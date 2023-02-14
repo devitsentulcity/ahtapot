@@ -42,6 +42,7 @@ import ListItemUnit from '@screens/ListItemUnit';
 import ContactUs from '@screens/ContactUs';
 import Messages from '@screens/Messages';
 import AboutUs from '@screens/AboutUs';
+import FormBooking from '@screens/FormBooking';
 
 const MainStack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -112,6 +113,7 @@ export default function Main() {
       />
       <MainStack.Screen name="ContactUs" component={ContactUs} />
       <MainStack.Screen name="AboutUs" component={AboutUs} />
+      <MainStack.Screen name="FormBooking" component={FormBooking} />
       <MainStack.Screen name="Messages" component={Messages} />
     </MainStack.Navigator>
   );

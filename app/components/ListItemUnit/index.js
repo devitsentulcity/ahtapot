@@ -180,41 +180,37 @@ export default function ListItem(props) {
           <Text headline semibold grayColor numberOfLines={1}>
             {subtitle}
           </Text>
-          {/* <View style={styles.lineRate}>
-            <Tag onPress={onPressTag} rateSmall style={{marginRight: 5}}>
-              {rate}
-            </Tag>
-            <StarRating
-              disabled={true}
-              starSize={10}
-              maxStars={5}
-              rating={rate}
-              selectedStar={rating => {}}
-              fullStarColor={BaseColor.yellowColor}
-            />
-          </View> */}
           <Text caption1 grayColor style={{marginTop: 10}}>
             {location}
           </Text>
           <Text caption1 grayColor style={{marginTop: 5}}>
             {phone}
           </Text>
-          {/* {favorite ? (
-            <Icon
-              name="heart"
-              color={colors.primaryLight}
-              solid
-              size={18}
-              style={styles.iconListLike}
-            />
-          ) : (
-            <Icon
-              name="heart"
-              color={colors.primaryLight}
-              size={18}
-              style={styles.iconListLike}
-            />
-          )} */}
+          <View style={{ flexDirection: 'row' }}>
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'flex-start',
+                justifyContent: 'center',
+            }}>
+              <Text caption1 grayColor>
+                LT :
+              </Text>
+            </View>
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                textAlign: 'left',
+              }}>
+              <Text caption1 grayColor>
+                Posisi :
+              </Text>
+            </View>
+          </View>
+          <Text caption1 grayColor style={{ marginTop: 5 }}>
+            LB :
+          </Text>
         </View>
       </TouchableOpacity>
     );

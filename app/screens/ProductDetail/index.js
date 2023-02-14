@@ -9,7 +9,6 @@ import {
   Alert,
   Platform,
   Dimensions,
-  Button,
 } from 'react-native';
 import {BaseColor, useTheme, BaseStyle} from '@config';
 import {
@@ -21,6 +20,7 @@ import {
   Tag,
   Image,
   ListItem,
+  Button,
 } from '@components';
 import {useTranslation} from 'react-i18next';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
@@ -334,68 +334,67 @@ export default function ProductDetail({navigation, route}) {
       );
     }
     return (
-      <ScrollView
-        onScroll={Animated.event(
-          [
-            {
-              nativeEvent: {
-                contentOffset: {y: deltaY},
-              },
-            },
-          ],
-          {useNativeDriver: false},
-        )}
-        onContentSizeChange={() => {
-          setHeightHeader(Utils.heightHeader());
-        }}
-        scrollEventThrottle={8}>
-        <View style={{height: 255 - heightHeader}} />
-        <View
-          style={{
+      <SafeAreaView
+        style={BaseStyle.safeAreaView}
+        edges={['right', 'top', 'left']}>
+        <ScrollView
+          contentContainerStyle={{
             paddingHorizontal: 20,
-            marginBottom: 20,
-          }}>
-          <View style={styles.lineSpace}>
-            <Text title1 semibold>
-              {product?.title}
+            paddingVertical: 20,
+          }}
+          onScroll={Animated.event(
+            [
+              {
+                nativeEvent: {
+                  contentOffset: {y: deltaY},
+                },
+              },
+            ],
+            {useNativeDriver: false},
+          )}
+          onContentSizeChange={() => {
+            setHeightHeader(Utils.heightHeader());
+          }}
+          scrollEventThrottle={8}>
+          <View style={{height: 255 - heightHeader}} />
+          <View
+            style={{
+              paddingHorizontal: 20,
+              marginBottom: 20,
+            }}>
+            <View style={styles.lineSpace}>
+              <Text title1 semibold>
+                {product?.title}
+              </Text>
+            </View>
+          </View>
+          <View style={[styles.contentDescription, {borderColor: colors.border}]}>
+            <Text body2 style={{lineHeight: 20}}>
+              {product?.description}
             </Text>
           </View>
-        </View>
-        <View style={[styles.contentDescription, {borderColor: colors.border}]}>
-          <Text body2 style={{lineHeight: 20}}>
-            {product?.description}
-          </Text>
-        </View>
-        <View
-          style={{
-            paddingTop: 20,
-            justifyContent: 'space-between',
-            flex: 1,
-            marginHorizontal: 40,
-          }}>
-          <Button onPress={onUnitDetail} title="Detail Unit" />
-        </View>
-        <View
-          style={{
-            paddingTop: 20,
-            flex: 1,
-            marginHorizontal: 60,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
-          <Button title="Brosur" />
-          <Button title="Daftar Harga" />
-        </View>
-        <View
-          style={{
-            paddingTop: 20,
-            justifyContent: 'space-between',
-            flex: 1,
-            marginHorizontal: 40,
-          }}>
-          <Button title="Virtual Reality" />
-        </View>
-      </ScrollView>
+          <View style={{ width: '100%' }}>
+            <Button full style={{ marginTop: 20 }} onPress={onUnitDetail}>
+              Detail Unit
+            </Button>
+          </View>
+          <View style={{ width: '100%' }}>
+            <Button full style={{ marginTop: 20 }}>
+              Brosur
+            </Button>
+          </View>
+          <View style={{ width: '100%' }}>
+            <Button full style={{ marginTop: 20 }}>
+              Daftar Harga
+            </Button>
+          </View>
+          <View style={{ width: '100%' }}>
+            <Button full style={{ marginTop: 20 }}>
+              Virtual Reality
+            </Button>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     );
   };
 

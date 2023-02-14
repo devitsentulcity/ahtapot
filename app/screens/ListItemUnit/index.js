@@ -193,8 +193,8 @@ export default function List({navigation, route}) {
   /**
    * on Review action
    */
-  const onProductDetail = item => {
-    navigation.navigate('ProductDetail', {
+  const onFormBooking = item => {
+    navigation.navigate('FormBooking', {
       item: item,
     });
   };
@@ -313,8 +313,7 @@ export default function List({navigation, route}) {
                   style={{
                     marginBottom: 15,
                   }}
-                  onPress={() => onProductDetail(item)}
-                  onPressTag={() => onReview(item)}
+                  onPress={() => onFormBooking(item)}
                 />
               )}
             />
