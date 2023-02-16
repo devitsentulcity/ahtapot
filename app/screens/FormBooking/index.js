@@ -6,7 +6,6 @@ import {
   Platform,
   Alert,
   TouchableOpacity,
-  StyleSheet,
 } from 'react-native';
 import {BaseStyle, useTheme} from '@config';
 import {
@@ -15,21 +14,31 @@ import {
   SafeAreaView,
   Icon,
   Text,
-  Button,
   TextInput,
+  Button,
 } from '@components';
 import styles from './styles';
 import {userSelect} from '@selectors';
 import {useDispatch, useSelector} from 'react-redux';
 import {useTranslation} from 'react-i18next';
 import {authActions} from '@actions';
-import DatePicker from 'react-native-date-picker';
-import { SH, SW, SF, heightPercent, widthPercent, fontPercent } from '../../utils/dimensions';
-import { Strings } from '../../utils/Strings';
-import { Colors } from '../../utils/Colors';
-import { Fonts } from '../../utils/Fonts';
+import MaskInput, { Masks } from 'react-native-mask-input';
+import SelectDropdown from 'react-native-select-dropdown'
+// import moment from 'moment';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import * as ImagePicker from 'react-native-image-picker';
+
+const options = {
+  title: 'Select Avatar',
+  customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
+  storageOptions: {
+    skipBackup: true,
+    path: 'images',
+  },
+};
 
 export default function ProfileEdit({navigation}) {
+  
   const { colorrdata } = useSelector(state => state.commonReducer) || {};
   const {colors} = useTheme();
   const {t} = useTranslation();
@@ -40,97 +49,94 @@ export default function ProfileEdit({navigation}) {
     android: 20,
   });
 
-  const [name, setName] = useState(user.name);
-  const [email, setEmail] = useState(user.email);
-  const [website, setWebsite] = useState(user.link);
-  const [information, setInformation] = useState(user.description);
+  // const [name, setName] = useState(user.name);
+  // const [email, setEmail] = useState(user.email);
+  // const [website, setWebsite] = useState(user.link);
+  // const [information, setInformation] = useState(user.description);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState({
-    name: true,
-    email: true,
-    website: true,
-    information: true,
-  });
+  // const [success, setSuccess] = useState({
+  //   name: true,
+  //   email: true,
+  //   website: true,
+  //   information: true,
+  // });
 
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState('');
+ 
+  const tcp = ["Tunai Keras", "KPR", "Tunai Bertahap"]
+  const statusPerkawinan = ["Kawin", "Belum Kawin", "Cerai"]
+  const pekerjaan = ["Kawyawan Stasta","PNS","POLRI","TNI","GURU","WIRASWASTA","DOSEN","KARWAYAN BUMN","IBU RUMAH TANGGA","DOKTER","PELAUT","PILOT"]
 
   /**
    * on Update Profile
    *
    */
-  const onUpdate = () => {
-    if (name == '' || email == '' || website == '' || information == '') {
-      setSuccess({
-        ...success,
-        name: name != '' ? true : false,
-        email: email != '' ? true : false,
-        website: website != '' ? true : false,
-        information: information != '' ? true : false,
-      });
-      return;
-    }
-    const params = {
-      name,
-      email,
-      url: website,
-      description: information,
-    };
-    setLoading(true);
-    dispatch(
-      authActions.onEditProfile(params, response => {
-        Alert.alert({
-          type: 'success',
-          title: t('edit_profile'),
-          message: t('update_success'),
-          action: [{onPress: () => navigation.goBack()}],
-        });
-        setLoading(false);
-      }),
-    );
-  };
+  // const onUpdate = () => {
+  //   if (name == '' || email == '' || website == '' || information == '') {
+  //     setSuccess({
+  //       ...success,
+  //       name: name != '' ? true : false,
+  //       email: email != '' ? true : false,
+  //       website: website != '' ? true : false,
+  //       information: information != '' ? true : false,
+  //     });
+  //     return;
+  //   }
+  //   const params = {
+  //     name,
+  //     email,
+  //     url: website,
+  //     description: information,
+  //   };
+  //   setLoading(true);
+  //   dispatch(
+  //     authActions.onEditProfile(params, response => {
+  //       Alert.alert({
+  //         type: 'success',
+  //         title: t('edit_profile'),
+  //         message: t('update_success'),
+  //         action: [{onPress: () => navigation.goBack()}],
+  //       });
+  //       setLoading(false);
+  //     }),
+  //   );
+  // };
 
   const [tabShow, SettabShow] = useState('1');
+  const [State, SetState] = useState('');
+  const [uriImgKTP, seturiImgKTP] = useState(null);
+  const [nameImgKTP, setnameImgKTP] = useState(null);
 
-  const Style = StyleSheet.create({
-    TabBoxTwo: {
-      flexDirection: 'row',
-      width: '100%',
-    },
-    TabsettextActiveBoxTwo: {
-      padding: SH(10),
-      paddingHorizontal: SH(0),
-      textAlign: 'center',
-      width: widthPercent(33.33),
-    },
-    TabsettextBoxTwo: {
-      padding: SH(10),
-      paddingHorizontal: SH(0),
-      textAlign: 'center',
-      width: widthPercent(33.33),
-    },
-    TabsettextActiveTwo: {
-      color: Colors.PrimaryColor,
-      // textTransform: 'uppercase',
-      fontSize: SF(10),
-      textAlign: 'center',
-      paddingVertical: SH(5),
-      paddingHorizontal: SH(10),
-      borderWidth: 1,
-    },
-    TabsettextTwo: {
-      color: '#000',
-      // textTransform: 'uppercase',
-      // fontFamily: Fonts.Poppins_Medium,
-      fontSize: SF(10),
-      textAlign: 'center',
-      paddingVertical: SH(5),
-      paddingHorizontal: SH(10),
-      borderWidth: 1,
-    },
-    MinHeightStyle: {
-      height: '100%'
-    },
-  });
+  launchImageLibrary = () => {
+    let options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+    ImagePicker.launchImageLibrary(options, (response) => {
+      // console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+        alert(response.customButton);
+      } else {
+        setnameImgKTP(response.assets[0].fileName);
+        seturiImgKTP(response.assets[0].uri);
+        console.log(response.assets[0]);
+        // this.setState({
+        //   filePath: response,
+        //   // fileData: response.data,
+        //   // fileUri: response.uri
+        // });
+      }
+    });
+
+  }
 
   return (
     <View style={{flex: 1}}>
@@ -156,15 +162,15 @@ export default function ProfileEdit({navigation}) {
           keyboardVerticalOffset={offsetKeyboard}
           style={{flex: 1}}>
           <ScrollView horizontal>
-            <View style={Style.TabBoxTwo}>
-              <TouchableOpacity onPress={() => SettabShow('1')} style={tabShow === '1' ? [Style.TabsettextActiveBoxTwo, { backgroundColor: colorrdata }] : Style.TabsettextBoxTwo}>
-                <Text onPress={() => SettabShow('1')} style={tabShow === '1' ? Style.TabsettextActiveTwo : [Style.TabsettextTwo, { color: colorrdata }]}>Form Booking</Text>
+            <View style={styles.TabBoxTwo}>
+              <TouchableOpacity onPress={() => SettabShow('1')} style={tabShow === '1' ? [styles.TabsettextActiveBoxTwo, { backgroundColor: colorrdata }] : styles.TabsettextBoxTwo}>
+                <Text onPress={() => SettabShow('1')} style={tabShow === '1' ? styles.TabsettextActiveTwo : [styles.TabsettextTwo, { color: colorrdata }]}>Form Booking</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => SettabShow('2')} style={tabShow === '2' ? [Style.TabsettextActiveBoxTwo, { backgroundColor: colorrdata }] : Style.TabsettextBoxTwo}>
-                <Text onPress={() => SettabShow('2')} style={tabShow === '2' ? Style.TabsettextActiveTwo : [Style.TabsettextTwo, { color: colorrdata }]}>Form Price Booking</Text>
+              <TouchableOpacity onPress={() => SettabShow('2')} style={tabShow === '2' ? [styles.TabsettextActiveBoxTwo, { backgroundColor: colorrdata }] : styles.TabsettextBoxTwo}>
+                <Text onPress={() => SettabShow('2')} style={tabShow === '2' ? styles.TabsettextActiveTwo : [styles.TabsettextTwo, { color: colorrdata }]}>Form Price Booking</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => SettabShow('3')} style={tabShow === '3' ? [Style.TabsettextActiveBoxTwo, { backgroundColor: colorrdata }] : Style.TabsettextBoxTwo}>
-                <Text onPress={() => SettabShow('3')} style={tabShow === '3' ? Style.TabsettextActiveTwo : [Style.TabsettextTwo, { color: colorrdata }]}>Form Add Schedule</Text>
+              <TouchableOpacity onPress={() => SettabShow('3')} style={tabShow === '3' ? [styles.TabsettextActiveBoxTwo, { backgroundColor: colorrdata }] : styles.TabsettextBoxTwo}>
+                <Text onPress={() => SettabShow('3')} style={tabShow === '3' ? styles.TabsettextActiveTwo : [styles.TabsettextTwo, { color: colorrdata }]}>Form Add Schedule</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>
@@ -176,17 +182,9 @@ export default function ProfileEdit({navigation}) {
                 </Text>
               </View>
               <TextInput
-                onChangeText={text => setName(text)}
-                placeholder={t('input_name')}
-                value={name}
+                placeholder={''}
+                value={''}
                 editable={false}
-                success={success.name}
-                onFocus={() => {
-                  setSuccess({
-                    ...success,
-                    username: true,
-                  });
-                }}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -194,17 +192,9 @@ export default function ProfileEdit({navigation}) {
                 </Text>
               </View>
               <TextInput
-                onChangeText={text => setEmail(text)}
-                placeholder={t('input_email')}
-                value={email}
+                placeholder={''}
+                value={''}
                 editable={false}
-                success={success.email}
-                onFocus={() => {
-                  setSuccess({
-                    ...success,
-                    email: true,
-                  });
-                }}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -212,34 +202,23 @@ export default function ProfileEdit({navigation}) {
                 </Text>
               </View>
               <TextInput
-                onChangeText={text => setWebsite(text)}
                 placeholder={t('input_email')}
-                value={website}
+                value={''}
                 editable={false}
-                success={success.website}
-                onFocus={() => {
-                  setSuccess({
-                    ...success,
-                    website: true,
-                  });
-                }}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
                   Tanggal
                 </Text>
               </View>
-              <TextInput
-                onChangeText={text => setInformation(text)}
-                placeholder={t('input_information')}
-                value={''}
-                success={success.information}
-                onFocus={() => {
-                  setSuccess({
-                    ...success,
-                    information: true,
-                  });
-                }}
+              <MaskInput
+                mask={Masks.DATE_DDMMYYYY}
+                keyboardType="numeric"
+                value={date}
+                style={styles.inputBasic}
+                maskAutoComplete
+                onChangeText={setDate}
+                maxLength={undefined}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -247,33 +226,34 @@ export default function ProfileEdit({navigation}) {
                 </Text>
               </View>
               <TextInput
-                onChangeText={text => setInformation(text)}
                 placeholder={'Nama Konsumen'}
-                value={''}
-                success={success.information}
-                onFocus={() => {
-                  setSuccess({
-                    ...success,
-                    information: true,
-                  });
-                }}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
                   Pilih TCP
                 </Text>
               </View>
-              <TextInput
-                onChangeText={text => setInformation(text)}
-                placeholder={'Pilih TCP'}
-                value={''}
-                success={success.information}
-                onFocus={() => {
-                  setSuccess({
-                    ...success,
-                    information: true,
-                  });
+              <SelectDropdown
+                data={tcp}
+                defaultButtonText={'Pilih CTP'}
+                onSelect={(selectedItem, index) => {
+                  console.log(selectedItem, index)
                 }}
+                buttonTextAfterSelection={(selectedItem, index) => {
+                  return selectedItem
+                }}
+                rowTextForSelection={(item, index) => {
+                  return item
+                }}
+                buttonStyle={styles.dropdown2BtnStyle}
+                buttonTextStyle={styles.dropdown2BtnTxtStyle}
+                renderDropdownIcon={isOpened => {
+                  return <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#FFF'} size={18} />;
+                }}
+                dropdownIconPosition={'right'}
+                dropdownStyle={styles.dropdown2DropdownStyle}
+                rowStyle={styles.dropdown2RowStyle}
+                rowTextStyle={styles.dropdown2RowTxtStyle}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -281,17 +261,8 @@ export default function ProfileEdit({navigation}) {
                 </Text>
               </View>
               <TextInput
-                onChangeText={text => setInformation(text)}
                 placeholder={'Harga Jual'}
-                value={''}
                 editable={false}
-                success={success.information}
-                onFocus={() => {
-                  setSuccess({
-                    ...success,
-                    information: true,
-                  });
-                }}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -299,16 +270,7 @@ export default function ProfileEdit({navigation}) {
                 </Text>
               </View>
               <TextInput
-                onChangeText={text => setInformation(text)}
                 placeholder={'No KTP'}
-                value={''}
-                success={success.information}
-                onFocus={() => {
-                  setSuccess({
-                    ...success,
-                    information: true,
-                  });
-                }}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -316,16 +278,8 @@ export default function ProfileEdit({navigation}) {
                 </Text>
               </View>
               <TextInput
-                onChangeText={text => setInformation(text)}
                 placeholder={'NPWP'}
                 value={''}
-                success={success.information}
-                onFocus={() => {
-                  setSuccess({
-                    ...success,
-                    information: true,
-                  });
-                }}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -333,16 +287,8 @@ export default function ProfileEdit({navigation}) {
                 </Text>
               </View>
               <TextInput
-                onChangeText={text => setInformation(text)}
                 placeholder={'Alamat KTP'}
                 value={''}
-                success={success.information}
-                onFocus={() => {
-                  setSuccess({
-                    ...success,
-                    information: true,
-                  });
-                }}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -350,16 +296,8 @@ export default function ProfileEdit({navigation}) {
                 </Text>
               </View>
               <TextInput
-                onChangeText={text => setInformation(text)}
                 placeholder={'Nama Kantor/Instansi'}
                 value={''}
-                success={success.information}
-                onFocus={() => {
-                  setSuccess({
-                    ...success,
-                    information: true,
-                  });
-                }}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -367,16 +305,8 @@ export default function ProfileEdit({navigation}) {
                 </Text>
               </View>
               <TextInput
-                onChangeText={text => setInformation(text)}
                 placeholder={'Alamat Kantor/Instansi'}
                 value={''}
-                success={success.information}
-                onFocus={() => {
-                  setSuccess({
-                    ...success,
-                    information: true,
-                  });
-                }}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -384,16 +314,8 @@ export default function ProfileEdit({navigation}) {
                 </Text>
               </View>
               <TextInput
-                onChangeText={text => setInformation(text)}
                 placeholder={'No HP 1'}
                 value={''}
-                success={success.information}
-                onFocus={() => {
-                  setSuccess({
-                    ...success,
-                    information: true,
-                  });
-                }}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -401,16 +323,8 @@ export default function ProfileEdit({navigation}) {
                 </Text>
               </View>
               <TextInput
-                onChangeText={text => setInformation(text)}
                 placeholder={'No HP 2'}
                 value={''}
-                success={success.information}
-                onFocus={() => {
-                  setSuccess({
-                    ...success,
-                    information: true,
-                  });
-                }}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -418,16 +332,8 @@ export default function ProfileEdit({navigation}) {
                 </Text>
               </View>
               <TextInput
-                onChangeText={text => setInformation(text)}
                 placeholder={'No Kantor/FAX'}
                 value={''}
-                success={success.information}
-                onFocus={() => {
-                  setSuccess({
-                    ...success,
-                    information: true,
-                  });
-                }}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -435,90 +341,90 @@ export default function ProfileEdit({navigation}) {
                 </Text>
               </View>
               <TextInput
-                onChangeText={text => setInformation(text)}
                 placeholder={'Email'}
                 value={''}
-                success={success.information}
-                onFocus={() => {
-                  setSuccess({
-                    ...success,
-                    information: true,
-                  });
-                }}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
                   Status Perkawinan
                 </Text>
               </View>
-              <TextInput
-                onChangeText={text => setInformation(text)}
-                placeholder={'Status Perkawinan'}
-                value={''}
-                success={success.information}
-                onFocus={() => {
-                  setSuccess({
-                    ...success,
-                    information: true,
-                  });
+              <SelectDropdown
+                data={statusPerkawinan}
+                defaultButtonText={'Pilih Status Perkawinan'}
+                onSelect={(selectedItem, index) => {
+                  console.log(selectedItem, index)
                 }}
+                buttonTextAfterSelection={(selectedItem, index) => {
+                  return selectedItem
+                }}
+                rowTextForSelection={(item, index) => {
+                  return item
+                }}
+                buttonStyle={styles.dropdown2BtnStyle}
+                buttonTextStyle={styles.dropdown2BtnTxtStyle}
+                renderDropdownIcon={isOpened => {
+                  return <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#FFF'} size={18} />;
+                }}
+                dropdownIconPosition={'right'}
+                dropdownStyle={styles.dropdown2DropdownStyle}
+                rowStyle={styles.dropdown2RowStyle}
+                rowTextStyle={styles.dropdown2RowTxtStyle}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
                   Pekerjaan
                 </Text>
               </View>
-              <TextInput
-                onChangeText={text => setInformation(text)}
-                placeholder={''}
-                value={''}
-                success={success.information}
-                onFocus={() => {
-                  setSuccess({
-                    ...success,
-                    information: true,
-                  });
+              <SelectDropdown
+                data={pekerjaan}
+                defaultButtonText={'Pilih Pekerjaan'}
+                onSelect={(selectedItem, index) => {
+                  console.log(selectedItem, index)
                 }}
+                buttonTextAfterSelection={(selectedItem, index) => {
+                  return selectedItem
+                }}
+                rowTextForSelection={(item, index) => {
+                  return item
+                }}
+                buttonStyle={styles.dropdown2BtnStyle}
+                buttonTextStyle={styles.dropdown2BtnTxtStyle}
+                renderDropdownIcon={isOpened => {
+                  return <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#FFF'} size={18} />;
+                }}
+                dropdownIconPosition={'right'}
+                dropdownStyle={styles.dropdown2DropdownStyle}
+                rowStyle={styles.dropdown2RowStyle}
+                rowTextStyle={styles.dropdown2RowTxtStyle}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
                   Foto KTP
                 </Text>
               </View>
-              <TextInput
-                onChangeText={text => setInformation(text)}
-                placeholder={''}
-                value={''}
-                success={success.information}
-                onFocus={() => {
-                  setSuccess({
-                    ...success,
-                    information: true,
-                  });
-                }}
+              {uriImgKTP != null ? (
+              <Image
+                style={styles.images}
+                source={{ uri: uriImgKTP }}
               />
+              ) : null}
+              <Button loading={loading} full onPress={this.launchImageLibrary}>
+                Foto KTP
+              </Button>
               <View style={styles.contentTitle}>
                 <Text headline semibold>
                   Foto NPWP
                 </Text>
               </View>
               <TextInput
-                onChangeText={text => setInformation(text)}
                 placeholder={''}
                 value={''}
-                success={success.information}
-                onFocus={() => {
-                  setSuccess({
-                    ...success,
-                    information: true,
-                  });
-                }}
               />
             </ScrollView>
           : null}
           {tabShow == '2' ?
-            <ScrollView contentContainerStyle={styles.contain}>
-            </ScrollView>
+            <ScrollView contentContainerStyle={styles.contain}></ScrollView>
           : null}
           {tabShow == '3' ?
             <ScrollView contentContainerStyle={styles.contain}>

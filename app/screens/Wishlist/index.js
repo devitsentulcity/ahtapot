@@ -12,7 +12,7 @@ import {wishlistSelect} from '@selectors';
 import {useDispatch, useSelector} from 'react-redux';
 import {useTranslation} from 'react-i18next';
 import {wishListActions} from '@actions';
-import Share from 'react-native-share';
+// import Share from 'react-native-share';
 import Modal from 'react-native-modal';
 import styles from './styles';
 
