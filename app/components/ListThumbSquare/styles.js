@@ -20,12 +20,12 @@ export default StyleSheet.create({
     flexDirection: 'row',
   },
   left: {
-    flex: 7.5,
+    flex: 7,
     alignItems: 'flex-start',
     justifyContent: 'center',
   },
   right: {
-    flex: 2.5,
+    flex: 3,
     alignItems: 'flex-end',
     justifyContent: 'center',
   },

@@ -53,8 +53,7 @@ export default StyleSheet.create({
   },
   TabsettextActiveTwo: {
     color: Colors.PrimaryColor,
-    // textTransform: 'uppercase',
-    fontSize: SF(10),
+    fontSize: SF(15),
     textAlign: 'center',
     paddingVertical: SH(5),
     paddingHorizontal: SH(10),
@@ -62,9 +61,7 @@ export default StyleSheet.create({
   },
   TabsettextTwo: {
     color: '#000',
-    // textTransform: 'uppercase',
-    // fontFamily: Fonts.Poppins_Medium,
-    fontSize: SF(10),
+    fontSize: SF(15),
     textAlign: 'center',
     paddingVertical: SH(5),
     paddingHorizontal: SH(10),
@@ -203,8 +200,6 @@ export default StyleSheet.create({
   dropdown4RowStyle: { backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5' },
   dropdown4RowTxtStyle: { color: '#f5f5f5', textAlign: 'left' },
   images: {
-    width: '100%',
-    height: undefined,
     aspectRatio: 1,
     borderColor: 'black',
     borderWidth: 1,

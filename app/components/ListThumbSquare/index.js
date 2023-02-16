@@ -49,7 +49,7 @@ export default function ListThumbSquare(props) {
       onPress={onPress}
       activeOpacity={0.9}>
       <View style={[styles.contain, {borderBottomColor: colors.border}]}>
-        <Image source={image} style={[styles.thumb, imageStyle]} />
+        {/* <Image source={image} style={[styles.thumb, imageStyle]} /> */}
         <View style={styles.content}>
           <View style={styles.left}>
             <Text headline semibold>
@@ -59,7 +59,6 @@ export default function ListThumbSquare(props) {
               note
               numberOfLines={1}
               footnote
-              grayColor
               style={{
                 paddingTop: 5,
               }}>
@@ -67,7 +66,7 @@ export default function ListThumbSquare(props) {
             </Text>
           </View>
           <View style={styles.right}>
-            <Text caption2 grayColor numberOfLines={1}>
+            <Text caption2>
               {txtRight}
             </Text>
           </View>
