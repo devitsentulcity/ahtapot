@@ -127,11 +127,11 @@ export default function ProfileEdit({navigation}) {
     };
     ImagePicker.launchImageLibrary(options, (response) => {
       if (response.didCancel) {
-        console.log('User cancelled image picker');
+        // console.log('User cancelled image picker');
       } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
+        // console.log('ImagePicker Error: ', response.error);
       } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
+        // console.log('User tapped custom button: ', response.customButton);
         alert(response.customButton);
       } else {
         setnameImgKTP(response.assets[0].fileName);
@@ -150,11 +150,11 @@ export default function ProfileEdit({navigation}) {
     };
     ImagePicker.launchImageLibrary(options, (response) => {
       if (response.didCancel) {
-        console.log('User cancelled image picker');
+        // console.log('User cancelled image picker');
       } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
+        // console.log('ImagePicker Error: ', response.error);
       } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
+        // console.log('User tapped custom button: ', response.customButton);
         alert(response.customButton);
       } else {
         setnameImgNPWP(response.assets[0].fileName);
@@ -173,11 +173,11 @@ export default function ProfileEdit({navigation}) {
     };
     ImagePicker.launchImageLibrary(options, (response) => {
       if (response.didCancel) {
-        console.log('User cancelled image picker');
+        // console.log('User cancelled image picker');
       } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
+        // console.log('ImagePicker Error: ', response.error);
       } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
+        // console.log('User tapped custom button: ', response.customButton);
         alert(response.customButton);
       } else {
         setnameImgDokumenLain(response.assets[0].fileName);
@@ -403,7 +403,7 @@ export default function ProfileEdit({navigation}) {
                 data={statusPerkawinan}
                 defaultButtonText={'Pilih Status Perkawinan'}
                 onSelect={(selectedItem, index) => {
-                  console.log(selectedItem, index)
+                  // console.log(selectedItem, index)
                 }}
                 buttonTextAfterSelection={(selectedItem, index) => {
                   return selectedItem
@@ -430,7 +430,7 @@ export default function ProfileEdit({navigation}) {
                 data={pekerjaan}
                 defaultButtonText={'Pilih Pekerjaan'}
                 onSelect={(selectedItem, index) => {
-                  console.log(selectedItem, index)
+                  // console.log(selectedItem, index)
                 }}
                 buttonTextAfterSelection={(selectedItem, index) => {
                   return selectedItem

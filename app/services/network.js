@@ -34,7 +34,7 @@ class HTTP {
         if (!config.baseURL) {
           config.baseURL = `${getDomain()}/index.php/wp-json`;
         }
-        console.log('Before Request >>>', config);
+        // console.log('Before Request >>>', config);
         // Add more config before request
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
@@ -43,7 +43,7 @@ class HTTP {
         return config;
       },
       error => {
-        console.log('Error Request >>>', error);
+        // console.log('Error Request >>>', error);
         // Do something with response error
         return new Promise.reject(error);
       },
@@ -51,12 +51,12 @@ class HTTP {
 
     api.interceptors.response.use(
       response => {
-        console.log('After Request >>>', response);
+        // console.log('After Request >>>', response);
         // process more after response
         return response;
       },
       error => {
-        console.log('Error Response >>>', error);
+        // console.log('Error Response >>>', error);
         // process more when exeption
         return new Promise.reject(error);
       },
@@ -81,7 +81,7 @@ class HTTP {
    */
   cancelRequest(key) {
     if (this.uniqueRequest?.[key]) {
-      console.log('Cancel request key', key);
+      // console.log('Cancel request key', key);
       this.uniqueRequest[key]?.cancel();
     }
   }
@@ -94,7 +94,7 @@ class HTTP {
    */
   removeTokenRequest(key) {
     if (this.uniqueRequest?.[key]) {
-      console.log('Remove uniqueRequest request key', key);
+      // console.log('Remove uniqueRequest request key', key);
       this.uniqueRequest[key] = null;
     }
   }

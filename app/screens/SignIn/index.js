@@ -13,6 +13,7 @@ import styles from './styles';
 import {useTranslation} from 'react-i18next';
 import {authActions} from '@actions';
 import {designSelect} from '@selectors';
+import CommonServices from '../../services/common';
 
 export default function SignIn({navigation, route}) {
   const {colors} = useTheme();
@@ -21,40 +22,36 @@ export default function SignIn({navigation, route}) {
   const design = useSelector(designSelect);
 
   const [loading, setLoading] = useState(false);
-  const [id, setId] = useState('paul');
-  const [password, setPassword] = useState('123456');
+  // const [id, setId] = useState('paul');
+  // const [password, setPassword] = useState('123456');
   const [success, setSuccess] = useState({id: true, password: true});
+  const [username, setUsername] = useState(null);
+  const [password, setPassword] = useState(null);
 
   /**
    * call when action onLogin
    */
-  const onLogin = () => {
-    if (id == '' || password == '') {
+  const onLogin = async () => {
+    if (username == '' || password == '') {
       setSuccess({
         ...success,
-        id: false,
+        username: false,
         password: false,
       });
       return;
     }
-    const params = {
-      username: id,
-      password,
-    };
     setLoading(true);
-    dispatch(
-      authActions.onLogin(params, design, response => {
-        if (response?.success) {
-          navigation.goBack();
-          setTimeout(() => {
-            route.params?.success?.();
-          }, 1000);
-          return;
-        }
-        Alert.alert({title: t('sign_in'), message: t(response?.message)});
-        setLoading(false);
-      }),
-    );
+    // let paramLogin = {
+    //   email: username,
+    //   password: password,
+    // }
+    // let responseLogin = await CommonServices.callApi('msales/public/login','POST',paramLogin);
+    // setLoading(false);
+    // //console.log(responseLogin);
+    // if (responseLogin.status === 'success') {image.png
+    // } else {
+    //   Alert.alert({ title: responseLogin.status, message: responseLogin.message });
+    // }
   };
 
   const offsetKeyboard = Platform.select({
@@ -87,20 +84,19 @@ export default function SignIn({navigation, route}) {
           style={{flex: 1}}>
           <View style={styles.contain}>
             <TextInput
-              onChangeText={setId}
+              onChangeText={text => setUsername(text)}
               onFocus={() => {
                 setSuccess({
                   ...success,
-                  id: true,
+                  username: true,
                 });
               }}
               placeholder={t('input_id')}
-              success={success.id}
-              value={id}
+              success={success.username}
             />
             <TextInput
               style={{marginTop: 10}}
-              onChangeText={setPassword}
+              onChangeText={text => setPassword(text)}
               onFocus={() => {
                 setSuccess({
                   ...success,
@@ -110,7 +106,6 @@ export default function SignIn({navigation, route}) {
               placeholder={t('input_password')}
               secureTextEntry={true}
               success={success.password}
-              value={password}
             />
             <Button
               style={{marginTop: 20}}

@@ -17,7 +17,7 @@ function* fetchNotification(action) {
     }
     action.callback?.(response);
   } catch (error) {
-    console.log('fetchNotification', error);
+    // console.log('fetchNotification', error);
     action.callback?.(error.response ?? error.message);
   }
 }

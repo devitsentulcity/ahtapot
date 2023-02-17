@@ -68,7 +68,7 @@ function* fetchHome(action) {
     }
     action.callback?.(response);
   } catch (error) {
-    console.log('fetchHome', error);
+    // console.log('fetchHome', error);
     action.callback?.(error.response ?? error.message);
   }
 }

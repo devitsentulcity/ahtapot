@@ -1,10 +1,10 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   ScrollView,
   Animated,
   TouchableOpacity,
-  FlatList,
+  FlatList
 } from 'react-native';
 import {
   Placeholder,
@@ -13,7 +13,7 @@ import {
   Progressive,
   PlaceholderMedia,
 } from 'rn-placeholder';
-import {Image, Text, Icon, Card, SafeAreaView, ListItem} from '@components';
+import { Image, Text, Icon, Card, SafeAreaView, ListItem} from '@components';
 import {BaseStyle, BaseColor, useTheme} from '@config';
 import * as Utils from '@utils';
 import styles from './styles';
@@ -22,6 +22,8 @@ import {useSelector} from 'react-redux';
 import {homeSelect} from '@selectors';
 import {useTranslation} from 'react-i18next';
 import {FilterModel} from '@models';
+import CommonServices from '../../services/common';
+
 
 const deltaY = new Animated.Value(0);
 
@@ -32,6 +34,27 @@ export default function Home({navigation}) {
   const [heightHeader, setHeightHeader] = useState(Utils.heightHeader());
   const heightImageBanner = Utils.scaleWithPixel(180);
   const marginTopBanner = heightImageBanner - heightHeader + 10;
+  const [bannerList, setBannerList] = useState([])
+
+  const initPage = async () => {
+    await fetchBanner()
+  }
+
+  const fetchBanner = async ()=>{
+    // let param = {
+    //   id:1,
+    //   name:"hardi"
+    // }
+    // let responses = await CommonServices.callApi('msales/public/pub/slider', 'POST', param)
+    let response = await CommonServices.callApi('msales/public/pub/slider', 'GET', '')
+    // (response)
+    if(response.status === 'success'){
+      // console.log(response.data)
+      setBannerList(response.data)
+    }
+    else
+    console.log(response)
+  }
 
   /**
    *
@@ -45,7 +68,7 @@ export default function Home({navigation}) {
    * render banner
    */
   const renderBanner = () => {
-    if (home.sliders?.length > 0) {
+    if (bannerList?.length > 0) {
       return (
         <Swiper
           dotStyle={{
@@ -56,12 +79,13 @@ export default function Home({navigation}) {
           removeClippedSubviews={false}
           autoplay={true}
           autoplayTimeout={2}>
-          {home.sliders.map((item, index) => {
+          {bannerList.map((item) => {
+            // console.log(item.id)
             return (
               <Image
-                key={`slider${index}`}
-                source={item}
-                style={{width: '100%', height: '100%'}}
+                key={`slider${item.id}`}
+                source={{ uri: item.gambar_kecil }}
+                style={{ width: '100%', height: '100%' }}
               />
             );
           })}
@@ -366,6 +390,10 @@ export default function Home({navigation}) {
       );
     });
   };
+
+  useEffect(()=>{
+    initPage()
+  },[])
 
   return (
     <View style={{flex: 1}}>

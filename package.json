@@ -10,7 +10,8 @@
     "clean": "watchman watch-del-all && rm -rf package-lock.json yarn.lock node_modules && cd ios && rm -rf Pods Podfile.lock build && cd ../android && rm -rf .gradle build && cd app && rm -rf build && cd ../..",
     "setup": "npm run clean && npm install --legacy-peer-deps",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "runDevice": "adb -s emulator-5554 shell am start -n com.runner/com.runner.MainActivity"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.17.11",
@@ -19,8 +20,9 @@
     "@react-navigation/bottom-tabs": "6.4.3",
     "@react-navigation/native": "6.0.16",
     "@react-navigation/stack": "6.3.7",
-    "axios": "0.27.2",
+    "axios": "^1.3.3",
     "i18next": "22.0.6",
+    "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "prop-types": "15.8.1",
     "react": "18.1.0",
