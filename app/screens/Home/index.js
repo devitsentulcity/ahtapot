@@ -4,7 +4,7 @@ import {
   ScrollView,
   Animated,
   TouchableOpacity,
-  FlatList
+  FlatList,
 } from 'react-native';
 import {
   Placeholder,
@@ -13,7 +13,7 @@ import {
   Progressive,
   PlaceholderMedia,
 } from 'rn-placeholder';
-import { Image, Text, Icon, Card, SafeAreaView, ListItem} from '@components';
+import {Image, Text, Icon, Card, SafeAreaView, ListItem} from '@components';
 import {BaseStyle, BaseColor, useTheme} from '@config';
 import * as Utils from '@utils';
 import styles from './styles';
@@ -22,7 +22,7 @@ import {useSelector} from 'react-redux';
 import {homeSelect} from '@selectors';
 import {useTranslation} from 'react-i18next';
 import {FilterModel} from '@models';
-import CommonServices from '../../services/common';
+import {banner, cluster, fasilitas} from '../../api/home/home';
 
 const deltaY = new Animated.Value(0);
 
@@ -33,27 +33,63 @@ export default function Home({navigation}) {
   const [heightHeader, setHeightHeader] = useState(Utils.heightHeader());
   const heightImageBanner = Utils.scaleWithPixel(180);
   const marginTopBanner = heightImageBanner - heightHeader + 10;
-  const [bannerList, setBannerList] = useState([])
+  const [bannerList, setBannerList] = useState([]);
+  const [clusterList, setClusterList] = useState([]);
+  const [fasilitasList, setFasilitasList] = useState([]);
 
   const initPage = async () => {
-    await fetchBanner()
-  }
+    fetchBanner();
+    fetchCluster();
+    fetchFasilitas();
+  };
 
-  const fetchBanner = async ()=>{
-    // let param = {
-    //   id:1,
-    //   name:"hardi"
-    // }
-    // let responses = await CommonServices.callApi('msales/public/pub/slider', 'POST', param)
-    let response = await CommonServices.callApi('msales/public/pub/slider', 'GET', '')
-    // (response)
-    if(response.status === 'success'){
-      // console.log(response.data)
-      setBannerList(response.data)
-    }
-    else
-    console.log(response)
-  }
+  const fetchBanner = async () => {
+    banner()
+      .then(result => {
+        if (result.status == 200) result = result.data;
+        if (result.status === 'success') {
+          setBannerList(result.data);
+        } else {
+          console.log(result);
+          setBannerList([]);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  const fetchCluster = async () => {
+    cluster()
+      .then(result => {
+        if (result.status == 200) result = result.data;
+        if (result.status === 'success') {
+          setClusterList(result.data);
+        } else {
+          console.log(result);
+          setClusterList([]);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  const fetchFasilitas = async () => {
+    fasilitas()
+      .then(result => {
+        if (result.status == 200) result = result.data;
+        if (result.status === 'success') {
+          setFasilitasList(result.data);
+        } else {
+          console.log(result);
+          setFasilitasList([]);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   /**
    *
@@ -78,13 +114,12 @@ export default function Home({navigation}) {
           removeClippedSubviews={false}
           autoplay={true}
           autoplayTimeout={2}>
-          {bannerList.map((item) => {
-            // console.log(item.id)
+          {bannerList.map(item => {
             return (
               <Image
                 key={`slider${item.id}`}
-                source={{ uri: item.gambar_kecil }}
-                style={{ width: '100%', height: '100%' }}
+                source={{uri: item.gambar_kecil}}
+                style={{width: '100%', height: '100%'}}
               />
             );
           })}
@@ -117,7 +152,7 @@ export default function Home({navigation}) {
               navigation.navigate('List', {filter});
             }}>
             <View
-              style={[styles.serviceCircleIcon, { backgroundColor: '#e33222'}]}>
+              style={[styles.serviceCircleIcon, {backgroundColor: '#e33222'}]}>
               <Icon
                 name={Utils.iconConvert('fas fa-home')}
                 size={20}
@@ -137,7 +172,7 @@ export default function Home({navigation}) {
               navigation.navigate('List', {filter});
             }}>
             <View
-              style={[styles.serviceCircleIcon, { backgroundColor: '#ee9836' }]}>
+              style={[styles.serviceCircleIcon, {backgroundColor: '#ee9836'}]}>
               <Icon
                 name={Utils.iconConvert('fas fa-building')}
                 size={20}
@@ -157,7 +192,7 @@ export default function Home({navigation}) {
               navigation.navigate('List', {filter});
             }}>
             <View
-              style={[styles.serviceCircleIcon, { backgroundColor: '#1231ee' }]}>
+              style={[styles.serviceCircleIcon, {backgroundColor: '#1231ee'}]}>
               <Icon
                 name={Utils.iconConvert('fas fa-shopping-basket')}
                 size={20}
@@ -177,7 +212,7 @@ export default function Home({navigation}) {
               navigation.navigate('List', {filter});
             }}>
             <View
-              style={[styles.serviceCircleIcon, { backgroundColor: '#7bc33b' }]}>
+              style={[styles.serviceCircleIcon, {backgroundColor: '#7bc33b'}]}>
               <Icon
                 name={Utils.iconConvert('fas fa-layer-group')}
                 size={20}
@@ -191,13 +226,13 @@ export default function Home({navigation}) {
           </TouchableOpacity>
           <TouchableOpacity
             key={'categoryNUP'}
-            style={[styles.serviceItem, { width: Utils.getWidthDevice() * 0.24 }]}
+            style={[styles.serviceItem, {width: Utils.getWidthDevice() * 0.24}]}
             onPress={() => {
               const filter = new FilterModel();
               // navigation.navigate('List', { filter });
             }}>
             <View
-              style={[styles.serviceCircleIcon, { backgroundColor: '#4c1f7e' }]}>
+              style={[styles.serviceCircleIcon, {backgroundColor: '#4c1f7e'}]}>
               <Icon
                 name={Utils.iconConvert('fas fa-list-ol')}
                 size={20}
@@ -211,13 +246,13 @@ export default function Home({navigation}) {
           </TouchableOpacity>
           <TouchableOpacity
             key={'categoryReserved'}
-            style={[styles.serviceItem, { width: Utils.getWidthDevice() * 0.24 }]}
+            style={[styles.serviceItem, {width: Utils.getWidthDevice() * 0.24}]}
             onPress={() => {
               const filter = new FilterModel();
               // navigation.navigate('List', { filter });
             }}>
             <View
-              style={[styles.serviceCircleIcon, { backgroundColor: '#bfb339' }]}>
+              style={[styles.serviceCircleIcon, {backgroundColor: '#bfb339'}]}>
               <Icon
                 name={Utils.iconConvert('fas fa-bookmark')}
                 size={20}
@@ -231,13 +266,13 @@ export default function Home({navigation}) {
           </TouchableOpacity>
           <TouchableOpacity
             key={'categoryBooking'}
-            style={[styles.serviceItem, { width: Utils.getWidthDevice() * 0.24 }]}
+            style={[styles.serviceItem, {width: Utils.getWidthDevice() * 0.24}]}
             onPress={() => {
               const filter = new FilterModel();
               // navigation.navigate('List', { filter });
             }}>
             <View
-              style={[styles.serviceCircleIcon, { backgroundColor: '#4546b5' }]}>
+              style={[styles.serviceCircleIcon, {backgroundColor: '#4546b5'}]}>
               <Icon
                 name={Utils.iconConvert('fas fa-check-circle')}
                 size={20}
@@ -251,13 +286,13 @@ export default function Home({navigation}) {
           </TouchableOpacity>
           <TouchableOpacity
             key={'categoryListBooking'}
-            style={[styles.serviceItem, { width: Utils.getWidthDevice() * 0.24 }]}
+            style={[styles.serviceItem, {width: Utils.getWidthDevice() * 0.24}]}
             onPress={() => {
               const filter = new FilterModel();
               // navigation.navigate('List', { filter });
             }}>
             <View
-              style={[styles.serviceCircleIcon, { backgroundColor: '#b152af' }]}>
+              style={[styles.serviceCircleIcon, {backgroundColor: '#b152af'}]}>
               <Icon
                 name={Utils.iconConvert('fas fa-clipboard-list')}
                 size={20}
@@ -302,14 +337,14 @@ export default function Home({navigation}) {
    * render Popular list
    * @returns
    */
-  const renderPopular = () => {
-    if (home.locations?.length > 0) {
+  const renderClusterTeratas = () => {
+    if (clusterList.length > 0) {
       return (
         <FlatList
           contentContainerStyle={{paddingLeft: 5, paddingRight: 15}}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          data={home.locations}
+          data={clusterList}
           keyExtractor={(item, index) => `locations ${index}`}
           renderItem={({item, index}) => {
             return (
@@ -321,7 +356,7 @@ export default function Home({navigation}) {
                   navigation.navigate('List', {filter});
                 }}>
                 <Text headline whiteColor semibold>
-                  {item.title}
+                  {item.KawasanName}
                 </Text>
               </Card>
             );
@@ -356,15 +391,15 @@ export default function Home({navigation}) {
    * render List recent
    * @returns
    */
-  const renderRecent = () => {
-    if (home.recents?.length > 0) {
-      return home.recents.map((item, index) => {
+  const renderFasilitas = () => {
+    if (fasilitasList?.length > 0) {
+      return fasilitasList.map((item, index) => {
         return (
           <ListItem
             small
             key={`recent${item.id}`}
-            image={item.image?.full}
-            title={item.title}
+            image={item.gambar_kecil}
+            title={item.nama_fasilitas}
             // subtitle={item.category?.title}
             // rate={item.rate}
             style={{marginBottom: 15}}
@@ -390,9 +425,9 @@ export default function Home({navigation}) {
     });
   };
 
-  useEffect(()=>{
-    initPage()
-  },[])
+  useEffect(() => {
+    initPage();
+  }, []);
 
   return (
     <View style={{flex: 1}}>
@@ -470,7 +505,7 @@ export default function Home({navigation}) {
               {t('popular_lologan')}
             </Text> */}
           </View>
-          {renderPopular()}
+          {renderClusterTeratas()}
           <View
             style={{
               paddingHorizontal: 20,
@@ -482,7 +517,7 @@ export default function Home({navigation}) {
             {/* <Text body2 grayColor style={{marginBottom: 15}}>
               {t('recent_sologan')}
             </Text> */}
-            {renderRecent()}
+            {renderFasilitas()}
           </View>
         </ScrollView>
         {/* <TouchableOpacity
