@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -6,27 +6,44 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {BaseStyle, useTheme} from '@config';
-import {Header, SafeAreaView, Icon, Text, Button, TextInput} from '@components';
+import { useDispatch, useSelector } from 'react-redux';
+import { BaseStyle, useTheme } from '@config';
+import { Header, SafeAreaView, Icon, Text, Button, TextInput } from '@components';
 import styles from './styles';
-import {useTranslation} from 'react-i18next';
-import {authActions} from '@actions';
-import {designSelect} from '@selectors';
-import CommonServices from '../../services/common';
+import { useTranslation } from 'react-i18next';
+import { authActions } from '@actions';
+import { designSelect } from '@selectors';
+import { userLogin } from '../../api/auth/login';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function SignIn({navigation, route}) {
-  const {colors} = useTheme();
-  const {t} = useTranslation();
+export default function SignIn({ navigation, route }) {
+  const { colors } = useTheme();
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const design = useSelector(designSelect);
 
   const [loading, setLoading] = useState(false);
   // const [id, setId] = useState('paul');
   // const [password, setPassword] = useState('123456');
-  const [success, setSuccess] = useState({id: true, password: true});
+  const [success, setSuccess] = useState({ id: true, password: true });
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
+
+  useEffect(() => {
+    setTimeout(() => {
+      handleGetToken();
+    }, 2000);
+  });
+
+  const handleGetToken = async () => {
+    const dataToken = await AsyncStorage.getItem('AccessToken');
+    if (dataToken) {
+      navigation.replace('Walkthrough');
+    }
+    // else {
+    //   navigation.replace('SignIn');
+    // }
+  };
 
   /**
    * call when action onLogin
@@ -41,17 +58,25 @@ export default function SignIn({navigation, route}) {
       return;
     }
     setLoading(true);
-    // let paramLogin = {
-    //   email: username,
-    //   password: password,
-    // }
-    // let responseLogin = await CommonServices.callApi('msales/public/login','POST',paramLogin);
-    // setLoading(false);
-    // //console.log(responseLogin);
-    // if (responseLogin.status === 'success') {image.png
-    // } else {
-    //   Alert.alert({ title: responseLogin.status, message: responseLogin.message });
-    // }
+
+    userLogin({
+      email: username,
+      password: password
+    })
+      .then(result => {
+        if (result.data.status === 'success') {
+          // console.log(result.data.token);
+          AsyncStorage.setItem('AccessToken', result.data.token);
+          navigation.navigate('Walkthrough');
+        } else {
+          Alert.alert({ title: 'Error', message: result.data.message });
+        }
+      })
+      .catch(err => {
+        Alert.alert({ title: 'Error', message: err });
+      });
+
+    setLoading(false);
   };
 
   const offsetKeyboard = Platform.select({
@@ -60,7 +85,7 @@ export default function SignIn({navigation, route}) {
   });
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <Header
         title={t('sign_in')}
         renderLeft={() => {
@@ -81,7 +106,7 @@ export default function SignIn({navigation, route}) {
         <KeyboardAvoidingView
           behavior={Platform.OS === 'android' ? 'height' : 'padding'}
           keyboardVerticalOffset={offsetKeyboard}
-          style={{flex: 1}}>
+          style={{ flex: 1 }}>
           <View style={styles.contain}>
             <TextInput
               onChangeText={text => setUsername(text)}
@@ -95,7 +120,7 @@ export default function SignIn({navigation, route}) {
               success={success.username}
             />
             <TextInput
-              style={{marginTop: 10}}
+              style={{ marginTop: 10 }}
               onChangeText={text => setPassword(text)}
               onFocus={() => {
                 setSuccess({
@@ -108,16 +133,16 @@ export default function SignIn({navigation, route}) {
               success={success.password}
             />
             <Button
-              style={{marginTop: 20}}
+              style={{ marginTop: 20 }}
               full
               loading={loading}
               onPress={onLogin}>
               {t('sign_in')}
             </Button>
             <TouchableOpacity
-              onPress={() => navigation.navigate('ResetPassword')}>
-              <Text body1 grayColor style={{marginTop: 25}}>
-                {t('forgot_your_password')}
+              onPress={() => navigation.navigate('SignUp')}>
+              <Text body1 grayColor style={{ marginTop: 25 }}>
+                Belum terdaftar?
               </Text>
             </TouchableOpacity>
           </View>

@@ -24,7 +24,6 @@ import {useTranslation} from 'react-i18next';
 import {FilterModel} from '@models';
 import CommonServices from '../../services/common';
 
-
 const deltaY = new Animated.Value(0);
 
 export default function Home({navigation}) {

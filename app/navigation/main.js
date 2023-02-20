@@ -1,11 +1,11 @@
 import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {BaseColor, useTheme, useFont} from '@config';
-import {useTranslation} from 'react-i18next';
-import {Icon} from '@components';
-import {userSelect, designSelect} from '@selectors';
-import {useSelector} from 'react-redux';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { BaseColor, useTheme, useFont } from '@config';
+import { useTranslation } from 'react-i18next';
+import { Icon } from '@components';
+import { userSelect, designSelect } from '@selectors';
+import { useSelector } from 'react-redux';
 
 /* Bottom Screen */
 import Home from '@screens/Home';
@@ -43,6 +43,8 @@ import ContactUs from '@screens/ContactUs';
 import Messages from '@screens/Messages';
 import AboutUs from '@screens/AboutUs';
 import FormBooking from '@screens/FormBooking';
+import SignIn from '../screens/SignIn';
+import SignUp from '../screens/SignUp';
 
 const MainStack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -95,6 +97,7 @@ export default function Main() {
         name="BottomTabNavigator"
         component={BottomTabNavigator}
       />
+      <MainStack.Screen name="Home" component={Home} />
       <MainStack.Screen name="ThemeSetting" component={ThemeSetting} />
       <MainStack.Screen name="Setting" component={Setting} />
       <MainStack.Screen name="Category" component={Category} />
@@ -115,13 +118,15 @@ export default function Main() {
       <MainStack.Screen name="AboutUs" component={AboutUs} />
       <MainStack.Screen name="FormBooking" component={FormBooking} />
       <MainStack.Screen name="Messages" component={Messages} />
+      <MainStack.Screen name="SignIn" component={SignIn} />
+      <MainStack.Screen name="SignUp" component={SignUp} />
     </MainStack.Navigator>
   );
 }
 
 function BottomTabNavigator() {
-  const {t} = useTranslation();
-  const {colors} = useTheme();
+  const { t } = useTranslation();
+  const { colors } = useTheme();
   const font = useFont();
   const user = useSelector(userSelect);
   const design = useSelector(designSelect);
@@ -183,7 +188,7 @@ function BottomTabNavigator() {
         component={exportHome(design)}
         options={{
           title: t('Beranda'),
-          tabBarIcon: ({color}) => {
+          tabBarIcon: ({ color }) => {
             return <Icon color={color} name="home" size={20} solid />;
           },
         }}
@@ -194,7 +199,7 @@ function BottomTabNavigator() {
         component={exportWishlist(design)}
         options={{
           title: t('wishlist'),
-          tabBarIcon: ({color}) => {
+          tabBarIcon: ({ color }) => {
             return <Icon color={color} name="bookmark" size={20} solid />;
           },
         }}
@@ -204,7 +209,7 @@ function BottomTabNavigator() {
         component={Category}
         options={{
           title: t('category'),
-          tabBarIcon: ({color}) => {
+          tabBarIcon: ({ color }) => {
             return <Icon color={color} name="clipboard-list" size={20} solid />;
           },
         }}
@@ -214,17 +219,17 @@ function BottomTabNavigator() {
         component={user ? Messenger : Walkthrough}
         options={{
           title: t('messenger'),
-          tabBarIcon: ({color}) => {
+          tabBarIcon: ({ color }) => {
             return <Icon color={color} name="envelope" size={20} solid />;
           },
         }}
       />
       <BottomTab.Screen
         name="Profile"
-        component={user ? Profile : Walkthrough}
+        component={SignIn}
         options={{
           title: t('account'),
-          tabBarIcon: ({color}) => {
+          tabBarIcon: ({ color }) => {
             return <Icon solid color={color} name="user-circle" size={20} />;
           },
         }}

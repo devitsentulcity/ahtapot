@@ -1,14 +1,14 @@
-import React, {useState} from 'react';
-import {View, KeyboardAvoidingView, Platform, Alert} from 'react-native';
-import {BaseStyle, useTheme} from '@config';
-import {Header, SafeAreaView, Icon, Button, TextInput} from '@components';
+import React, { useState } from 'react';
+import { View, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import { BaseStyle, useTheme } from '@config';
+import { Header, SafeAreaView, Icon, Button, TextInput } from '@components';
 import styles from './styles';
 import * as api from '@api';
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
-export default function SignUp({navigation}) {
-  const {colors} = useTheme();
-  const {t} = useTranslation();
+export default function SignUp({ navigation, route }) {
+  const { colors } = useTheme();
+  const { t } = useTranslation();
   const offsetKeyboard = Platform.select({
     ios: 0,
     android: 20,
@@ -48,7 +48,7 @@ export default function SignUp({navigation}) {
           type: 'success',
           title: t('sign_up'),
           message: t('register_success'),
-          action: [{onPress: () => navigation.goBack()}],
+          action: [{ onPress: () => navigation.goBack() }],
         });
       } catch (error) {
         Alert.alert({
@@ -61,7 +61,7 @@ export default function SignUp({navigation}) {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <Header
         title={t('sign_up')}
         renderLeft={() => {
@@ -75,14 +75,17 @@ export default function SignUp({navigation}) {
           );
         }}
         onPressLeft={() => {
-          navigation.goBack();
+          if (navigation.canGoBack())
+            navigation.goBack();
+          else
+            navigation.replace('SignIn');
         }}
       />
       <SafeAreaView style={BaseStyle.safeAreaView} edges={['right', 'left']}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'android' ? 'height' : 'padding'}
           keyboardVerticalOffset={offsetKeyboard}
-          style={{flex: 1}}>
+          style={{ flex: 1 }}>
           <View style={styles.contain}>
             <TextInput
               onChangeText={text => setUsername(text)}
@@ -97,7 +100,7 @@ export default function SignUp({navigation}) {
               }}
             />
             <TextInput
-              style={{marginTop: 10}}
+              style={{ marginTop: 10 }}
               onChangeText={text => setEmail(text)}
               placeholder={t('input_email')}
               keyboardType="email-address"
@@ -111,7 +114,7 @@ export default function SignUp({navigation}) {
               }}
             />
             <TextInput
-              style={{marginTop: 10}}
+              style={{ marginTop: 10 }}
               onChangeText={text => setPassword(text)}
               secureTextEntry={true}
               placeholder={t('input_password')}
@@ -126,7 +129,7 @@ export default function SignUp({navigation}) {
             />
             <Button
               full
-              style={{marginTop: 20}}
+              style={{ marginTop: 20 }}
               loading={loading}
               onPress={() => onSignUp()}>
               {t('sign_up')}
