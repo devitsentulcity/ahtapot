@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-export const BASE_URL = 'https://inapps.sentulcity.co.id/msales/';
-// export const BASE_URL = 'http://10.10.20.36/oss/oss_be/';
+// export const BASE_URL = 'https://inapps.sentulcity.co.id/msales/';
+export const BASE_URL = 'http://10.10.20.36/oss/oss_be/';
 
 const request = async function (
   options,
