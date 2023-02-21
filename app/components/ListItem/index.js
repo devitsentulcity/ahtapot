@@ -11,6 +11,7 @@ import {
   Progressive,
   PlaceholderMedia,
 } from 'rn-placeholder';
+
 export default function ListItem(props) {
   const {t} = useTranslation();
   const {colors} = useTheme();
@@ -66,7 +67,7 @@ export default function ListItem(props) {
     return (
       <View style={style}>
         <TouchableOpacity onPress={onPress}>
-          <Image source={image} style={styles.blockImage} />
+          <Image source={{uri: image}} style={styles.blockImage} />
           <Tag status style={styles.tagStatus}>
             {t(status)}
           </Tag>
@@ -95,7 +96,7 @@ export default function ListItem(props) {
               <Tag rate onPress={onPressTag}>
                 {rate}
               </Tag>
-              <View style={{marginLeft: 10}}>
+              {/* <View style={{marginLeft: 10}}>
                 <Text caption1 whiteColor semibold style={{marginBottom: 5}}>
                   {t('rate')}
                 </Text>
@@ -107,7 +108,7 @@ export default function ListItem(props) {
                   selectedStar={onPressTag}
                   fullStarColor={BaseColor.yellowColor}
                 />
-              </View>
+              </View> */}
             </View>
             <Text caption1 semibold whiteColor style={{marginTop: 5}}>
               {numReviews} {t('feedback')}
@@ -271,7 +272,7 @@ export default function ListItem(props) {
             />
           )} */}
         </View>
-        <Text subhead semibold style={{ marginTop: 5 }} numberOfLines={1}>
+        <Text subhead semibold style={{marginTop: 5}} numberOfLines={1}>
           {title}
         </Text>
         <Text
@@ -300,10 +301,14 @@ export default function ListItem(props) {
             fullStarColor={BaseColor.yellowColor}
           />
         </View> */}
-        <Text caption2 grayColor style={{marginTop: 10,}} numberOfLines={1}>
+        <Text caption2 grayColor style={{marginTop: 10}} numberOfLines={1}>
           {location}
         </Text>
-        <Text caption2 grayColor style={{ marginTop: 10, marginBottom: 20, }} numberOfLines={1}>
+        <Text
+          caption2
+          grayColor
+          style={{marginTop: 10, marginBottom: 20}}
+          numberOfLines={1}>
           {phone}
         </Text>
       </TouchableOpacity>
@@ -342,7 +347,7 @@ export default function ListItem(props) {
           <Text footnote semibold grayColor style={{marginTop: 4}}>
             {subtitle}
           </Text>
-          <View style={styles.smallContentRate}>
+          {/* <View style={styles.smallContentRate}>
             <Tag onPress={onPressTag} rateSmall style={{marginRight: 4}}>
               {rate}
             </Tag>
@@ -354,7 +359,7 @@ export default function ListItem(props) {
               selectedStar={onPressTag}
               fullStarColor={BaseColor.yellowColor}
             />
-          </View>
+          </View> */}
         </View>
         {enableAction && (
           <TouchableOpacity onPress={omPressMore} style={styles.moreButton}>

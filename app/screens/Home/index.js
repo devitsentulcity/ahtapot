@@ -53,9 +53,11 @@ export default function Home({navigation}) {
           console.log(result);
           setBannerList([]);
         }
+        return true;
       })
       .catch(err => {
         console.log(err);
+        return false;
       });
   };
 
@@ -69,9 +71,11 @@ export default function Home({navigation}) {
           console.log(result);
           setClusterList([]);
         }
+        return true;
       })
       .catch(err => {
         console.log(err);
+        return false;
       });
   };
 
@@ -85,9 +89,11 @@ export default function Home({navigation}) {
           console.log(result);
           setFasilitasList([]);
         }
+        return true;
       })
       .catch(err => {
         console.log(err);
+        return false;
       });
   };
 
@@ -118,7 +124,7 @@ export default function Home({navigation}) {
             return (
               <Image
                 key={`slider${item.id}`}
-                source={{uri: item.gambar_kecil}}
+                source={item.gambar_kecil}
                 style={{width: '100%', height: '100%'}}
               />
             );
@@ -350,7 +356,7 @@ export default function Home({navigation}) {
             return (
               <Card
                 style={[styles.popularItem, {marginLeft: 15}]}
-                image={item.image?.full}
+                image={item.gambar_kecil}
                 onPress={() => {
                   const filter = new FilterModel();
                   navigation.navigate('List', {filter});
@@ -406,6 +412,7 @@ export default function Home({navigation}) {
             onPress={() => {
               navigation.navigate('ProductDetail', {
                 item: item,
+                useGallery: false,
               });
             }}
           />

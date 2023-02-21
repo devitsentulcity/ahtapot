@@ -41,8 +41,9 @@ export default function ProductDetail({navigation, route}) {
   const {colors} = useTheme();
   const dispatch = useDispatch();
   const wishlist = useSelector(wishlistSelect);
-  const design = useSelector(designSelect);
+  // const design = useSelector(designSelect);
   const item = route.params?.item;
+  const useGallery = !!route.params?.useGallery;
   const user = useSelector(userSelect);
   const deltaY = new Animated.Value(0);
 
@@ -54,14 +55,14 @@ export default function ProductDetail({navigation, route}) {
   const heightImageBanner = Utils.scaleWithPixel(250, 1);
 
   useEffect(() => {
-    dispatch(
-      productActions.onLoadProduct(item.id, design, item => {
-        setLoading(false);
-        setProduct(item);
-        setLike(item.favorite);
-      }),
-    );
-  }, [design, dispatch, item.id]);
+    setProduct(item);
+    // console.log('Item:', item);
+  }, [item]);
+
+  useEffect(() => {
+    // console.log('Product:', product);
+    setLoading(false);
+  }, [product]);
 
   /**
    * check wishlist state
@@ -231,7 +232,8 @@ export default function ProductDetail({navigation, route}) {
           },
         ]}>
         <Image
-          source={product?.image?.full}
+          // source={product?.gambar_besar}
+          source={product?.gambar_besar}
           style={{width: '100%', height: '100%'}}
         />
         <Animated.View
@@ -249,15 +251,15 @@ export default function ProductDetail({navigation, route}) {
               outputRange: [1, 0, 0],
             }),
           }}>
-          {/* <Image source={product?.author?.image} style={styles.userIcon} />
+          {/* <Image source={product?.author?.image} style={styles.userIcon} /> */}
           <View>
-            <Text headline semibold whiteColor>
-              {product?.author?.name}
+            <Text headline bold whiteColor>
+              {product?.nama_fasilitas}
             </Text>
-            <Text footnote whiteColor>
+            {/* <Text footnote whiteColor>
               {product?.author?.email}
-            </Text>
-          </View> */}
+            </Text> */}
+          </View>
         </Animated.View>
       </Animated.View>
     );
@@ -368,28 +370,29 @@ export default function ProductDetail({navigation, route}) {
               </Text>
             </View>
           </View>
-          <View style={[styles.contentDescription, {borderColor: colors.border}]}>
+          <View
+            style={[styles.contentDescription, {borderColor: colors.border}]}>
             <Text body2 style={{lineHeight: 20}}>
               {product?.description}
             </Text>
           </View>
-          <View style={{ width: '100%' }}>
-            <Button full style={{ marginTop: 20 }} onPress={onUnitDetail}>
+          <View style={{width: '100%'}}>
+            <Button full style={{marginTop: 20}} onPress={onUnitDetail}>
               Detail Unit
             </Button>
           </View>
-          <View style={{ width: '100%' }}>
-            <Button full style={{ marginTop: 20 }}>
+          <View style={{width: '100%'}}>
+            <Button full style={{marginTop: 20}}>
               Brosur
             </Button>
           </View>
-          <View style={{ width: '100%' }}>
-            <Button full style={{ marginTop: 20 }}>
+          <View style={{width: '100%'}}>
+            <Button full style={{marginTop: 20}}>
               Daftar Harga
             </Button>
           </View>
-          <View style={{ width: '100%' }}>
-            <Button full style={{ marginTop: 20 }}>
+          <View style={{width: '100%'}}>
+            <Button full style={{marginTop: 20}}>
               Virtual Reality
             </Button>
           </View>
@@ -409,15 +412,21 @@ export default function ProductDetail({navigation, route}) {
           );
         }}
         renderRight={() => {
-          return <Icon name="images" size={20} color={BaseColor.whiteColor} />;
+          if (useGallery) {
+            return (
+              <Icon name="images" size={20} color={BaseColor.whiteColor} />
+            );
+          }
         }}
         onPressLeft={() => {
           navigation.goBack();
         }}
         onPressRight={() => {
-          navigation.navigate('PreviewImage', {
-            gallery: product?.gallery,
-          });
+          if (useGallery) {
+            navigation.navigate('PreviewImage', {
+              gallery: product?.gallery,
+            });
+          }
         }}
       />
       <SafeAreaView style={BaseStyle.safeAreaView} edges={['right', 'left']}>
