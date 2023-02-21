@@ -7,6 +7,7 @@ import * as api from '@api';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { userRegister } from '../../api/auth/register';
+import RNRestart from 'react-native-restart';
 
 export default function SignUp({ navigation, route }) {
   const { colors } = useTheme();
@@ -61,7 +62,7 @@ export default function SignUp({ navigation, route }) {
             type: 'success',
             title: t('sign_up'),
             message: 'Pendaftaran akun berhasil, menunggu aktifasi dari GM',
-            action: [{ onPress: () => navigation.navigate('Home') }],
+            action: [{ onPress: () => RNRestart.Restart() }],
           });
         } else {
           Alert.alert({ title: 'Error', message: result.data.data });

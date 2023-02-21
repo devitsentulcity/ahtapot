@@ -2,7 +2,7 @@ import ApiManager from "../ApiManager";
 
 export const userRegister = async data => {
     try {
-        const result = await ApiManager('msales/public/register', {
+        const result = await ApiManager('public/register', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',

@@ -68,12 +68,11 @@ export default function SignIn({ navigation, route }) {
         } else {
           Alert.alert({ title: 'Error', message: result.data.message });
         }
+        setLoading(false);
       })
       .catch(err => {
         Alert.alert({ title: 'Error', message: err });
       });
-
-    setLoading(false);
   };
 
   const offsetKeyboard = Platform.select({

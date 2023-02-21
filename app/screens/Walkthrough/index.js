@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { CheckAuth } from '../../api/CheckAuth';
+import RNRestart from 'react-native-restart';
 
 export default function Walkthrough({ navigation }) {
   const [scrollEnabled, setScrollEnabled] = useState(true);
@@ -47,7 +48,8 @@ export default function Walkthrough({ navigation }) {
 
   const handleLogout = () => {
     AsyncStorage.clear();
-    navigation.navigate('Home');
+    RNRestart.Restart()
+    // navigation.navigate('Home');
     // navigation.goBack();
     // navigation.popToTop();
   };
