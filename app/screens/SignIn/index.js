@@ -19,20 +19,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function SignIn({ navigation, route }) {
   const { colors } = useTheme();
   const { t } = useTranslation();
+  
   const dispatch = useDispatch();
-  const design = useSelector(designSelect);
-
   const [loading, setLoading] = useState(false);
-  // const [id, setId] = useState('paul');
-  // const [password, setPassword] = useState('123456');
   const [success, setSuccess] = useState({ id: true, password: true });
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
 
   useEffect(() => {
-    setTimeout(() => {
-      handleGetToken();
-    }, 2000);
+    handleGetToken();
   });
 
   const handleGetToken = async () => {
@@ -40,9 +35,6 @@ export default function SignIn({ navigation, route }) {
     if (dataToken) {
       navigation.replace('Walkthrough');
     }
-    // else {
-    //   navigation.replace('SignIn');
-    // }
   };
 
   /**
@@ -66,8 +58,13 @@ export default function SignIn({ navigation, route }) {
       .then(result => {
         if (result.data.status === 'success') {
           // console.log(result.data.token);
+          AsyncStorage.setItem('AccessId', result.data.data.id);
+          AsyncStorage.setItem('AccessUid', result.data.data.uid);
+          AsyncStorage.setItem('AccessNama', result.data.data.nama);
+          AsyncStorage.setItem('AccessEmail', result.data.data.email);
           AsyncStorage.setItem('AccessToken', result.data.token);
           navigation.navigate('Walkthrough');
+          // navigation.popToTop();
         } else {
           Alert.alert({ title: 'Error', message: result.data.message });
         }

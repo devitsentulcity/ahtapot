@@ -93,10 +93,7 @@ export default function Main() {
         headerShown: false,
       }}
       initialRouteName="BottomTabNavigator">
-      <MainStack.Screen
-        name="BottomTabNavigator"
-        component={BottomTabNavigator}
-      />
+      <MainStack.Screen name="BottomTabNavigator" component={BottomTabNavigator}/>
       <MainStack.Screen name="Home" component={Home} />
       <MainStack.Screen name="ThemeSetting" component={ThemeSetting} />
       <MainStack.Screen name="Setting" component={Setting} />
@@ -110,10 +107,7 @@ export default function Main() {
       <MainStack.Screen name="ChangePassword" component={ChangePassword} />
       <MainStack.Screen name="ProfileEdit" component={ProfileEdit} />
       <MainStack.Screen name="ChangeLanguage" component={ChangeLanguage} />
-      <MainStack.Screen
-        name="ProductDetail"
-        component={exportProductDetail(design)}
-      />
+      <MainStack.Screen name="ProductDetail" component={exportProductDetail(design)}/>
       <MainStack.Screen name="ContactUs" component={ContactUs} />
       <MainStack.Screen name="AboutUs" component={AboutUs} />
       <MainStack.Screen name="FormBooking" component={FormBooking} />
@@ -169,7 +163,6 @@ function BottomTabNavigator() {
         return Wishlist;
     }
   };
-
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
@@ -193,8 +186,7 @@ function BottomTabNavigator() {
           },
         }}
       />
-
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name="Wishlist"
         component={exportWishlist(design)}
         options={{
@@ -203,7 +195,7 @@ function BottomTabNavigator() {
             return <Icon color={color} name="bookmark" size={20} solid />;
           },
         }}
-      />
+      /> */}
       <BottomTab.Screen
         name="Category"
         component={Category}
@@ -214,7 +206,7 @@ function BottomTabNavigator() {
           },
         }}
       />
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name="Messenger"
         component={user ? Messenger : Walkthrough}
         options={{
@@ -223,7 +215,7 @@ function BottomTabNavigator() {
             return <Icon color={color} name="envelope" size={20} solid />;
           },
         }}
-      />
+      /> */}
       <BottomTab.Screen
         name="Profile"
         component={SignIn}

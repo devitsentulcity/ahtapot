@@ -5,6 +5,8 @@ import { Header, SafeAreaView, Icon, Button, TextInput } from '@components';
 import styles from './styles';
 import * as api from '@api';
 import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { userRegister } from '../../api/auth/register';
 
 export default function SignUp({ navigation, route }) {
   const { colors } = useTheme();
@@ -13,13 +15,18 @@ export default function SignUp({ navigation, route }) {
     ios: 0,
     android: 20,
   });
-  const [username, setUsername] = useState('');
+
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [noHp, setNoHp] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState({
-    username: true,
+    name: true,
     email: true,
+    noHp: true,
     password: true,
   });
 
@@ -28,34 +35,42 @@ export default function SignUp({ navigation, route }) {
    *
    */
   const onSignUp = async () => {
-    if (username == '' || email == '' || password == '') {
+    if (name == '' || email == '' || noHp == '' || password == '') {
       setSuccess({
         ...success,
-        username: username != '' ? true : false,
+        name: name != '' ? true : false,
         email: email != '' ? true : false,
+        noHp: noHp != '' ? true : false,
         password: password != '' ? true : false,
+        confirmPassword: confirmPassword != '' ? true : false,
       });
-    } else {
+    } else if (password != confirmPassword ) {
+      Alert.alert({ title: 'Error', message: 'Password tidak sama' });
+    }else {
       setLoading(true);
-      try {
-        const params = {
-          username,
-          password,
-          email,
-        };
-        const response = await api.signUp(params);
-        Alert.alert({
-          type: 'success',
-          title: t('sign_up'),
-          message: t('register_success'),
-          action: [{ onPress: () => navigation.goBack() }],
-        });
-      } catch (error) {
-        Alert.alert({
-          title: t('sign_up'),
-          message: error.data?.code ?? error.message,
-        });
-      }
+
+      userRegister({
+        nama: name,
+        email: email,
+        nohp: noHp,
+        password: password
+      })
+      .then(result => {
+        if (result.data.status === 'success') {
+          Alert.alert({
+            type: 'success',
+            title: t('sign_up'),
+            message: 'Pendaftaran akun berhasil, menunggu aktifasi dari GM',
+            action: [{ onPress: () => navigation.navigate('Home') }],
+          });
+        } else {
+          Alert.alert({ title: 'Error', message: result.data.data });
+        }
+      })
+      .catch(err => {
+        Alert.alert({ title: 'Error', message: err });
+      });
+
       setLoading(false);
     }
   };
@@ -75,9 +90,11 @@ export default function SignUp({ navigation, route }) {
           );
         }}
         onPressLeft={() => {
+          // navigation.goBack();
           if (navigation.canGoBack())
             navigation.goBack();
           else
+            // BackHandler.exitApp();
             navigation.replace('SignIn');
         }}
       />
@@ -88,21 +105,21 @@ export default function SignUp({ navigation, route }) {
           style={{ flex: 1 }}>
           <View style={styles.contain}>
             <TextInput
-              onChangeText={text => setUsername(text)}
-              placeholder={t('input_id')}
-              success={success.username}
-              value={username}
+              onChangeText={text => setName(text)}
+              placeholder='Nama'
+              success={success.name}
+              value={name}
               onFocus={() => {
                 setSuccess({
                   ...success,
-                  username: true,
+                  name: true,
                 });
               }}
             />
             <TextInput
               style={{ marginTop: 10 }}
               onChangeText={text => setEmail(text)}
-              placeholder={t('input_email')}
+              placeholder='Email'
               keyboardType="email-address"
               success={success.email}
               value={email}
@@ -110,6 +127,20 @@ export default function SignUp({ navigation, route }) {
                 setSuccess({
                   ...success,
                   email: true,
+                });
+              }}
+            />
+            <TextInput
+              style={{ marginTop: 10 }}
+              onChangeText={text => setNoHp(text)}
+              placeholder='No HP'
+              success={success.noHp}
+              keyboardType="phone-pad"
+              value={noHp}
+              onFocus={() => {
+                setSuccess({
+                  ...success,
+                  noHp: true,
                 });
               }}
             />
@@ -124,6 +155,20 @@ export default function SignUp({ navigation, route }) {
                 setSuccess({
                   ...success,
                   password: true,
+                });
+              }}
+            />
+            <TextInput
+              style={{ marginTop: 10 }}
+              onChangeText={text => setConfirmPassword(text)}
+              secureTextEntry={true}
+              placeholder='Confirm Password'
+              success={success.confirmPassword}
+              value={confirmPassword}
+              onFocus={() => {
+                setSuccess({
+                  ...success,
+                  confirmPassword: true,
                 });
               }}
             />

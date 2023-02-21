@@ -53,7 +53,8 @@
     "redux-persist": "6.0.0",
     "redux-saga": "1.2.1",
     "rn-placeholder": "3.0.3",
-    "rn-range-slider": "https://github.com/wem2017/rn-range-slider.git"
+    "rn-range-slider": "https://github.com/wem2017/rn-range-slider.git",
+    "sync-storage": "^0.4.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
