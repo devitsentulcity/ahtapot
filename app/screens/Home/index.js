@@ -46,7 +46,9 @@ export default function Home({navigation}) {
   const fetchBanner = async () => {
     banner()
       .then(result => {
-        if (result.status == 200) result = result.data;
+        if (result.status === 200) {
+          result = result.data;
+        }
         if (result.status === 'success') {
           setBannerList(result.data);
         } else {
@@ -361,7 +363,7 @@ export default function Home({navigation}) {
                   const filter = new FilterModel();
                   navigation.navigate('List', {filter});
                 }}>
-                <Text headline whiteColor semibold>
+                <Text headline blackColor semibold>
                   {item.KawasanName}
                 </Text>
               </Card>

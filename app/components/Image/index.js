@@ -22,7 +22,7 @@ export default function Image(props) {
   return (
     <FastImage
       style={StyleSheet.flatten([style && style])}
-      source={typeof source === 'number' ? source : {uri: source.toString()}}
+      source={typeof source === 'number' ? source : {uri: source?.toString()}}
       {...rest}
       resizeMode={resize}
     />
