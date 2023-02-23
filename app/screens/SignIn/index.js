@@ -13,29 +13,16 @@ import styles from './styles';
 import { useTranslation } from 'react-i18next';
 import { authActions } from '@actions';
 import { designSelect } from '@selectors';
-import { userLogin } from '../../api/auth/login';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SignIn({ navigation, route }) {
   const { colors } = useTheme();
   const { t } = useTranslation();
-  
   const dispatch = useDispatch();
+  const design = useSelector(designSelect);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState({ id: true, password: true });
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
-
-  useEffect(() => {
-    handleGetToken();
-  });
-
-  const handleGetToken = async () => {
-    const dataToken = await AsyncStorage.getItem('AccessToken');
-    if (dataToken) {
-      navigation.replace('Walkthrough');
-    }
-  };
 
   /**
    * call when action onLogin
@@ -50,29 +37,23 @@ export default function SignIn({ navigation, route }) {
       return;
     }
     setLoading(true);
-
-    userLogin({
+    let params = {
       email: username,
       password: password
-    })
-      .then(result => {
-        if (result.data.status === 'success') {
-          // console.log(result.data.token);
-          AsyncStorage.setItem('AccessId', result.data.data.id);
-          AsyncStorage.setItem('AccessUid', result.data.data.uid);
-          AsyncStorage.setItem('AccessNama', result.data.data.nama);
-          AsyncStorage.setItem('AccessEmail', result.data.data.email);
-          AsyncStorage.setItem('AccessToken', result.data.token);
-          navigation.navigate('Walkthrough');
-          // navigation.popToTop();
-        } else {
-          Alert.alert({ title: 'Error', message: result.data.message });
+    }
+    dispatch(
+      authActions.onLogin(params, design, response => {
+        if (response?.data.status === 'success') {
+          navigation.goBack();
+          setTimeout(() => {
+            route.params?.success?.();
+          }, 1000);
+          return;
         }
-        setLoading(false);
-      })
-      .catch(err => {
-        Alert.alert({ title: 'Error', message: err });
-      });
+        Alert.alert({ title: t('sign_in'), message: t(response.data.message) });
+      }),
+    );
+    setLoading(false);
   };
 
   const offsetKeyboard = Platform.select({

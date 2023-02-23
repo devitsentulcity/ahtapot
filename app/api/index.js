@@ -1,12 +1,13 @@
 import network from '@services/network';
 import * as local from './response';
+import { userLogin } from './auth/login';
 
 const endPoints = {
   login: 'index.php/wp-json/jwt-auth/v1/token',
 };
 
-export const fetchLogin = params => {
-  return local.login({params});
+export const fetchLogin = async (params) => {
+  return await userLogin(params);
 };
 
 export const fetchValid = params => {

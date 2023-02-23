@@ -6,8 +6,10 @@ import {UserModel} from '@models';
 function* onLogin(action) {
   try {
     const response = yield api.fetchLogin(action.params);
-    if (response.success) {
-      const user = new UserModel(response.data);
+    console.log("SAGAS RESPONSE");
+    console.log(response.data.data);
+    if (response.data.status === 'success') {
+      const user = new UserModel(response.data.data);
       yield put({type: actionTypes.LOGIN_SUCCESS, user: user});
       yield put({type: actionTypes.GET_WISHLIST, design: action.design});
       yield put({type: actionTypes.FETCH_MESSAGE});

@@ -2,7 +2,9 @@ import axios from 'axios';
 
 // export const BASE_URL = 'https://inapps.sentulcity.co.id/msales/';
 export const BASE_URL = 'http://10.10.20.36/oss/oss_be/';
+import { store } from '@store';
 
+const getToken = () => store.getState().auth?.user?.token;
 const request = async function (
   options,
   isHeader = true,
@@ -10,13 +12,15 @@ const request = async function (
 ) {
   let authHeader = null;
 
-  if (isHeader) {
-    authHeader = GetString('x-token', false);
+  if (getToken() !== null) {
+    authHeader = getToken();
   }
 
   let optDefault = {
     baseURL: custom_url,
-    headers: {'x-token': authHeader},
+    headers: { 
+      'Authorization': 'Bearer ' + authHeader
+    },
     timeout: 60000,
     maxContentLength: 150 * 1000 * 1000,
   };

@@ -1,5 +1,4 @@
-import { method } from 'lodash'
-import request from './httpClient'
+import request from './httpClient';
 
 function callApi(urlParam, methodParam, param) {
     return request({
@@ -13,4 +12,4 @@ const CommonServices = {
     callApi
 }
 
-export default CommonServices
+export default CommonServices;

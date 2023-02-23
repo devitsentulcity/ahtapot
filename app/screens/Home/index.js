@@ -52,13 +52,11 @@ export default function Home({navigation}) {
         if (result.status === 'success') {
           setBannerList(result.data);
         } else {
-          console.log(result);
           setBannerList([]);
         }
         return true;
       })
       .catch(err => {
-        console.log(err);
         return false;
       });
   };
@@ -70,13 +68,11 @@ export default function Home({navigation}) {
         if (result.status === 'success') {
           setClusterList(result.data);
         } else {
-          console.log(result);
           setClusterList([]);
         }
         return true;
       })
       .catch(err => {
-        console.log(err);
         return false;
       });
   };
@@ -88,13 +84,11 @@ export default function Home({navigation}) {
         if (result.status === 'success') {
           setFasilitasList(result.data);
         } else {
-          console.log(result);
           setFasilitasList([]);
         }
         return true;
       })
       .catch(err => {
-        console.log(err);
         return false;
       });
   };
@@ -474,45 +468,11 @@ export default function Home({navigation}) {
             setHeightHeader(Utils.heightHeader());
           }}
           scrollEventThrottle={8}>
-          {/* <View
-            style={[
-              styles.searchForm,
-              {
-                backgroundColor: colors.background,
-                borderColor: colors.border,
-                shadowColor: colors.border,
-              },
-              {marginTop: marginTopBanner},
-            ]}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('SearchHistory')}>
-              <View
-                style={[BaseStyle.textInput, {backgroundColor: colors.card}]}>
-                <Text body1 grayColor style={{flex: 1}}>
-                  {t('search_location')}
-                </Text>
-                <View style={{paddingVertical: 8}}>
-                  <View
-                    style={[styles.lineForm, {backgroundColor: colors.border}]}
-                  />
-                </View>
-                <Icon
-                  name="location-arrow"
-                  size={18}
-                  color={colors.primaryLight}
-                  solid
-                />
-              </View>
-            </TouchableOpacity>
-          </View> */}
           {renderCategory()}
           <View style={styles.contentPopular}>
             <Text title3 semibold>
               {t('popular_location')}
             </Text>
-            {/* <Text body2 grayColor>
-              {t('popular_lologan')}
-            </Text> */}
           </View>
           {renderClusterTeratas()}
           <View
@@ -523,17 +483,9 @@ export default function Home({navigation}) {
             <Text title3 semibold>
               {t('recent_location')}
             </Text>
-            {/* <Text body2 grayColor style={{marginBottom: 15}}>
-              {t('recent_sologan')}
-            </Text> */}
             {renderFasilitas()}
           </View>
         </ScrollView>
-        {/* <TouchableOpacity
-          onPress={onChooseBusiness}
-          style={[styles.menuIcon, {backgroundColor: colors.primary}]}>
-          <Icon name="plus" size={16} color={BaseColor.whiteColor} solid />
-        </TouchableOpacity> */}
       </SafeAreaView>
     </View>
   );

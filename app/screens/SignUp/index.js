@@ -3,11 +3,9 @@ import { View, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { BaseStyle, useTheme } from '@config';
 import { Header, SafeAreaView, Icon, Button, TextInput } from '@components';
 import styles from './styles';
-import * as api from '@api';
 import { useTranslation } from 'react-i18next';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { userRegister } from '../../api/auth/register';
-import RNRestart from 'react-native-restart';
+import CommonServices from '../../services/common';
 
 export default function SignUp({ navigation, route }) {
   const { colors } = useTheme();
@@ -35,7 +33,9 @@ export default function SignUp({ navigation, route }) {
    * call when action signup
    *
    */
-  const onSignUp = async () => {
+
+  const onRegister = async () => {
+    setLoading(true);
     if (name == '' || email == '' || noHp == '' || password == '') {
       setSuccess({
         ...success,
@@ -45,36 +45,29 @@ export default function SignUp({ navigation, route }) {
         password: password != '' ? true : false,
         confirmPassword: confirmPassword != '' ? true : false,
       });
-    } else if (password != confirmPassword ) {
+    } else if (password != confirmPassword) {
       Alert.alert({ title: 'Error', message: 'Password tidak sama' });
-    }else {
-      setLoading(true);
-
-      userRegister({
+    } else {
+      let params = {
         nama: name,
         email: email,
         nohp: noHp,
         password: password
-      })
-      .then(result => {
-        if (result.data.status === 'success') {
-          Alert.alert({
-            type: 'success',
-            title: t('sign_up'),
-            message: 'Pendaftaran akun berhasil, menunggu aktifasi dari GM',
-            action: [{ onPress: () => RNRestart.Restart() }],
-          });
-        } else {
-          Alert.alert({ title: 'Error', message: result.data.data });
-        }
-      })
-      .catch(err => {
-        Alert.alert({ title: 'Error', message: err });
-      });
-
-      setLoading(false);
+      }
+      let response = await CommonServices.callApi('public/register', 'POST', params);
+      if(response.status === 'success'){
+        Alert.alert({
+          type: 'success',
+          title: t('sign_up'),
+          message: 'Pendaftaran akun berhasil, menunggu aktifasi dari GM',
+          action: [{ onPress: () => navigation.goBack() }],
+        });
+      } else {
+        Alert.alert({ title: 'Error', message: response.data });
+      }
     }
-  };
+    setLoading(false);
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -91,12 +84,7 @@ export default function SignUp({ navigation, route }) {
           );
         }}
         onPressLeft={() => {
-          // navigation.goBack();
-          if (navigation.canGoBack())
-            navigation.goBack();
-          else
-            // BackHandler.exitApp();
-            navigation.replace('SignIn');
+          navigation.goBack();
         }}
       />
       <SafeAreaView style={BaseStyle.safeAreaView} edges={['right', 'left']}>
@@ -172,12 +160,12 @@ export default function SignUp({ navigation, route }) {
                   confirmPassword: true,
                 });
               }}
-            />
+            />``
             <Button
               full
               style={{ marginTop: 20 }}
               loading={loading}
-              onPress={() => onSignUp()}>
+              onPress={() => onRegister()}>
               {t('sign_up')}
             </Button>
           </View>

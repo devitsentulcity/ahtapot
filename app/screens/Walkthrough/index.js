@@ -11,56 +11,95 @@ import {
   Icon
 } from '@components';
 import styles from './styles';
-import Swiper from 'react-native-swiper';
 import { BaseColor, BaseStyle, Images, useTheme, useFont } from '@config';
 import * as Utils from '@utils';
 import { useTranslation } from 'react-i18next';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { CheckAuth } from '../../api/CheckAuth';
-import RNRestart from 'react-native-restart';
+import { useDispatch, useSelector } from 'react-redux';
+import { userSelect } from '@selectors';
+import { authActions } from '@actions';
 
 export default function Walkthrough({ navigation }) {
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const { colors } = useTheme();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
-  const [idUser, setIdUser] = useState('');
-  const [uidUser, setUidUser] = useState('');
-  const [namaUser, setNamaUser] = useState('');
-  const [emailUser, setEmailUser] = useState('');
-
-  const handleGetAuth = async () => {
-    const dataId = await AsyncStorage.getItem('AccessId');
-    setIdUser(dataId);
-    const dataUid = await AsyncStorage.getItem('AccessUid');
-    setUidUser(uidUser);
-    const dataNama = await AsyncStorage.getItem('AccessNama');
-    setNamaUser(dataNama);
-    const dataEmail = await AsyncStorage.getItem('AccessEmail');
-    setEmailUser(dataEmail);
-    
-  }
+  const dispatch = useDispatch();
+  const user = useSelector(userSelect);
   
   const onNotification = () => {
     navigation.navigate('Notification');
   };
 
-  const handleLogout = () => {
-    AsyncStorage.clear();
-    RNRestart.Restart()
-    // navigation.navigate('Home');
-    // navigation.goBack();
-    // navigation.popToTop();
+  const onLogout = () => {
+    setLoading(true);
+    dispatch(authActions.onLogout());
   };
 
-  useEffect(() => {
-    handleGetAuth();
-  }, []);
-
-  // useEffect(() => {
-  //   console.log(CheckAuth());
-  // }, []);
+  /**
+   * render button list sales
+  */
+  const renderListSales = () => {
+    if(user.level === '9') {
+      return (
+        <View>
+          <TouchableOpacity
+            style={[
+              styles.profileItem,
+              {
+                borderBottomColor: colors.border,
+                borderBottomWidth: 1,
+                marginTop: 15,
+              },
+            ]}
+            onPress={() => {
+              navigation.navigate('ListSales',{
+                item: {
+                  judul: 'Data Sales Non Aktif',
+                  aktif: 'F',
+                  level: '0'
+                }
+              });
+            }}>
+            <Text body1>Data Sales Non Aktif</Text>
+            <Icon
+              name="angle-right"
+              size={18}
+              color={colors.primary}
+              style={{ marginLeft: 5 }}
+              enableRTL={true}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.profileItem,
+              {
+                borderBottomColor: colors.border,
+                borderBottomWidth: 1,
+                marginTop: 15,
+              },
+            ]}
+            onPress={() => {
+              navigation.navigate('ListSales',{
+                item: {
+                  judul: 'Data Sales Aktif',
+                  aktif: 'T',
+                  level: '0'
+                }
+              });
+            }}>
+            <Text body1>Data Sales Aktif</Text>
+            <Icon
+              name="angle-right"
+              size={20}
+              color={colors.primary}
+              style={{ marginLeft: 5 }}
+              enableRTL={true}
+            />
+          </TouchableOpacity>
+        </View>
+      );
+    }
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -75,104 +114,16 @@ export default function Walkthrough({ navigation }) {
         <ScrollView>
           <View style={styles.contain}>
             <ProfileDetail
-              textFirst={namaUser}
-              textSecond={emailUser}
+              image={'https://engineering.fb.com/wp-content/uploads/2016/04/yearinreview.jpg'}
+              textFirst={user.nama}
+              textSecond={user.email}
             />
             <ProfilePerformance style={{ marginTop: 20 }} />
-            {/* <TouchableOpacity
-              style={[
-                styles.profileItem,
-                {
-                  borderBottomColor: colors.border,
-                  borderBottomWidth: 1,
-                  marginTop: 15,
-                },
-              ]}
-              onPress={() => {
-                navigation.navigate('ProfileEdit');
-              }}>
-              <Text body1>{t('edit_profile')}</Text>
-              <Icon
-                name="angle-right"
-                size={18}
-                color={colors.primary}
-                style={{ marginLeft: 5 }}
-                enableRTL={true}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.profileItem,
-                { borderBottomColor: colors.border, borderBottomWidth: 1 },
-              ]}
-              onPress={() => {
-                navigation.navigate('ChangePassword');
-              }}>
-              <Text body1>{t('change_password')}</Text>
-              <Icon
-                name="angle-right"
-                size={18}
-                color={colors.primary}
-                style={{ marginLeft: 5 }}
-                enableRTL={true}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.profileItem,
-                { borderBottomColor: colors.border, borderBottomWidth: 1 },
-              ]}
-              onPress={() => navigation.navigate('ContactUs')}>
-              <Text body1>{t('contact_us')}</Text>
-              <Icon
-                name="angle-right"
-                size={18}
-                color={colors.primary}
-                style={{ marginLeft: 5 }}
-                enableRTL={true}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.profileItem,
-                { borderBottomColor: colors.border, borderBottomWidth: 1 },
-              ]}
-              onPress={() => {
-                navigation.navigate('AboutUs');
-              }}>
-              <Text body1>{t('about_us')}</Text>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
-                <Icon
-                  name="angle-right"
-                  size={18}
-                  color={colors.primary}
-                  style={{ marginLeft: 5 }}
-                  enableRTL={true}
-                />
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.profileItem}
-              onPress={() => {
-                navigation.navigate('Setting');
-              }}>
-              <Text body1>{t('setting')}</Text>
-              <Icon
-                name="angle-right"
-                size={18}
-                color={colors.primary}
-                style={{ marginLeft: 5 }}
-                enableRTL={true}
-              />
-            </TouchableOpacity> */}
+            {renderListSales()}
           </View>
         </ScrollView>
         <View style={{ paddingHorizontal: 20, paddingVertical: 15 }}>
-          <Button full loading={loading} onPress={handleLogout}>
+          <Button full loading={loading} onPress={onLogout}>
             {t('sign_out')}
           </Button>
         </View>

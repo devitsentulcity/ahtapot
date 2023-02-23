@@ -15,7 +15,7 @@ export default (state = initialState, action = {}) => {
         ...state,
         user: {
           ...action.user,
-          token: state.user.token,
+          ...state.user,
         },
       };
     case actionTypes.LOGOUT:

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BaseColor, useTheme, useFont } from '@config';
@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Icon } from '@components';
 import { userSelect, designSelect } from '@selectors';
 import { useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /* Bottom Screen */
 import Home from '@screens/Home';
@@ -45,11 +46,13 @@ import AboutUs from '@screens/AboutUs';
 import FormBooking from '@screens/FormBooking';
 import SignIn from '../screens/SignIn';
 import SignUp from '../screens/SignUp';
+import ListSales from '../screens/ListSales';
 
 const MainStack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
 
 export default function Main() {
+
   const design = useSelector(designSelect);
   /**
    * Main follow return  Product detail design you are selected
@@ -114,6 +117,7 @@ export default function Main() {
       <MainStack.Screen name="Messages" component={Messages} />
       <MainStack.Screen name="SignIn" component={SignIn} />
       <MainStack.Screen name="SignUp" component={SignUp} />
+      <MainStack.Screen name="ListSales" component={ListSales} />
     </MainStack.Navigator>
   );
 }
@@ -123,46 +127,7 @@ function BottomTabNavigator() {
   const { colors } = useTheme();
   const font = useFont();
   const user = useSelector(userSelect);
-  const design = useSelector(designSelect);
-
-  /**
-   * Main follow return  Home Screen design you are selected
-   * @param {*} value  ['basic', 'real_estate','event', 'food']
-   * @returns
-   */
-  const exportHome = value => {
-    switch (value) {
-      case 'real_estate':
-        return HomeRealEstate;
-      case 'event':
-        return HomeEvent;
-      case 'food':
-        return HomeFood;
-      default:
-        return Home;
-    }
-  };
-
-  /**
-   * Main follow return  WishList Screen design you are selected
-   * @param {*} value  ['basic', 'real_estate','event', 'food']
-   * @returns
-   */
-  const exportWishlist = value => {
-    if (!user) {
-      return Walkthrough;
-    }
-    switch (value) {
-      case 'real_estate':
-        return WishlistRealEstate;
-      case 'event':
-        return WishlistEvent;
-      case 'food':
-        return WishlistFood;
-      default:
-        return Wishlist;
-    }
-  };
+  
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
@@ -176,9 +141,11 @@ function BottomTabNavigator() {
           paddingBottom: 2,
         },
       }}>
+      
       <BottomTab.Screen
         name="Home"
-        component={exportHome(design)}
+        component={Home}
+        // component={exportHome(design)}
         options={{
           title: t('Beranda'),
           tabBarIcon: ({ color }) => {
@@ -186,16 +153,6 @@ function BottomTabNavigator() {
           },
         }}
       />
-      {/* <BottomTab.Screen
-        name="Wishlist"
-        component={exportWishlist(design)}
-        options={{
-          title: t('wishlist'),
-          tabBarIcon: ({ color }) => {
-            return <Icon color={color} name="bookmark" size={20} solid />;
-          },
-        }}
-      /> */}
       <BottomTab.Screen
         name="Category"
         component={Category}
@@ -206,19 +163,9 @@ function BottomTabNavigator() {
           },
         }}
       />
-      {/* <BottomTab.Screen
-        name="Messenger"
-        component={user ? Messenger : Walkthrough}
-        options={{
-          title: t('messenger'),
-          tabBarIcon: ({ color }) => {
-            return <Icon color={color} name="envelope" size={20} solid />;
-          },
-        }}
-      /> */}
       <BottomTab.Screen
         name="Profile"
-        component={SignIn}
+        component={user ? Walkthrough : SignIn}
         options={{
           title: t('account'),
           tabBarIcon: ({ color }) => {
