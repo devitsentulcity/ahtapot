@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { userSelect } from '@selectors';
 import { authActions } from '@actions';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 export default function Walkthrough({ navigation }) {
   const [scrollEnabled, setScrollEnabled] = useState(true);
@@ -25,6 +26,15 @@ export default function Walkthrough({ navigation }) {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector(userSelect);
+  const [showAlert, setShowAlert] = useState(false);
+
+  const sAlert = () => {
+    setShowAlert(true);
+  }
+
+  const hAlert = () => {
+    setShowAlert(false);
+  }
   
   const onNotification = () => {
     navigation.navigate('Notification');
@@ -123,10 +133,29 @@ export default function Walkthrough({ navigation }) {
           </View>
         </ScrollView>
         <View style={{ paddingHorizontal: 20, paddingVertical: 15 }}>
-          <Button full loading={loading} onPress={onLogout}>
+          <Button full loading={loading} onPress={() => sAlert()}>
             {t('sign_out')}
           </Button>
         </View>
+        <AwesomeAlert
+          show={showAlert}
+          showProgress={false}
+          title="Konfirmasi"
+          message="Anda yakin akan keluar ?"
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showCancelButton={true}
+          showConfirmButton={true}
+          cancelText="Batal"
+          confirmText="Yakin"
+          confirmButtonColor="#DD6B55"
+          onCancelPressed={() => {
+            hAlert();
+          }}
+          onConfirmPressed={() => {
+            onLogout();
+          }}
+        />
       </SafeAreaView>
     </View>
   );
