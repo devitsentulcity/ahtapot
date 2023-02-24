@@ -43,6 +43,7 @@ export default function SignIn({ navigation, route }) {
     }
     dispatch(
       authActions.onLogin(params, design, response => {
+        console.log(response.data.data);
         if (response?.data.status === 'success') {
           navigation.goBack();
           setTimeout(() => {

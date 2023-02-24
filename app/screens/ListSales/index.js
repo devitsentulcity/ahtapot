@@ -9,6 +9,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import styles from './styles';
 import CommonServices from '../../services/common';
 import { userSelect } from '@selectors';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 export default function ListSales({ navigation, route }) {
   const {t} = useTranslation();
@@ -18,7 +19,21 @@ export default function ListSales({ navigation, route }) {
   const [refreshing, setRefresh] = useState(false);
   const item = route.params?.item;
   const [salesData, setSalesData] = useState([]);
-  const user = useSelector(userSelect);
+  const [uniqueId, setUniqueId] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+  const [viewName, setViewName] = useState('');
+
+  const sAlert = (unique_id, item_nama) => {
+    setShowAlert(true);
+    setUniqueId(unique_id);
+    setViewName('Anda yakin akan aktivasi sales ' + item_nama + ' ?');
+  }
+
+  const hAlert = () => {
+    setShowAlert(false);
+    setUniqueId('');
+    setViewName('');
+  }
 
   const initPage = async () => {
     fetchSales();
@@ -31,7 +46,8 @@ export default function ListSales({ navigation, route }) {
       mgr_id: '',
       sp_access: ''
     }
-    let response = await CommonServices.callApi('public/api/user?page=&item=0', 'POST', params);
+    let response = await CommonServices.callApi('api/user?page=&item=0', 'POST', params);
+    console.log(response);
     if (response.status === 'success') {
       setSalesData(response.data.data);
     } else {
@@ -39,24 +55,25 @@ export default function ListSales({ navigation, route }) {
     }
   }
 
-  const buttonActive = () => {
-    return (
-      <Button 
-        full 
-        onPress={console.log('KESINI')}
-        color="#841584"
-      >Aktikan</Button>
-    );
-  }
-
-  const confirmActive = () => {
-    Alert.alert({
-      type: 'error',
-      title: 'Anda yakin ?',
-      message: buttonActive(),
-      action: [{ onPress: () => console.log("KESINI") }],
-      
-    });
+  const actActive = async () => {
+    hAlert();
+    let paramsActive = {
+      unique_id: uniqueId,
+    }
+    let response = await CommonServices.callApi('api/approve', 'POST', paramsActive);
+    console.log(response);
+    console.log(paramsActive);
+    if(response.status === 'success')
+    {
+      Alert.alert({
+        type: 'success',
+        title: 'Aktivasi',
+        message: 'Aktivasi Akun Berhasil'
+      });
+    } else {
+      Alert.alert({ title: 'Aktifasi', message: response.data });
+    }
+    fetchSales();
   }
 
   /**
@@ -95,7 +112,7 @@ export default function ListSales({ navigation, route }) {
               txtContent={item.email}
               txtRight={item.nohp}
               style={{ marginBottom: 5 }}
-              onPress={confirmActive}
+              onPress={() => sAlert(item.unique_id, item.nama)}
             />
           )}
         />
@@ -135,6 +152,25 @@ export default function ListSales({ navigation, route }) {
       />
       <SafeAreaView style={BaseStyle.safeAreaView} edges={['right', 'left']}>
         {renderContent()}
+        <AwesomeAlert
+          show={showAlert}
+          showProgress={false}
+          title="Konfirmasi"
+          message={viewName}
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showCancelButton={true}
+          showConfirmButton={true}
+          cancelText="Batal"
+          confirmText="Yakin"
+          confirmButtonColor="#DD6B55"
+          onCancelPressed={() => {
+            hAlert();
+          }}
+          onConfirmPressed={() => {
+            actActive();
+          }}
+        />
       </SafeAreaView>
     </View>
   );

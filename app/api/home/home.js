@@ -2,7 +2,7 @@ import ApiManager from '../ApiManager';
 
 export const banner = async data => {
   try {
-    const result = await ApiManager('public/pub/slider', {
+    const result = await ApiManager('pub/slider', {
       method: 'GET',
       headers: {
         'content-type': 'application/json',
@@ -17,7 +17,7 @@ export const banner = async data => {
 
 export const cluster = async data => {
   try {
-    const result = await ApiManager('public/pub/cluster', {
+    const result = await ApiManager('pub/cluster', {
       method: 'GET',
       headers: {
         'content-type': 'application/json',
@@ -32,7 +32,7 @@ export const cluster = async data => {
 
 export const fasilitas = async data => {
   try {
-    const result = await ApiManager('public/pub/fasilitas', {
+    const result = await ApiManager('pub/fasilitas', {
       method: 'GET',
       headers: {
         'content-type': 'application/json',

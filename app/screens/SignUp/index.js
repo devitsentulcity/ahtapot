@@ -4,7 +4,6 @@ import { BaseStyle, useTheme } from '@config';
 import { Header, SafeAreaView, Icon, Button, TextInput } from '@components';
 import styles from './styles';
 import { useTranslation } from 'react-i18next';
-import { userRegister } from '../../api/auth/register';
 import CommonServices from '../../services/common';
 
 export default function SignUp({ navigation, route }) {
@@ -36,7 +35,7 @@ export default function SignUp({ navigation, route }) {
 
   const onRegister = async () => {
     setLoading(true);
-    if (name == '' || email == '' || noHp == '' || password == '') {
+    if (name === '' || email === '' || noHp === '' || password === '') {
       setSuccess({
         ...success,
         name: name != '' ? true : false,
@@ -54,11 +53,12 @@ export default function SignUp({ navigation, route }) {
         nohp: noHp,
         password: password
       }
-      let response = await CommonServices.callApi('public/register', 'POST', params);
-      if(response.status === 'success'){
+      let response = await CommonServices.callApi('register', 'POST', params);
+      console.log(response);
+      if (response.status === 'success') {
         Alert.alert({
           type: 'success',
-          title: t('sign_up'),
+          title: 'Pendaftaran',
           message: 'Pendaftaran akun berhasil, menunggu aktifasi dari GM',
           action: [{ onPress: () => navigation.goBack() }],
         });
@@ -76,7 +76,7 @@ export default function SignUp({ navigation, route }) {
         renderLeft={() => {
           return (
             <Icon
-              name="arrow-left"
+              name='arrow-left'
               size={20}
               color={colors.primary}
               enableRTL={true}
@@ -160,7 +160,7 @@ export default function SignUp({ navigation, route }) {
                   confirmPassword: true,
                 });
               }}
-            />``
+            />
             <Button
               full
               style={{ marginTop: 20 }}
