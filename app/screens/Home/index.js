@@ -23,6 +23,7 @@ import {homeSelect} from '@selectors';
 import {useTranslation} from 'react-i18next';
 import {FilterModel} from '@models';
 import {banner, cluster, fasilitas} from '../../api/home/home';
+import CommonServices from '../../services/common';
 
 const deltaY = new Animated.Value(0);
 
@@ -62,19 +63,17 @@ export default function Home({navigation}) {
   };
 
   const fetchCluster = async () => {
-    cluster()
-      .then(result => {
-        if (result.status == 200) result = result.data;
-        if (result.status === 'success') {
-          setClusterList(result.data);
-        } else {
-          setClusterList([]);
-        }
-        return true;
-      })
-      .catch(err => {
-        return false;
-      });
+    let params = {
+      cluster: '',
+      tipe: ''
+    }
+    let response = await CommonServices.callApi('/pub/unitlookup', 'POST', params);
+    console.log(response.data.list.data);
+    if (response.status === 'success') {
+      setClusterList(response.data.list.data);
+    } else {
+      setClusterList([]);
+    }
   };
 
   const fetchFasilitas = async () => {
@@ -352,13 +351,12 @@ export default function Home({navigation}) {
             return (
               <Card
                 style={[styles.popularItem, {marginLeft: 15}]}
-                image={item.gambar_kecil}
+                image={item.image}
                 onPress={() => {
-                  const filter = new FilterModel();
-                  navigation.navigate('List', {filter});
+                  navigation.navigate('List', { item: item, });
                 }}>
                 <Text headline blackColor semibold>
-                  {item.KawasanName}
+                  {item.name}
                 </Text>
               </Card>
             );

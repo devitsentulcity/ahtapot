@@ -23,6 +23,7 @@ import {
   designSelect,
 } from '@selectors';
 import {listActions} from '@actions';
+import CommonServices from '../../services/common';
 
 export default function List({navigation, route}) {
   const {t} = useTranslation();
@@ -33,6 +34,7 @@ export default function List({navigation, route}) {
   const design = useSelector(designSelect);
   const setting = useSelector(settingSelect);
   const user = useSelector(userSelect);
+  const item = route.params?.item;
 
   const scrollAnim = new Animated.Value(0);
   const offsetAnim = new Animated.Value(0);
@@ -63,6 +65,25 @@ export default function List({navigation, route}) {
     latitudeDelta: 0.009,
     longitudeDelta: 0.004,
   });
+  const [tipe, setTipe] = useState([]);
+
+  const initPage = async () => {
+    fecthType();
+  };
+
+  const fecthType = async () => {
+    let params = {
+      cluster: item.id,
+      tipe: ''
+    }
+    let response = await CommonServices.callApi('/pub/unitlookup', 'POST', params);
+    console.log('DETAIL CLUSTER',response);
+    if (response.status === 'success') {
+      setTipe(response.data.list.data);
+    } else {
+      setClusterList([]);
+    }
+  }
 
   useEffect(() => {
     dispatch(
@@ -509,20 +530,20 @@ export default function List({navigation, route}) {
                 ],
                 {useNativeDriver: true},
               )}
-              data={list.data}
+              data={tipe}
               key={'block'}
               keyExtractor={(item, index) => `block ${index}`}
               renderItem={({item, index}) => (
                 <ListItem
                   block
                   image={item.image?.full}
-                  title={item.title}
-                  subtitle={item.category?.title}
-                  location={item.address}
-                  phone={'ini diisi sama deskripsi block'}
-                  rate={item.rate}
-                  status={item.status}
-                  numReviews={item.numRate}
+                  title={item.name}
+                  subtitle={item.name}
+                  location={item.name}
+                  phone={''}
+                  rate={''}
+                  status={''}
+                  numReviews={''}
                   favorite={isFavorite(item)}
                   onPress={() => onProductDetail(item)}
                   onPressTag={() => onReview(item)}
@@ -579,20 +600,20 @@ export default function List({navigation, route}) {
               )}
               showsVerticalScrollIndicator={false}
               numColumns={2}
-              data={list.data}
+              data={tipe}
               key={'gird'}
               keyExtractor={(item, index) => `gird ${index}`}
               renderItem={({item, index}) => (
                 <ListItem
                   grid
                   image={item.image?.full}
-                  title={item.title}
-                  subtitle={item.category?.title}
-                  location={'Total Unit'}
-                  phone={'ini diisi sama deskripsi Grid'}
-                  rate={item.rate}
-                  status={item.status}
-                  numReviews={item.numRate}
+                  title={item.name}
+                  subtitle={item.name}
+                  location={item.name}
+                  phone={item.name}
+                  rate={''}
+                  status={''}
+                  numReviews={''}
                   favorite={isFavorite(item)}
                   style={{
                     marginLeft: 15,
@@ -651,19 +672,19 @@ export default function List({navigation, route}) {
                 ],
                 {useNativeDriver: true},
               )}
-              data={list.data}
+              data={tipe}
               key={'list'}
               keyExtractor={(item, index) => `list ${index}`}
               renderItem={({item, index}) => (
                 <ListItem
                   list
                   image={item.image?.full}
-                  title={item.title}
-                  subtitle={item.category?.title}
-                  location={'Total Unit'}
-                  phone={'ini diisi sama deskripsi List'}
-                  rate={item.rate}
-                  status={item.status}
+                  title={item.name}
+                  subtitle={item.name}
+                  location={item.name}
+                  phone={item.name}
+                  rate={''}
+                  status={''}
                   numReviews={item.numRate}
                   favorite={isFavorite(item)}
                   style={{
@@ -760,105 +781,13 @@ export default function List({navigation, route}) {
   };
 
   /**
-   * render MapView
-   * @returns
-   */
-  const renderMapView = () => {
-    return (
-      <View style={{flex: 1}}>
-        <MapView provider={PROVIDER_GOOGLE} style={styles.map} region={region}>
-          {list.data?.map?.((item, index) => {
-            return (
-              <Marker
-                onPress={e => onSelectLocation(e.nativeEvent.coordinate)}
-                key={item.id}
-                coordinate={{
-                  latitude: item.location?.latitude,
-                  longitude: item.location.longitude,
-                }}>
-                <View
-                  style={[
-                    styles.iconLocation,
-                    {
-                      backgroundColor:
-                        index == active ? colors.primary : BaseColor.whiteColor,
-                      borderColor: colors.primary,
-                    },
-                  ]}>
-                  <Icon
-                    name="star"
-                    size={16}
-                    color={
-                      index == active ? BaseColor.whiteColor : colors.primary
-                    }
-                  />
-                </View>
-              </Marker>
-            );
-          })}
-        </MapView>
-        <View style={{position: 'absolute', bottom: 0, overflow: 'visible'}}>
-          <Carousel
-            ref={sliderRef}
-            data={list.data ?? []}
-            renderItem={({item, index}) => (
-              <ListItem
-                small
-                image={item.image?.full}
-                title={item.title}
-                subtitle={item.category?.title}
-                rate={item.rate}
-                favorite={isFavorite(item)}
-                style={{
-                  margin: 3,
-                  padding: 10,
-                  backgroundColor: colors.card,
-                  borderRadius: 8,
-                  shadowColor: colors.border,
-                  shadowOffset: {
-                    width: 3,
-                    height: 2,
-                  },
-                  shadowOpacity: 1,
-                  shadowRadius: 3.84,
-                  elevation: 5,
-                }}
-                onPress={() => onProductDetail(item)}
-                onPressTag={() => onReview(item)}
-              />
-            )}
-            sliderWidth={viewportWidth}
-            itemWidth={getViewPort(75) + getViewPort(2) * 2}
-            firstItem={1}
-            inactiveSlideScale={0.95}
-            inactiveSlideOpacity={0.85}
-            contentContainerCustomStyle={{paddingVertical: 10}}
-            loop={true}
-            loopClonesPerSide={2}
-            autoplay={false}
-            onSnapToItem={index => {
-              setActive(index);
-              setRegion({
-                latitudeDelta: 0.009,
-                longitudeDelta: 0.004,
-                latitude: list.data?.[index]?.location?.latitude,
-                longitude: list.data?.[index]?.location?.longitude,
-              });
-            }}
-          />
-        </View>
-      </View>
-    );
-  };
-
-  /**
    * render Content view
    */
   const renderContent = () => {
     if (loading) {
       return renderLoading();
     }
-    if (list.data?.length == 0) {
+    if (tipe?.length == 0) {
       return (
         <View style={styles.centerView}>
           <View style={{alignItems: 'center'}}>
@@ -873,14 +802,17 @@ export default function List({navigation, route}) {
         </View>
       );
     }
-    if (mapView) return renderMapView();
     return renderList();
   };
+
+  useEffect(() => {
+    initPage();
+  }, []);
 
   return (
     <View style={{flex: 1}}>
       <Header
-        title={t('')}
+        title={'Cluster ' + item.name}
         renderLeft={() => {
           return (
             <Icon
@@ -894,15 +826,6 @@ export default function List({navigation, route}) {
         onPressLeft={() => {
           navigation.goBack();
         }}
-        // renderRight={() => {
-        //   return (
-        //     <Icon
-        //       name={mapView ? 'align-right' : 'map'}
-        //       size={20}
-        //       color={colors.primary}
-        //     />
-        //   );
-        // }}
         renderRightSecond={() => {
           return <Icon name="search" size={20} color={colors.primary} />;
         }}
