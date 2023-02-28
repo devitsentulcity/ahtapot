@@ -32,9 +32,10 @@ import {
   Progressive,
   PlaceholderMedia,
 } from 'rn-placeholder';
-import {productActions, wishListActions} from '@actions';
+import {productActions, wishListActions, listActions} from '@actions';
 import {userSelect, wishlistSelect, designSelect} from '@selectors';
 import styles from './styles';
+import CommonServices from '../../services/common';
 
 export default function ProductDetail({navigation, route}) {
   const {t} = useTranslation();
@@ -43,6 +44,7 @@ export default function ProductDetail({navigation, route}) {
   const wishlist = useSelector(wishlistSelect);
   // const design = useSelector(designSelect);
   const item = route.params?.item;
+  const idCluster = route.params?.id;
   const useGallery = !!route.params?.useGallery;
   const user = useSelector(userSelect);
   const deltaY = new Animated.Value(0);
@@ -53,141 +55,40 @@ export default function ProductDetail({navigation, route}) {
   const [collapseHour, setCollapseHour] = useState(false);
   const [heightHeader, setHeightHeader] = useState(Utils.heightHeader());
   const heightImageBanner = Utils.scaleWithPixel(250, 1);
+  const [clusterId, setClusterId] = useState('');
+  const [cluster, setCluster] = useState('');
 
   useEffect(() => {
     setProduct(item);
-    // console.log('Item:', item);
   }, [item]);
 
   useEffect(() => {
-    // console.log('Product:', product);
     setLoading(false);
   }, [product]);
 
-  /**
-   * check wishlist state
-   * only UI kit
-   */
-  const isFavorite = item => {
-    return wishlist.list?.some(i => i.id === item.id);
+  const initPage = async () => {
+    fecthTipe();
   };
 
-  /**
-   * like action
-   * @param {*} like
-   */
-  const onLike = like => {
-    if (user) {
-      setLike(null);
-      dispatch(wishListActions.onUpdate(item));
-      setLike(like);
-    } else {
-      navigation.navigate({
-        name: 'SignIn',
-        params: {
-          success: () => {
-            dispatch(wishListActions.onUpdate(item));
-            setLike(like);
-          },
-        },
-      });
+  const fecthTipe = async () => {
+    let params = {
+      cluster: idCluster,
+      tipe: item.id
     }
-  };
-
-  /**
-   * on Review action
-   */
-  const onReview = () => {
-    if (user) {
-      navigation.navigate({
-        name: 'Review',
-      });
+    let response = await CommonServices.callApi('/pub/unitlookup', 'POST', params);
+    if (response.status === 'success') {
+      setCluster(response.data.cluster);
     } else {
-      navigation.navigate({
-        name: 'SignIn',
-        params: {
-          success: () => {
-            navigation.navigate({
-              name: 'Review',
-            });
-          },
-        },
-      });
+      setCluster([]);
     }
-  };
-
-  /**
-   * go product detail
-   * @param {*} item
-   */
-  const onProductDetail = item => {
-    navigation.replace('ProductDetail', {item: item});
-  };
-
-  /**
-   * Open action
-   * @param {*} item
-   */
-  const onOpen = (type, title, link) => {
-    Alert.alert({
-      title: title,
-      message: `${t('do_you_want_open')} ${title} ?`,
-      action: [
-        {
-          text: t('cancel'),
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {
-          text: t('done'),
-          onPress: () => {
-            switch (type) {
-              case 'web':
-                Linking.openURL(link);
-                break;
-              case 'phone':
-                Linking.openURL('tel://' + link);
-                break;
-              case 'email':
-                Linking.openURL('mailto:' + link);
-                break;
-              case 'address':
-                Linking.openURL(link);
-                break;
-            }
-          },
-        },
-      ],
+  }
+  const onUnitDetail = () => {
+    navigation.navigate('ListType', {
+      item: item,
+      id: idCluster
     });
   };
 
-  const onUnitDetail = () => {
-    navigation.navigate('ListItemUnit', {});
-  };
-
-  /**
-   * collapse open time
-   */
-  const onCollapse = () => {
-    Utils.enableExperimental();
-    setCollapseHour(!collapseHour);
-  };
-
-  /**
-   * render wishlist status
-   *
-   */
-  const renderLike = () => {
-    return (
-      <TouchableOpacity onPress={() => onLike(!like)}>
-        {like ? (
-          <Icon name="heart" color={colors.primaryLight} solid size={18} />
-        ) : (
-          <Icon name="heart" color={colors.primaryLight} size={18} />
-        )}
-      </TouchableOpacity>
-    );
-  };
   /**
    * render Banner
    * @returns
@@ -232,8 +133,7 @@ export default function ProductDetail({navigation, route}) {
           },
         ]}>
         <Image
-          // source={product?.gambar_besar}
-          source={product?.gambar_besar}
+          source={cluster.image}
           style={{width: '100%', height: '100%'}}
         />
         <Animated.View
@@ -251,15 +151,6 @@ export default function ProductDetail({navigation, route}) {
               outputRange: [1, 0, 0],
             }),
           }}>
-          {/* <Image source={product?.author?.image} style={styles.userIcon} /> */}
-          <View>
-            <Text headline bold whiteColor>
-              {product?.nama_fasilitas}
-            </Text>
-            {/* <Text footnote whiteColor>
-              {product?.author?.email}
-            </Text> */}
-          </View>
         </Animated.View>
       </Animated.View>
     );
@@ -366,14 +257,14 @@ export default function ProductDetail({navigation, route}) {
             }}>
             <View style={styles.lineSpace}>
               <Text title1 semibold>
-                {product?.title}
+                {cluster.name}
               </Text>
             </View>
           </View>
           <View
             style={[styles.contentDescription, {borderColor: colors.border}]}>
             <Text body2 style={{lineHeight: 20}}>
-              {product?.description}
+              {cluster.description}
             </Text>
           </View>
           <View style={{width: '100%'}}>
@@ -401,14 +292,23 @@ export default function ProductDetail({navigation, route}) {
     );
   };
 
+  useEffect(() => {
+    initPage();
+  }, []);
+
   return (
     <View style={{flex: 1}}>
       {renderBanner()}
       <Header
-        title=""
+        title={'Tipe : ' + item.name}
         renderLeft={() => {
           return (
-            <Icon name="arrow-left" size={20} color={BaseColor.whiteColor} />
+            <Icon
+              name="arrow-left"
+              size={20}
+              color={colors.primary}
+              enableRTL={true}
+            />
           );
         }}
         renderRight={() => {
@@ -420,13 +320,6 @@ export default function ProductDetail({navigation, route}) {
         }}
         onPressLeft={() => {
           navigation.goBack();
-        }}
-        onPressRight={() => {
-          if (useGallery) {
-            navigation.navigate('PreviewImage', {
-              gallery: product?.gallery,
-            });
-          }
         }}
       />
       <SafeAreaView style={BaseStyle.safeAreaView} edges={['right', 'left']}>

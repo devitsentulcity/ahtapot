@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   ScrollView,
@@ -43,7 +43,7 @@ const options = {
   },
 };
 
-export default function ProfileEdit({navigation}) {
+export default function ProfileEdit({ navigation, route }) {
   
   const { colorrdata } = useSelector(state => state.commonReducer) || {};
   const {colors} = useTheme();
@@ -56,48 +56,15 @@ export default function ProfileEdit({navigation}) {
     android: 20,
   });
   const win = Dimensions.get('window');
+  const item = route.params?.item;
+  const cluster = route.params?.cluster;
+  const tipe = route.params?.tipe;
 
   const [loading, setLoading] = useState(false);
   const [date, setDate] = useState(''); 
   const tcp = ['Tunai Keras','KPR','Tunai Bertahap'];
   const statusPerkawinan = ["Kawin", "Belum Kawin", "Cerai"]
   const pekerjaan = ["Kawyawan Stasta","PNS","POLRI","TNI","GURU","WIRASWASTA","DOSEN","KARWAYAN BUMN","IBU RUMAH TANGGA","DOKTER","PELAUT","PILOT"]
-
-  /**
-   * on Update Profile
-   *
-   */
-  // const onUpdate = () => {
-    
-  //   if (name == '' || email == '' || website == '' || information == '') {
-  //     setSuccess({
-  //       ...success,
-  //       name: name != '' ? true : false,
-  //       email: email != '' ? true : false,
-  //       website: website != '' ? true : false,
-  //       information: information != '' ? true : false,
-  //     });
-  //     return;
-  //   }
-  //   const params = {
-  //     name,
-  //     email,
-  //     url: website,
-  //     description: information,
-  //   };
-  //   setLoading(true);
-  //   dispatch(
-  //     authActions.onEditProfile(params, response => {
-  //       Alert.alert({
-  //         type: 'success',
-  //         title: t('edit_profile'),
-  //         message: t('update_success'),
-  //         action: [{onPress: () => navigation.goBack()}],
-  //       });
-  //       setLoading(false);
-  //     }),
-  //   );
-  // };
 
   const [tanggal, settanggal] = useState(moment().format("DD/MM/YYYY"));
   const [namaKonsumen, setnamaKonsumen] = useState('');
@@ -110,14 +77,7 @@ export default function ProfileEdit({navigation}) {
   const [uriImgDokumenLain, seturiImgDokumenLain] = useState(null);
   const [nameImgDokumenLain, setnameImgDokumenLain] = useState(null);
   
-  const header = ['heading 1', 'heading 2', 'heading 3']
-  const dataTable = [
-    ['gfg1', 'gfg2', 'gfg3'],
-    ['gfg4', 'gfg5', 'gfg6'],
-    ['gfg7', 'gfg8', 'gfg9']
-
-  ]
-
+  
   launchImageLibraryKTP = () => {
     let options = {
       storageOptions: {
@@ -187,6 +147,12 @@ export default function ProfileEdit({navigation}) {
 
   }
 
+  useEffect(() => {
+    console.log("ITEMNYAAAAA ", item);
+    console.log("CLUSTERNYAAAAA ", cluster);
+    console.log("TIPEEEEEENYAAAAA ", tipe);
+  }, []);
+
   return (
     <View style={{flex: 1}}>
       <Header
@@ -231,8 +197,7 @@ export default function ProfileEdit({navigation}) {
                 </Text>
               </View>
               <TextInput
-                placeholder={''}
-                value={''}
+                value={cluster.name}
                 editable={false}
               />
               <View style={styles.contentTitle}>
@@ -241,8 +206,16 @@ export default function ProfileEdit({navigation}) {
                 </Text>
               </View>
               <TextInput
-                placeholder={''}
-                value={''}
+                value={tipe.id}
+                editable={false}
+              />
+              <View style={styles.contentTitle}>
+                <Text headline semibold>
+                  Unit
+                </Text>
+              </View>
+              <TextInput
+                value={item.id}
                 editable={false}
               />
               <View style={styles.contentTitle}>
@@ -251,8 +224,7 @@ export default function ProfileEdit({navigation}) {
                 </Text>
               </View>
               <TextInput
-                placeholder={t('input_email')}
-                value={''}
+                value={item.size.building + '/' + item.size.land}
                 editable={false}
               />
               <View style={styles.contentTitle}>

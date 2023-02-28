@@ -26,6 +26,9 @@ export default function ListItem(props) {
     subtitle,
     location,
     phone,
+    lt,
+    lb,
+    posisi,
     rate,
     status,
     numReviews,
@@ -180,12 +183,12 @@ export default function ListItem(props) {
           <Text headline semibold grayColor numberOfLines={1}>
             {subtitle}
           </Text>
-          <Text caption1 grayColor style={{marginTop: 10}}>
+          {/* <Text caption1 grayColor style={{marginTop: 10}}>
             {location}
           </Text>
           <Text caption1 grayColor style={{marginTop: 5}}>
             {phone}
-          </Text>
+          </Text> */}
           <View style={{ flexDirection: 'row' }}>
             <View
               style={{
@@ -194,7 +197,7 @@ export default function ListItem(props) {
                 justifyContent: 'center',
             }}>
               <Text caption1 grayColor>
-                LT :
+                LT : {lt} 
               </Text>
             </View>
             <View
@@ -204,13 +207,13 @@ export default function ListItem(props) {
                 textAlign: 'left',
               }}>
               <Text caption1 grayColor>
-                Posisi :
+                LB : {lb}
               </Text>
             </View>
           </View>
-          <Text caption1 grayColor style={{ marginTop: 5 }}>
-            LB :
-          </Text>
+          {/* <Text caption1 grayColor style={{ marginTop: 5 }}>
+            LB : {lb}
+          </Text> */}
         </View>
       </TouchableOpacity>
     );
@@ -380,6 +383,9 @@ ListItem.propTypes = {
   subtitle: PropTypes.string,
   location: PropTypes.string,
   phone: PropTypes.string,
+  lt: PropTypes.string,
+  lb: PropTypes.string,
+  posisi: PropTypes.string,
   rate: PropTypes.number,
   status: PropTypes.string,
   numReviews: PropTypes.number,
@@ -402,6 +408,9 @@ ListItem.defaultProps = {
   subtitle: '',
   location: '',
   phone: '',
+  lt: '',
+  lb: '',
+  posisi: '',
   rate: 4.5,
   status: '',
   numReviews: 99,

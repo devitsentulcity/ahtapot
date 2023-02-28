@@ -63,14 +63,11 @@ export default function Home({navigation}) {
   };
 
   const fetchCluster = async () => {
-    let params = {
-      cluster: '',
-      tipe: ''
-    }
-    let response = await CommonServices.callApi('/pub/unitlookup', 'POST', params);
-    console.log(response.data.list.data);
+    let params = {}
+    let response = await CommonServices.callApi('/pub/cluster', 'GET', params);
+    console.log(response.data);
     if (response.status === 'success') {
-      setClusterList(response.data.list.data);
+      setClusterList(response.data);
     } else {
       setClusterList([]);
     }
@@ -351,12 +348,12 @@ export default function Home({navigation}) {
             return (
               <Card
                 style={[styles.popularItem, {marginLeft: 15}]}
-                image={item.image}
+                image={item.gambar}
                 onPress={() => {
                   navigation.navigate('List', { item: item, });
                 }}>
                 <Text headline blackColor semibold>
-                  {item.name}
+                  {item.KawasanName}
                 </Text>
               </Card>
             );

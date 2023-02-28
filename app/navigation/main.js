@@ -47,6 +47,7 @@ import FormBooking from '@screens/FormBooking';
 import SignIn from '../screens/SignIn';
 import SignUp from '../screens/SignUp';
 import ListSales from '../screens/ListSales';
+import ListNup from '../screens/ListNup';
 
 const MainStack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -118,6 +119,7 @@ export default function Main() {
       <MainStack.Screen name="SignIn" component={SignIn} />
       <MainStack.Screen name="SignUp" component={SignUp} />
       <MainStack.Screen name="ListSales" component={ListSales} />
+      <MainStack.Screen name="ListNup" component={ListNup} />
     </MainStack.Navigator>
   );
 }

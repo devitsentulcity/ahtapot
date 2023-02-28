@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TouchableOpacity} from 'react-native';
+import { View, TouchableOpacity, Dimensions } from 'react-native';
 import {Image, Text, Icon, StarRating, Tag} from '@components';
 import {BaseColor, useTheme} from '@config';
 import PropTypes from 'prop-types';
@@ -13,6 +13,8 @@ import {
 } from 'rn-placeholder';
 
 export default function ListItem(props) {
+  const { width, height } = Dimensions.get('window');
+
   const {t} = useTranslation();
   const {colors} = useTheme();
   const {
@@ -68,9 +70,9 @@ export default function ListItem(props) {
       <View style={style}>
         <TouchableOpacity onPress={onPress}>
           <Image source={{uri: image}} style={styles.blockImage} />
-          <Tag status style={styles.tagStatus}>
+          {/* <Tag status style={styles.tagStatus}>
             {t(status)}
-          </Tag>
+          </Tag> */}
           {favorite ? (
             <Icon
               solid
@@ -93,9 +95,9 @@ export default function ListItem(props) {
                 flexDirection: 'row',
                 alignItems: 'center',
               }}>
-              <Tag rate onPress={onPressTag}>
+              {/* <Tag rate onPress={onPressTag}>
                 {rate}
-              </Tag>
+              </Tag> */}
               {/* <View style={{marginLeft: 10}}>
                 <Text caption1 whiteColor semibold style={{marginBottom: 5}}>
                   {t('rate')}
@@ -110,9 +112,9 @@ export default function ListItem(props) {
                 />
               </View> */}
             </View>
-            <Text caption1 semibold whiteColor style={{marginTop: 5}}>
+            {/* <Text caption1 semibold whiteColor style={{marginTop: 5}}>
               {numReviews} {t('feedback')}
-            </Text>
+            </Text> */}
           </View>
         </TouchableOpacity>
         <View
@@ -127,16 +129,22 @@ export default function ListItem(props) {
             {title}
           </Text>
           <View style={styles.blockLineMap}>
-            <Icon name="map-marker-alt" color={colors.primaryLight} size={12} />
+            {/* <Icon name="map-marker-alt" color={colors.primaryLight} size={12} /> */}
             <Text caption1 grayColor style={{paddingHorizontal: 4}}>
               {location}
             </Text>
           </View>
           <View style={styles.blockLinePhone}>
-            <Icon name="phone" color={colors.primaryLight} size={12} />
+            {/* <Icon name="phone" color={colors.primaryLight} size={12} /> */}
             <Text caption1 grayColor style={{paddingHorizontal: 4}}>
               {phone}
             </Text>
+          </View>
+          <View style={{
+            borderBottomColor: 'black',
+            borderBottomWidth: 0.5,
+            width: width - 20,
+          }}>
           </View>
         </View>
       </View>

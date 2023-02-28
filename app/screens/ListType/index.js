@@ -10,6 +10,7 @@ import {
   ListItem,
   FilterSort,
   Text,
+  ListItemUnit,
 } from '@components';
 import styles from './styles';
 import * as Utils from '@utils';
@@ -23,6 +24,7 @@ import {
   designSelect,
 } from '@selectors';
 import {listActions} from '@actions';
+import CommonServices from '../../services/common';
 
 export default function List({navigation, route}) {
   const {t} = useTranslation();
@@ -33,6 +35,8 @@ export default function List({navigation, route}) {
   const design = useSelector(designSelect);
   const setting = useSelector(settingSelect);
   const user = useSelector(userSelect);
+  const item = route.params?.item;
+  const idCluster = route.params?.id;
 
   const scrollAnim = new Animated.Value(0);
   const offsetAnim = new Animated.Value(0);
@@ -63,6 +67,29 @@ export default function List({navigation, route}) {
     latitudeDelta: 0.009,
     longitudeDelta: 0.004,
   });
+
+  const [listTipe, setListTipe] = useState([]);
+  const [clusterData, setClusterData] = useState('');
+  const [tipeData, setTipeData] = useState('');
+
+  const initPage = async () => {
+    fecthType();
+  };
+
+  const fecthType = async () => {
+    let params = {
+      cluster: idCluster,
+      tipe: item.id
+    }
+    let response = await CommonServices.callApi('/pub/unitlookup', 'POST', params);
+    if (response.status === 'success') {
+      setListTipe(response.data.list.data);
+      setClusterData(response.data.cluster);
+      setTipeData(response.data.tipe);
+    } else {
+      setListTipe([]);
+    }
+  }
 
   useEffect(() => {
     dispatch(
@@ -463,6 +490,14 @@ export default function List({navigation, route}) {
     }
   };
 
+  const onFormBooking = item => {
+    navigation.navigate('FormBooking', {
+      item: item,
+      cluster: clusterData,
+      tipe: tipeData
+    });
+  };
+
   /**
    * @description Render container view
    * @author Passion UI <passionui.com>
@@ -503,23 +538,19 @@ export default function List({navigation, route}) {
                 ],
                 {useNativeDriver: true},
               )}
-              data={list.data}
+              data={listTipe}
               key={'block'}
               keyExtractor={(item, index) => `block ${index}`}
               renderItem={({item, index}) => (
                 <ListItem
                   block
                   image={item.image?.full}
-                  title={item.title}
-                  subtitle={item.category?.title}
-                  location={item.address}
-                  phone={'ini diisi sama deskripsi block Type'}
-                  rate={item.rate}
-                  status={item.status}
-                  numReviews={item.numRate}
-                  favorite={isFavorite(item)}
-                  onPress={() => onProductDetail(item)}
-                  onPressTag={() => onReview(item)}
+                  title={item.name}
+                  subtitle={item.name}
+                  location={item.name}
+                  phone={''}
+                  status={''}
+                  onPress={() => onFormBooking(item)}
                 />
               )}
             />
@@ -573,27 +604,23 @@ export default function List({navigation, route}) {
               )}
               showsVerticalScrollIndicator={false}
               numColumns={2}
-              data={list.data}
+              data={listTipe}
               key={'gird'}
               keyExtractor={(item, index) => `gird ${index}`}
               renderItem={({item, index}) => (
                 <ListItem
                   grid
                   image={item.image?.full}
-                  title={item.title}
-                  subtitle={item.category?.title}
-                  location={'Total Unit'}
-                  phone={'ini diisi sama deskripsi Grid Type'}
-                  rate={item.rate}
-                  status={item.status}
-                  numReviews={item.numRate}
-                  favorite={isFavorite(item)}
+                  title={item.name}
+                  subtitle={item.name}
+                  location={item.name}
+                  phone={item.name}
+                  status={''}
                   style={{
                     marginLeft: 15,
                     marginBottom: 15,
                   }}
-                  onPress={() => onProductDetail(item)}
-                  onPressTag={() => onReview(item)}
+                  onPress={() => onFormBooking(item)}
                 />
               )}
             />
@@ -645,26 +672,25 @@ export default function List({navigation, route}) {
                 ],
                 {useNativeDriver: true},
               )}
-              data={list.data}
+              data={listTipe}
               key={'list'}
               keyExtractor={(item, index) => `list ${index}`}
               renderItem={({item, index}) => (
-                <ListItem
+                <ListItemUnit
                   list
                   image={item.image?.full}
-                  title={item.title}
-                  subtitle={item.category?.title}
-                  location={'Total Unit'}
-                  phone={'ini diisi sama deskripsi List Type'}
-                  rate={item.rate}
-                  status={item.status}
-                  numReviews={item.numRate}
-                  favorite={isFavorite(item)}
+                  title={item.name}
+                  subtitle={item.name}
+                  location={item.name}
+                  phone={item.name}
+                  lt={item.size.land}
+                  lb={item.size.building}
+                  posisi={''}
+                  status={''}
                   style={{
                     marginBottom: 15,
                   }}
-                  onPress={() => onProductDetail(item)}
-                  onPressTag={() => onReview(item)}
+                  onPress={() => onFormBooking(item)}
                 />
               )}
             />
@@ -714,7 +740,7 @@ export default function List({navigation, route}) {
                 ],
                 {useNativeDriver: true},
               )}
-              data={list.data}
+              data={listTipe}
               key={'block'}
               keyExtractor={(item, index) => `block ${index}`}
               renderItem={({item, index}) => (
@@ -729,8 +755,7 @@ export default function List({navigation, route}) {
                   status={item.status}
                   numReviews={item.numReviews}
                   favorite={isFavorite(item)}
-                  onPress={() => onProductDetail(item)}
-                  onPressTag={() => onReview(item)}
+                  onPress={() => onTypeDetail(item)}
                 />
               )}
             />
@@ -852,7 +877,7 @@ export default function List({navigation, route}) {
     if (loading) {
       return renderLoading();
     }
-    if (list.data?.length == 0) {
+    if (listTipe?.length == 0) {
       return (
         <View style={styles.centerView}>
           <View style={{alignItems: 'center'}}>
@@ -867,14 +892,17 @@ export default function List({navigation, route}) {
         </View>
       );
     }
-    if (mapView) return renderMapView();
     return renderList();
   };
+
+  useEffect(() => {
+    initPage();
+  }, []);
 
   return (
     <View style={{flex: 1}}>
       <Header
-        title={t('')}
+        title={'Tipe : ' + item.name}
         renderLeft={() => {
           return (
             <Icon
@@ -888,15 +916,6 @@ export default function List({navigation, route}) {
         onPressLeft={() => {
           navigation.goBack();
         }}
-        // renderRight={() => {
-        //   return (
-        //     <Icon
-        //       name={mapView ? 'align-right' : 'map'}
-        //       size={20}
-        //       color={colors.primary}
-        //     />
-        //   );
-        // }}
         renderRightSecond={() => {
           return <Icon name="search" size={20} color={colors.primary} />;
         }}

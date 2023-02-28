@@ -377,7 +377,7 @@ export default function List({navigation, route}) {
   return (
     <View style={{flex: 1}}>
       <Header
-        title={t('')}
+        title={t('KESINI')}
         renderLeft={() => {
           return (
             <Icon

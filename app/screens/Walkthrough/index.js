@@ -108,6 +108,38 @@ export default function Walkthrough({ navigation }) {
           </TouchableOpacity>
         </View>
       );
+    } else {
+      return (
+        <View>
+          <TouchableOpacity
+            style={[
+              styles.profileItem,
+              {
+                borderBottomColor: colors.border,
+                borderBottomWidth: 1,
+                marginTop: 15,
+              },
+            ]}
+            onPress={() => {
+              navigation.navigate('ListSales', {
+                item: {
+                  judul: 'Data Sales Non Aktif',
+                  aktif: 'F',
+                  level: '0'
+                }
+              });
+            }}>
+            <Text body1>Data NUP</Text>
+            <Icon
+              name="angle-right"
+              size={18}
+              color={colors.primary}
+              style={{ marginLeft: 5 }}
+              enableRTL={true}
+            />
+          </TouchableOpacity>
+        </View>
+      );
     }
   }
 

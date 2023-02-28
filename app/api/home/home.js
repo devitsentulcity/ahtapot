@@ -15,21 +15,6 @@ export const banner = async data => {
   }
 };
 
-export const cluster = async data => {
-  try {
-    const result = await ApiManager('pub/unitlookup', {
-      method: 'GET',
-      headers: {
-        'content-type': 'application/json',
-      },
-      //   data: data,
-    });
-    return result;
-  } catch (error) {
-    return error;
-  }
-};
-
 export const fasilitas = async data => {
   try {
     const result = await ApiManager('pub/fasilitas', {
