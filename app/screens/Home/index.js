@@ -22,7 +22,7 @@ import {useSelector} from 'react-redux';
 import {homeSelect} from '@selectors';
 import {useTranslation} from 'react-i18next';
 import {FilterModel} from '@models';
-import {banner, cluster, fasilitas} from '../../api/home/home';
+import {banner, fasilitas} from '../../api/home/home';
 import CommonServices from '../../services/common';
 
 const deltaY = new Animated.Value(0);
@@ -401,7 +401,8 @@ export default function Home({navigation}) {
             // rate={item.rate}
             style={{marginBottom: 15}}
             onPress={() => {
-              navigation.navigate('ProductDetail', {
+              console.log(item);
+              navigation.navigate('FasilitasDetail', {
                 item: item,
                 useGallery: false,
               });
@@ -465,9 +466,19 @@ export default function Home({navigation}) {
           scrollEventThrottle={8}>
           {renderCategory()}
           <View style={styles.contentPopular}>
-            <Text title3 semibold>
-              {t('popular_location')}
-            </Text>
+            <View style={{ flex: 1 }}>
+              <Text title3 semibold>
+                {t('popular_location')}
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('ListAllCluster');
+              }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ textAlign: 'right' }}>Show All</Text>
+              </View>
+            </TouchableOpacity>
           </View>
           {renderClusterTeratas()}
           <View

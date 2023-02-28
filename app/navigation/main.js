@@ -48,6 +48,8 @@ import SignIn from '../screens/SignIn';
 import SignUp from '../screens/SignUp';
 import ListSales from '../screens/ListSales';
 import ListNup from '../screens/ListNup';
+import FasilitasDetail from '../screens/FasilitasDetail';
+import ListAllCluster from '../screens/ListAllCluster';
 
 const MainStack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -120,6 +122,8 @@ export default function Main() {
       <MainStack.Screen name="SignUp" component={SignUp} />
       <MainStack.Screen name="ListSales" component={ListSales} />
       <MainStack.Screen name="ListNup" component={ListNup} />
+      <MainStack.Screen name="ListAllCluster" component={ListAllCluster} />
+      <MainStack.Screen name="FasilitasDetail" component={FasilitasDetail} />
     </MainStack.Navigator>
   );
 }

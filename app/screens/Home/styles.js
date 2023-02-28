@@ -45,8 +45,10 @@ export default StyleSheet.create({
     marginBottom: 5,
   },
   contentPopular: {
+    flexDirection: 'row',
     marginHorizontal: 20,
     marginBottom: 15,
+    marginTop: 20,
   },
   promotionBanner: {
     height: Utils.scaleWithPixel(100),
