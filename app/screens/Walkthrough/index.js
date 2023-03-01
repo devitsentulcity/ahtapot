@@ -108,39 +108,39 @@ export default function Walkthrough({ navigation }) {
           </TouchableOpacity>
         </View>
       );
-    } else {
-      return (
-        <View>
-          <TouchableOpacity
-            style={[
-              styles.profileItem,
-              {
-                borderBottomColor: colors.border,
-                borderBottomWidth: 1,
-                marginTop: 15,
-              },
-            ]}
-            onPress={() => {
-              navigation.navigate('ListSales', {
-                item: {
-                  judul: 'Data Sales Non Aktif',
-                  aktif: 'F',
-                  level: '0'
-                }
-              });
-            }}>
-            <Text body1>Data NUP</Text>
-            <Icon
-              name="angle-right"
-              size={18}
-              color={colors.primary}
-              style={{ marginLeft: 5 }}
-              enableRTL={true}
-            />
-          </TouchableOpacity>
-        </View>
-      );
-    }
+    } else {}
+  }
+
+  const renderDataTrx = () => {
+    return (
+      <View>
+        <TouchableOpacity
+          style={[
+            styles.profileItem,
+            {
+              borderBottomColor: colors.border,
+              borderBottomWidth: 1,
+              marginTop: 15,
+            },
+          ]}
+          onPress={() => {
+            navigation.navigate('ListTrxVa', {
+              item: {
+                judul: 'Data Transaksi VA',
+              }
+            });
+          }}>
+          <Text body1>Data Transaksi VA</Text>
+          <Icon
+            name="angle-right"
+            size={18}
+            color={colors.primary}
+            style={{ marginLeft: 5 }}
+            enableRTL={true}
+          />
+        </TouchableOpacity>
+      </View>
+    );
   }
 
   return (
@@ -156,12 +156,13 @@ export default function Walkthrough({ navigation }) {
         <ScrollView>
           <View style={styles.contain}>
             <ProfileDetail
-              image={'https://engineering.fb.com/wp-content/uploads/2016/04/yearinreview.jpg'}
+              image={'https://icon2.cleanpng.com/20180319/bkq/kisspng-computer-icons-user-profile-profile-ico-5ab03f37d376a3.6072672315214999598662.jpg'}
               textFirst={user.nama}
               textSecond={user.email}
             />
             <ProfilePerformance style={{ marginTop: 20 }} />
             {renderListSales()}
+            {renderDataTrx()}
           </View>
         </ScrollView>
         <View style={{ paddingHorizontal: 20, paddingVertical: 15 }}>

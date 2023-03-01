@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { View, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { BaseStyle, useTheme } from '@config';
 import { Header, SafeAreaView, Icon, Button, TextInput } from '@components';
 import styles from './styles';
 import { useTranslation } from 'react-i18next';
 import CommonServices from '../../services/common';
+import PhoneInput from "react-native-phone-number-input";
 
 export default function SignUp({ navigation, route }) {
   const { colors } = useTheme();
@@ -27,6 +28,8 @@ export default function SignUp({ navigation, route }) {
     noHp: true,
     password: true,
   });
+
+  const phoneInput = useRef(null);
 
   /**
    * call when action signup
@@ -119,7 +122,22 @@ export default function SignUp({ navigation, route }) {
                 });
               }}
             />
-            <TextInput
+            <PhoneInput
+              ref={phoneInput}
+              defaultValue={noHp}
+              defaultCode="ID"
+              layout="first"
+              withShadow
+              autoFocus
+              containerStyle={{ margin: 10, width: '100%', height: 50, backgroundColor: "#f5f5f5" }}
+              textInputStyle={{ height: 50 }}
+              placeholder="Nomor Handphone"
+              onChangeFormattedText={text => {
+                setNoHp(text);
+              }}
+              // onChangeText={text => setNoHp(text)}
+            />
+            {/* <TextInput
               style={{ marginTop: 10 }}
               onChangeText={text => setNoHp(text)}
               placeholder='No HP'
@@ -132,7 +150,7 @@ export default function SignUp({ navigation, route }) {
                   noHp: true,
                 });
               }}
-            />
+            /> */}
             <TextInput
               style={{ marginTop: 10 }}
               onChangeText={text => setPassword(text)}

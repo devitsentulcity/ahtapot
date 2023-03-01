@@ -537,7 +537,12 @@ export default function ListAllCluster({navigation, route}) {
                   status={''}
                   favorite={isFavorite(item)}
                   onPress={() => {
-                    navigation.navigate('List', { item: item, });
+                    navigation.navigate('List', {
+                      item: {
+                        KawasanCode: item.id,
+                        KawasanName: item.name
+                      },
+                    });
                   }}
                 />
               )}
@@ -610,7 +615,12 @@ export default function ListAllCluster({navigation, route}) {
                     marginBottom: 15,
                   }}
                   onPress={() => {
-                    navigation.navigate('List', { item: item, });
+                    navigation.navigate('List', {
+                      item: {
+                        KawasanCode: item.id,
+                        KawasanName: item.name
+                      },
+                    });
                   }}
                 />
               )}
@@ -750,7 +760,12 @@ export default function ListAllCluster({navigation, route}) {
                   numReviews={item.numReviews}
                   favorite={isFavorite(item)}
                   onPress={() => {
-                    navigation.navigate('List', { item: item, });
+                    navigation.navigate('List', {
+                      item: {
+                        KawasanCode: item.id,
+                        KawasanName: item.name
+                      },
+                    });
                   }}
                 />
               )}

@@ -106,14 +106,22 @@ export default function ListSales({ navigation, route }) {
           }
           data={salesData}
           renderItem={({ item, index }) => (
+            item.aktif === 'F' ?
             <ListThumbCircle
-              image={'https://engineering.fb.com/wp-content/uploads/2016/04/yearinreview.jpg'}
+                image={'https://icon2.cleanpng.com/20180319/bkq/kisspng-computer-icons-user-profile-profile-ico-5ab03f37d376a3.6072672315214999598662.jpg'}
               txtLeftTitle={item.nama}
               txtContent={item.email}
               txtRight={item.nohp}
               style={{ marginBottom: 5 }}
               onPress={() => sAlert(item.unique_id, item.nama)}
             />
+              : <ListThumbCircle
+                image={'https://icon2.cleanpng.com/20180319/bkq/kisspng-computer-icons-user-profile-profile-ico-5ab03f37d376a3.6072672315214999598662.jpg'}
+                txtLeftTitle={item.nama}
+                txtContent={item.email}
+                txtRight={item.nohp}
+                style={{ marginBottom: 5 }}
+              />
           )}
         />
       );
