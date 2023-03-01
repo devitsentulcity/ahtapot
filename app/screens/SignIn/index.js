@@ -28,15 +28,15 @@ export default function SignIn({ navigation, route }) {
    * call when action onLogin
    */
   const onLogin = async () => {
+    setLoading(true);
     if (username == '' || password == '') {
       setSuccess({
         ...success,
-        username: false,
-        password: false,
+        username: username != '' ? true : false,
+        password: password != '' ? true : false,
       });
       return;
     }
-    setLoading(true);
     let params = {
       email: username,
       password: password

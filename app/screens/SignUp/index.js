@@ -128,29 +128,13 @@ export default function SignUp({ navigation, route }) {
               defaultCode="ID"
               layout="first"
               withShadow
-              autoFocus
               containerStyle={{ margin: 10, width: '100%', height: 50, backgroundColor: "#f5f5f5" }}
               textInputStyle={{ height: 50 }}
               placeholder="Nomor Handphone"
               onChangeFormattedText={text => {
                 setNoHp(text);
               }}
-              // onChangeText={text => setNoHp(text)}
             />
-            {/* <TextInput
-              style={{ marginTop: 10 }}
-              onChangeText={text => setNoHp(text)}
-              placeholder='No HP'
-              success={success.noHp}
-              keyboardType="phone-pad"
-              value={noHp}
-              onFocus={() => {
-                setSuccess({
-                  ...success,
-                  noHp: true,
-                });
-              }}
-            /> */}
             <TextInput
               style={{ marginTop: 10 }}
               onChangeText={text => setPassword(text)}

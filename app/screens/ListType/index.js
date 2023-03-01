@@ -542,6 +542,7 @@ export default function List({navigation, route}) {
               key={'block'}
               keyExtractor={(item, index) => `block ${index}`}
               renderItem={({item, index}) => (
+                user ? 
                 <ListItem
                   block
                   image={item.image?.full}
@@ -552,6 +553,15 @@ export default function List({navigation, route}) {
                   status={''}
                   onPress={() => onFormBooking(item)}
                 />
+                  : <ListItem
+                    block
+                    image={item.image?.full}
+                    title={item.name}
+                    subtitle={item.name}
+                    location={item.name}
+                    phone={''}
+                    status={''}
+                  />
               )}
             />
             <Animated.View
@@ -608,6 +618,7 @@ export default function List({navigation, route}) {
               key={'gird'}
               keyExtractor={(item, index) => `gird ${index}`}
               renderItem={({item, index}) => (
+                user ?
                 <ListItem
                   grid
                   image={item.image?.full}
@@ -622,6 +633,19 @@ export default function List({navigation, route}) {
                   }}
                   onPress={() => onFormBooking(item)}
                 />
+                  : <ListItem
+                    grid
+                    image={item.image?.full}
+                    title={item.name}
+                    subtitle={item.name}
+                    location={item.name}
+                    phone={item.name}
+                    status={''}
+                    style={{
+                      marginLeft: 15,
+                      marginBottom: 15,
+                    }}
+                  />
               )}
             />
             <Animated.View
@@ -676,6 +700,7 @@ export default function List({navigation, route}) {
               key={'list'}
               keyExtractor={(item, index) => `list ${index}`}
               renderItem={({item, index}) => (
+                user ?
                 <ListItemUnit
                   list
                   image={item.image?.full}
@@ -692,6 +717,21 @@ export default function List({navigation, route}) {
                   }}
                   onPress={() => onFormBooking(item)}
                 />
+                  : <ListItemUnit
+                    list
+                    image={item.image?.full}
+                    title={item.name}
+                    subtitle={item.name}
+                    location={item.name}
+                    phone={item.name}
+                    lt={item.size.land}
+                    lb={item.size.building}
+                    posisi={''}
+                    status={''}
+                    style={{
+                      marginBottom: 15,
+                    }}
+                  />
               )}
             />
             <Animated.View
@@ -779,98 +819,6 @@ export default function List({navigation, route}) {
   };
 
   /**
-   * render MapView
-   * @returns
-   */
-  const renderMapView = () => {
-    return (
-      <View style={{flex: 1}}>
-        <MapView provider={PROVIDER_GOOGLE} style={styles.map} region={region}>
-          {list.data?.map?.((item, index) => {
-            return (
-              <Marker
-                onPress={e => onSelectLocation(e.nativeEvent.coordinate)}
-                key={item.id}
-                coordinate={{
-                  latitude: item.location?.latitude,
-                  longitude: item.location.longitude,
-                }}>
-                <View
-                  style={[
-                    styles.iconLocation,
-                    {
-                      backgroundColor:
-                        index == active ? colors.primary : BaseColor.whiteColor,
-                      borderColor: colors.primary,
-                    },
-                  ]}>
-                  <Icon
-                    name="star"
-                    size={16}
-                    color={
-                      index == active ? BaseColor.whiteColor : colors.primary
-                    }
-                  />
-                </View>
-              </Marker>
-            );
-          })}
-        </MapView>
-        <View style={{position: 'absolute', bottom: 0, overflow: 'visible'}}>
-          <Carousel
-            ref={sliderRef}
-            data={list.data ?? []}
-            renderItem={({item, index}) => (
-              <ListItem
-                small
-                image={item.image?.full}
-                title={item.title}
-                subtitle={item.category?.title}
-                rate={item.rate}
-                favorite={isFavorite(item)}
-                style={{
-                  margin: 3,
-                  padding: 10,
-                  backgroundColor: colors.card,
-                  borderRadius: 8,
-                  shadowColor: colors.border,
-                  shadowOffset: {
-                    width: 3,
-                    height: 2,
-                  },
-                  shadowOpacity: 1,
-                  shadowRadius: 3.84,
-                  elevation: 5,
-                }}
-                onPress={() => onProductDetail(item)}
-                onPressTag={() => onReview(item)}
-              />
-            )}
-            sliderWidth={viewportWidth}
-            itemWidth={getViewPort(75) + getViewPort(2) * 2}
-            firstItem={1}
-            inactiveSlideScale={0.95}
-            inactiveSlideOpacity={0.85}
-            contentContainerCustomStyle={{paddingVertical: 10}}
-            loop={true}
-            loopClonesPerSide={2}
-            autoplay={false}
-            onSnapToItem={index => {
-              setActive(index);
-              setRegion({
-                latitudeDelta: 0.009,
-                longitudeDelta: 0.004,
-                latitude: list.data?.[index]?.location?.latitude,
-                longitude: list.data?.[index]?.location?.longitude,
-              });
-            }}
-          />
-        </View>
-      </View>
-    );
-  };
-
-  /**
    * render Content view
    */
   const renderContent = () => {
@@ -902,7 +850,7 @@ export default function List({navigation, route}) {
   return (
     <View style={{flex: 1}}>
       <Header
-        title={'Tipe : ' + item.name}
+        title={'Tipe : ' + item.name }
         renderLeft={() => {
           return (
             <Icon

@@ -51,6 +51,7 @@ import ListNup from '../screens/ListNup';
 import FasilitasDetail from '../screens/FasilitasDetail';
 import ListAllCluster from '../screens/ListAllCluster';
 import ListTrxVa from '../screens/ListTrxVa';
+import ListTrxVaDetail from '../screens/ListTrxVaDetail';
 
 const MainStack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -126,6 +127,7 @@ export default function Main() {
       <MainStack.Screen name="ListAllCluster" component={ListAllCluster} />
       <MainStack.Screen name="FasilitasDetail" component={FasilitasDetail} />
       <MainStack.Screen name="ListTrxVa" component={ListTrxVa} />
+      <MainStack.Screen name="ListTrxVaDetail" component={ListTrxVaDetail} />
     </MainStack.Navigator>
   );
 }

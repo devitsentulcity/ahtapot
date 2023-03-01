@@ -10,26 +10,30 @@ import styles from './styles';
 import CommonServices from '../../services/common';
 import Table, { Section, BioCell, KeyValueCell } from 'react-native-js-tableview';
 
-export default function ListTrxVa({ navigation, route }) {
+export default function ListTrxVaDetail({ navigation, route }) {
   const {t} = useTranslation();
   const {colors} = useTheme();
   const dispatch = useDispatch();
   const notification = useSelector(notificationSelect);
   const [refreshing, setRefresh] = useState(false);
   const item = route.params?.item;
-  const [trxVa, setTrxVa] = useState([]);
+  const [trxVaDetail, setTrxVaDetail] = useState({});
+  const [trxVaDetailList, setTrxVaDetailList] = useState([]);
   
   const initPage = async () => {
-    fetchTrxVa();
+    fetchTrxVaDetail();
   };
 
-  const fetchTrxVa = async () => {
+  const fetchTrxVaDetail = async () => {
     let params = {}
-    let response = await CommonServices.callApi('api/va/list', 'GET', params);
+    let response = await CommonServices.callApi('api/va/detail/' + item.transactionId, 'GET', params);
+    console.log(response.data.detail);
     if (response.status === 'success') {
-      setTrxVa(response.data.data);
+      setTrxVaDetail(response.data.detail);
+      setTrxVaDetailList(response.data.list.data);
     } else {
-      setTrxVa([]);
+      setTrxVaDetail('');
+      setTrxVaDetailList([]);
     }
   }
 
@@ -53,53 +57,44 @@ export default function ListTrxVa({ navigation, route }) {
     });
   }
 
+  const rupiah = (number) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR"
+    }).format(number);
+  } 
+
   /**
    * render Content list
    */
+
+  const renderDetailContent = () => {
+    const myData = [];
+    for (let i = 0; i < trxVaDetailList?.length; i++) {
+      myData.push(
+        <Section header={''} footer={''}>
+          <KeyValueCell title='Amount' value={rupiah(trxVaDetailList[i]?.amount?.split('.')[0])} />
+          <KeyValueCell title='Time' value={trxVaDetailList[i]?.timestamp} />
+        </Section>
+      );
+    }
+
+    return myData;
+  }
+  
   const renderContent = () => {
-    if (trxVa.length > 0) {
-      return (
-        <FlatList
-          contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 10 }}
-          refreshControl={
-            <RefreshControl
-              colors={[colors.primary]}
-              tintColor={colors.primary}
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-            />
-          }
-          data={trxVa}
-          renderItem={({ item, index }) => (
-            <TouchableOpacity onPress={ () => {
-              onDetailVa(item.transaction_id)
-            }}>
-              <Table style={styles.container} accentColor='#4DB6AC' scrollable={true}>
-                <Section header={item.transaction_id} footer={item.timestamp.created}>
-                  <BioCell title={item.konsumen.nama} subtitle={item.konsumen.nik} />
-                  <KeyValueCell title='No VA' value={item.va_number} />
-                </Section>
-              </Table>
-            </TouchableOpacity>
-          )}
-        />
-      );
-    }
-    if (trxVa?.length == 0) {
-      return (
-        <View style={styles.loadingContent}>
-          <View style={{alignItems: 'center'}}>
-            <Icon
-              name="frown-open"
-              size={18}
-              color={colors.text}
-              style={{marginBottom: 4}}
-            />
-            <Text>{t('data_not_found')}</Text>
-          </View>
-        </View>
-      );
-    }
+    return (
+      <Table style={styles.container} accentColor='#4DB6AC' scrollable={true}>
+        <Section header={trxVaDetail?.transaction_id} footer={''}>
+          <BioCell title={trxVaDetail?.konsumen?.nama} subtitle={trxVaDetail?.konsumen?.nik} />
+          <KeyValueCell title='Phone' value={trxVaDetail?.konsumen?.phone} />
+          <KeyValueCell title='Email' value={trxVaDetail?.konsumen?.email} />
+          <KeyValueCell title='No VA' value={trxVaDetail?.va_number} />
+          <KeyValueCell title='Jumlah Total ' value={rupiah(trxVaDetail?.total_amount?.split('.')[0])} />
+        </Section>
+        {renderDetailContent()}
+      </Table>
+    );
   };
 
   useEffect(() => {
@@ -109,7 +104,7 @@ export default function ListTrxVa({ navigation, route }) {
   return (
     <View style={{flex: 1}}>
       <Header
-        title={item.judul}
+        title={'Detail Transaksi ' + item.transactionId}
         renderLeft={() => {
           return <Icon name="arrow-left" size={20} color={colors.primary} />;
         }}
