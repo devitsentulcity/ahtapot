@@ -328,21 +328,37 @@ export default function ListTypeCluster({navigation, route}) {
           <View style={{ paddingHorizontal: 20 }}>
             {listType?.map?.(item => {
               return (
-                <ListItem
-                  key={item.id}
-                  small
-                  image={item.image}
-                  title={item.id}
-                  subtitle={item.name}
-                  location={'Stok unit : ' + item.unit_total}
-                  style={{ marginBottom: 15 }}
-                  onPress={() => {
-                    navigation.navigate('ProductDetail', {
-                      item: item,
-                      id: codeCluster,
-                    });
-                  }}
-                />
+                user ? 
+                  <ListItem
+                    key={item.id}
+                    small
+                    image={item.image}
+                    title={item.id}
+                    subtitle={item.name}
+                    location={'Stok unit : ' + item.unit_total}
+                    style={{ marginBottom: 15 }}
+                    onPress={() => {
+                      navigation.navigate('ProductDetail', {
+                        item: item,
+                        id: codeCluster,
+                      });
+                    }}
+                  />
+                  : <ListItem
+                    key={item.id}
+                    small
+                    image={item.image}
+                    title={item.id}
+                    subtitle={item.name}
+                    location={'login untuk mengetahui stok'}
+                    style={{ marginBottom: 15 }}
+                    onPress={() => {
+                      navigation.navigate('ProductDetail', {
+                        item: item,
+                        id: codeCluster,
+                      });
+                    }}
+                  />
               );
             })}
           </View>

@@ -81,7 +81,8 @@ export default function List({navigation, route}) {
       cluster: idCluster,
       tipe: item.id
     }
-    let response = await CommonServices.callApi('/pub/unitlookup', 'POST', params);
+    console.log(params);
+    let response = await CommonServices.callApi('/api/unitlookup', 'POST', params);
     if (response.status === 'success') {
       setListTipe(response.data.list.data);
       setClusterData(response.data.cluster);
@@ -491,11 +492,17 @@ export default function List({navigation, route}) {
   };
 
   const onFormBooking = item => {
-    navigation.navigate('FormBooking', {
-      item: item,
-      cluster: clusterData,
-      tipe: tipeData
+    navigation.navigate('DataUnit', {
+      item: item
     });
+
+    //console.log(item);
+
+    // navigation.navigate('FormBooking', {
+    //   item: item,
+    //   cluster: clusterData,
+    //   tipe: tipeData
+    // });
   };
 
   /**
@@ -542,10 +549,9 @@ export default function List({navigation, route}) {
               key={'block'}
               keyExtractor={(item, index) => `block ${index}`}
               renderItem={({item, index}) => (
-                user ? 
                 <ListItem
                   block
-                  image={item.image?.full}
+                  image={item.image}
                   title={item.name}
                   subtitle={item.name}
                   location={item.name}
@@ -553,15 +559,6 @@ export default function List({navigation, route}) {
                   status={''}
                   onPress={() => onFormBooking(item)}
                 />
-                  : <ListItem
-                    block
-                    image={item.image?.full}
-                    title={item.name}
-                    subtitle={item.name}
-                    location={item.name}
-                    phone={''}
-                    status={''}
-                  />
               )}
             />
             <Animated.View
@@ -618,10 +615,9 @@ export default function List({navigation, route}) {
               key={'gird'}
               keyExtractor={(item, index) => `gird ${index}`}
               renderItem={({item, index}) => (
-                user ?
                 <ListItem
                   grid
-                  image={item.image?.full}
+                  image={item.image}
                   title={item.name}
                   subtitle={item.name}
                   location={item.name}
@@ -633,19 +629,6 @@ export default function List({navigation, route}) {
                   }}
                   onPress={() => onFormBooking(item)}
                 />
-                  : <ListItem
-                    grid
-                    image={item.image?.full}
-                    title={item.name}
-                    subtitle={item.name}
-                    location={item.name}
-                    phone={item.name}
-                    status={''}
-                    style={{
-                      marginLeft: 15,
-                      marginBottom: 15,
-                    }}
-                  />
               )}
             />
             <Animated.View
@@ -700,10 +683,9 @@ export default function List({navigation, route}) {
               key={'list'}
               keyExtractor={(item, index) => `list ${index}`}
               renderItem={({item, index}) => (
-                user ?
                 <ListItemUnit
                   list
-                  image={item.image?.full}
+                  image={item.image}
                   title={item.name}
                   subtitle={item.name}
                   location={item.name}
@@ -717,21 +699,6 @@ export default function List({navigation, route}) {
                   }}
                   onPress={() => onFormBooking(item)}
                 />
-                  : <ListItemUnit
-                    list
-                    image={item.image?.full}
-                    title={item.name}
-                    subtitle={item.name}
-                    location={item.name}
-                    phone={item.name}
-                    lt={item.size.land}
-                    lb={item.size.building}
-                    posisi={''}
-                    status={''}
-                    style={{
-                      marginBottom: 15,
-                    }}
-                  />
               )}
             />
             <Animated.View
@@ -786,7 +753,7 @@ export default function List({navigation, route}) {
               renderItem={({item, index}) => (
                 <ListItem
                   block
-                  image={item.image?.full}
+                  image={item.image}
                   title={item.title}
                   subtitle={item.subtitle}
                   location={item.address}

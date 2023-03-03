@@ -53,6 +53,7 @@ import ListAllCluster from '../screens/ListAllCluster';
 import ListTrxVa from '../screens/ListTrxVa';
 import ListTrxVaDetail from '../screens/ListTrxVaDetail';
 import ListTypeCluster from '../screens/ListTypeCLuster';
+import DataUnit from '../screens/DataUnit';
 
 const MainStack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -130,6 +131,7 @@ export default function Main() {
       <MainStack.Screen name="ListTrxVa" component={ListTrxVa} />
       <MainStack.Screen name="ListTrxVaDetail" component={ListTrxVaDetail} />
       <MainStack.Screen name="ListTypeCluster" component={ListTypeCluster} />
+      <MainStack.Screen name="DataUnit" component={DataUnit} />
     </MainStack.Navigator>
   );
 }

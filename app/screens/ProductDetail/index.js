@@ -72,10 +72,13 @@ export default function ProductDetail({navigation, route}) {
     }
   }
   const onUnitDetail = () => {
-    navigation.navigate('ListType', {
-      item: item,
-      id: idCluster
-    });
+    if (user){
+      navigation.navigate('ListType', {
+        item: item,
+        id: idCluster
+      });
+    }
+    else {}
   };
 
   const onMessage = (data) => {

@@ -55,8 +55,6 @@ export default function ProfileEdit({ navigation, route }) {
   });
   const win = Dimensions.get('window');
   const item = route.params?.item;
-  const cluster = route.params?.cluster;
-  const tipe = route.params?.tipe;
 
   const [loading, setLoading] = useState(false);
   const [date, setDate] = useState(''); 
@@ -217,7 +215,7 @@ export default function ProfileEdit({ navigation, route }) {
                 </Text>
               </View>
               <TextInput
-                value={cluster.name}
+                value={item?.cluster}
                 editable={false}
               />
               <View style={styles.contentTitle}>
@@ -226,7 +224,7 @@ export default function ProfileEdit({ navigation, route }) {
                 </Text>
               </View>
               <TextInput
-                value={tipe.id}
+                value={item?.blocktype}
                 editable={false}
               />
               <View style={styles.contentTitle}>
@@ -235,7 +233,7 @@ export default function ProfileEdit({ navigation, route }) {
                 </Text>
               </View>
               <TextInput
-                value={item.id}
+                value={item?.blockcode}
                 editable={false}
               />
               <View style={styles.contentTitle}>
@@ -244,7 +242,7 @@ export default function ProfileEdit({ navigation, route }) {
                 </Text>
               </View>
               <TextInput
-                value={item.size.building + '/' + item.size.land}
+                value={item?.lblt}
                 editable={false}
               />
               <View style={styles.contentTitle}>
