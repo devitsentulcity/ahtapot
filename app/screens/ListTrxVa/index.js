@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { RefreshControl, View, FlatList, Alert, TouchableOpacity, StyleSheet } from 'react-native';
+import { RefreshControl, View, FlatList, Alert, TouchableOpacity, StyleSheet, LogBox } from 'react-native';
 import {BaseStyle, useTheme} from '@config';
 import {useTranslation} from 'react-i18next';
 import { Header, SafeAreaView, Icon, Text } from '@components';
@@ -9,7 +9,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import styles from './styles';
 import CommonServices from '../../services/common';
 import Table, { Section, BioCell, KeyValueCell } from 'react-native-js-tableview';
-
+LogBox.ignoreAllLogs();
 export default function ListTrxVa({ navigation, route }) {
   const {t} = useTranslation();
   const {colors} = useTheme();

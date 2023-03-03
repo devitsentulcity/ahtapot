@@ -72,6 +72,7 @@ export default function ListAllCluster({navigation, route}) {
 
   const fecthCLuster = async () => {
     let params = {
+      cluster_category: item?.cluster_category,
       cluster: '',
       tipe: ''
     }
@@ -112,16 +113,6 @@ export default function ListAllCluster({navigation, route}) {
   const onRefresh = () => {
     setRefreshing(true);
     loadData();
-  };
-
-  /**
-   * export viewport
-   * @param {*} percentage
-   * @returns
-   */
-  const getViewPort = percentage => {
-    const value = (percentage * viewportWidth) / 100;
-    return Math.round(value);
   };
 
   /**
@@ -174,41 +165,6 @@ export default function ListAllCluster({navigation, route}) {
   };
 
   /**
-   * onChange view style
-   *
-   */
-  const onChangeMapView = () => {
-    Utils.enableExperimental();
-    if (!mapView) {
-      setRegion({
-        latitude: list?.data?.[0].location.latitude,
-        longitude: list?.data?.[0].location.longitude,
-        latitudeDelta: 0.009,
-        longitudeDelta: 0.004,
-      });
-    }
-    setMapView(!mapView);
-  };
-
-  /**
-   * on Select location map view
-   * @param {*} location
-   * @returns
-   */
-  const onSelectLocation = location => {
-    for (let index = 0; index < list?.data?.length; index++) {
-      const element = list?.data[index];
-      if (
-        element.location.latitude == location.latitude &&
-        element.location.longitude == location.longitude
-      ) {
-        sliderRef.current.snapToItem(index);
-        return;
-      }
-    }
-  };
-
-  /**
    * on Review action
    */
   const onTypeDetail = item => {
@@ -216,24 +172,6 @@ export default function ListAllCluster({navigation, route}) {
       item: item,
       id: idCluster,
     });
-  };
-
-  /**
-   * on Review action
-   */
-  const onReview = item => {
-    if (user) {
-      navigation.navigate('Review');
-    } else {
-      navigation.navigate({
-        name: 'SignIn',
-        params: {
-          success: () => {
-            navigation.navigate('Review');
-          },
-        },
-      });
-    }
   };
 
   /**
@@ -529,15 +467,15 @@ export default function ListAllCluster({navigation, route}) {
               renderItem={({item, index}) => (
                 <ListItem
                   block
-                  image={item.image?.full}
+                  image={item.image}
                   title={item.name}
-                  subtitle={item.name}
-                  location={item.name}
+                  subtitle={item.category}
+                  location={'Total unit ' + item.unit_total}
                   phone={''}
                   status={''}
                   favorite={isFavorite(item)}
                   onPress={() => {
-                    navigation.navigate('List', {
+                    navigation.navigate('ListTypeCluster', {
                       item: {
                         KawasanCode: item.id,
                         KawasanName: item.name
@@ -605,9 +543,9 @@ export default function ListAllCluster({navigation, route}) {
                   grid
                   image={item.image?.full}
                   title={item.name}
-                  subtitle={item.name}
-                  location={item.name}
-                  phone={item.name}
+                  subtitle={item.category}
+                  location={'Total unit ' + item.unit_total}
+                  phone={''}
                   status={''}
                   favorite={isFavorite(item)}
                   style={{
@@ -615,7 +553,7 @@ export default function ListAllCluster({navigation, route}) {
                     marginBottom: 15,
                   }}
                   onPress={() => {
-                    navigation.navigate('List', {
+                    navigation.navigate('ListTypeCluster', {
                       item: {
                         KawasanCode: item.id,
                         KawasanName: item.name
@@ -679,18 +617,18 @@ export default function ListAllCluster({navigation, route}) {
               renderItem={({item, index}) => (
                 <ListItem
                   list
-                  image={item.image?.full}
+                  image={item.image}
                   title={item.name}
-                  subtitle={item.name}
-                  location={item.name}
-                  phone={item.name}
+                  subtitle={item.category}
+                  location={'Total unit ' + item.unit_total}
+                  phone={''}
                   status={''}
                   favorite={isFavorite(item)}
                   style={{
                     marginBottom: 15,
                   }}
                   onPress={() => {
-                    navigation.navigate('List', { item: {
+                    navigation.navigate('ListTypeCluster', { item: {
                       KawasanCode: item.id,
                       KawasanName: item.name
                     }, });
@@ -750,7 +688,7 @@ export default function ListAllCluster({navigation, route}) {
               renderItem={({item, index}) => (
                 <ListItem
                   block
-                  image={item.image?.full}
+                  image={item.image}
                   title={item.title}
                   subtitle={item.subtitle}
                   location={item.address}
@@ -760,7 +698,7 @@ export default function ListAllCluster({navigation, route}) {
                   numReviews={item.numReviews}
                   favorite={isFavorite(item)}
                   onPress={() => {
-                    navigation.navigate('List', {
+                    navigation.navigate('ListTypeCluster', {
                       item: {
                         KawasanCode: item.id,
                         KawasanName: item.name
@@ -816,6 +754,7 @@ export default function ListAllCluster({navigation, route}) {
 
   useEffect(() => {
     initPage();
+    console.log(item);
   }, []);
 
   return (
@@ -840,9 +779,6 @@ export default function ListAllCluster({navigation, route}) {
         }}
         onPressRightSecond={() => {
           navigation.navigate('SearchHistory');
-        }}
-        onPressRight={() => {
-          onChangeMapView();
         }}
       />
       <SafeAreaView style={BaseStyle.safeAreaView} edges={['right', 'left']}>

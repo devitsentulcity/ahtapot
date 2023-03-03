@@ -4,7 +4,6 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  Alert,
   TouchableOpacity,
   Dimensions,
   Image,
@@ -31,8 +30,7 @@ import SelectDropdown from 'react-native-select-dropdown'
 import moment from 'moment';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'react-native-image-picker';
-import { messengerActions } from '@actions';
-import { Cell, Section, TableView } from 'react-native-tableview-simple';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const options = {
   title: 'Select Avatar',
@@ -62,10 +60,6 @@ export default function ProfileEdit({ navigation, route }) {
 
   const [loading, setLoading] = useState(false);
   const [date, setDate] = useState(''); 
-  const tcp = ['Tunai Keras','KPR','Tunai Bertahap'];
-  const statusPerkawinan = ["Kawin", "Belum Kawin", "Cerai"]
-  const pekerjaan = ["Kawyawan Stasta","PNS","POLRI","TNI","GURU","WIRASWASTA","DOSEN","KARWAYAN BUMN","IBU RUMAH TANGGA","DOKTER","PELAUT","PILOT"]
-
   const [tanggal, settanggal] = useState(moment().format("DD/MM/YYYY"));
   const [namaKonsumen, setnamaKonsumen] = useState('');
   const [tabShow, SettabShow] = useState('1');
@@ -76,7 +70,39 @@ export default function ProfileEdit({ navigation, route }) {
   const [nameImgNPWP, setnameImgNPWP] = useState(null);
   const [uriImgDokumenLain, seturiImgDokumenLain] = useState(null);
   const [nameImgDokumenLain, setnameImgDokumenLain] = useState(null);
-  
+
+  const[openTcp, setOpenTCP] = useState(false);
+  const [tcp, setTcp] = useState(null);
+  const [itemsTcp, setItemsTcp] = useState([
+    { label: 'Tunai Keras', value: '1' },
+    { label: 'KPR', value: '2' },
+    { label: 'Tunai Bertahap', value: '3' }
+  ]);
+
+  const [openStatus, setOpenStatus] = useState(false);
+  const [status, setStatus] = useState(null);
+  const [itemsStatus, setItemsStatus] = useState([
+    { label: 'Kawin', value: '1' },
+    { label: 'Belum Kawin', value: '2' },
+    { label: 'Cerai', value: '3' },
+  ]);
+
+  const [openPekerjaan, setOpenPekerjaan] = useState(false);
+  const [pekerjaan, setPekerjaan] = useState(null);
+  const [itemsPekerjaan, setItemsPekerjaan] = useState([
+    { label: 'Karyawan Swasta', value: '1' },
+    { label: 'PNS', value: '2' },
+    { label: 'POLRI', value: '3' }, 
+    { label: 'TNI', value: '4' }, 
+    { label: 'GURU', value: '5' },
+    { label: 'WIRASWASTA', value: '6' },
+    { label: 'DOSEN', value: '7' },
+    { label: 'KARWAYAN BUMN', value: '8' },
+    { label: 'IBU RUMAH TANGGA', value: '9' },
+    { label: 'DOKTER', value: '10' },
+    { label: 'PELAUT', value: '11' },
+    { label: 'PILOT', value: '12' },
+  ]);
   
   launchImageLibraryKTP = () => {
     let options = {
@@ -147,12 +173,6 @@ export default function ProfileEdit({ navigation, route }) {
 
   }
 
-  useEffect(() => {
-    console.log("ITEMNYAAAAA ", item);
-    console.log("CLUSTERNYAAAAA ", cluster);
-    console.log("TIPEEEEEENYAAAAA ", tipe);
-  }, []);
-
   return (
     <View style={{flex: 1}}>
       <Header
@@ -190,7 +210,7 @@ export default function ProfileEdit({ navigation, route }) {
             </View>
           </ScrollView>
           {tabShow == '1' ?
-            <ScrollView contentContainerStyle={styles.contain}>
+            <ScrollView estedScrollEnabled={true} contentContainerStyle={styles.contain}>
               <View style={styles.contentTitle}>
                 <Text headline semibold>
                   Cluster
@@ -240,7 +260,6 @@ export default function ProfileEdit({ navigation, route }) {
                 maskAutoComplete
                 onChangeText={setDate}
                 maxLength={undefined}
-                // editable={false}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -255,27 +274,17 @@ export default function ProfileEdit({ navigation, route }) {
                   Pilih TCP
                 </Text>
               </View>
-              <SelectDropdown
-                data={tcp}
-                defaultButtonText={'Pilih CTP'}
-                onSelect={(selectedItem, key) => {
-                  console.log(selectedItem, key)
+              <DropDownPicker
+                open={openTcp}
+                value={tcp}
+                items={itemsTcp}
+                setOpen={setOpenTCP}
+                setValue={setTcp}
+                setItems={setItemsTcp}
+                listMode="SCROLLVIEW"
+                onChangeValue={(text) => {
+                  console.log(text)
                 }}
-                // buttonTextAfterSelection={(selectedItem, index) => {
-                //   return selectedItem
-                // }}
-                // rowTextForSelection={(item, index) => {
-                //   return item
-                // }}
-                buttonStyle={styles.dropdown2BtnStyle}
-                buttonTextStyle={styles.dropdown2BtnTxtStyle}
-                renderDropdownIcon={isOpened => {
-                  return <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#000'} size={18} />;
-                }}
-                dropdownIconPosition={'right'}
-                dropdownStyle={styles.dropdown2DropdownStyle}
-                rowStyle={styles.dropdown2RowStyle}
-                rowTextStyle={styles.dropdown2RowTxtStyle}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -312,6 +321,7 @@ export default function ProfileEdit({ navigation, route }) {
                 placeholder={'Alamat KTP'}
                 value={''}
               />
+              
               <View style={styles.contentTitle}>
                 <Text headline semibold>
                   Nama Kantor/Instansi
@@ -368,57 +378,31 @@ export default function ProfileEdit({ navigation, route }) {
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
-                  Status Perkawinan
-                </Text>
-              </View>
-              <SelectDropdown
-                data={statusPerkawinan}
-                defaultButtonText={'Pilih Status Perkawinan'}
-                onSelect={(selectedItem, index) => {
-                  // console.log(selectedItem, index)
-                }}
-                buttonTextAfterSelection={(selectedItem, index) => {
-                  return selectedItem
-                }}
-                rowTextForSelection={(item, index) => {
-                  return item
-                }}
-                buttonStyle={styles.dropdown2BtnStyle}
-                buttonTextStyle={styles.dropdown2BtnTxtStyle}
-                renderDropdownIcon={isOpened => {
-                  return <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#FFF'} size={18} />;
-                }}
-                dropdownIconPosition={'right'}
-                dropdownStyle={styles.dropdown2DropdownStyle}
-                rowStyle={styles.dropdown2RowStyle}
-                rowTextStyle={styles.dropdown2RowTxtStyle}
-              />
-              <View style={styles.contentTitle}>
-                <Text headline semibold>
                   Pekerjaan
                 </Text>
               </View>
-              <SelectDropdown
-                data={pekerjaan}
-                defaultButtonText={'Pilih Pekerjaan'}
-                onSelect={(selectedItem, index) => {
-                  // console.log(selectedItem, index)
-                }}
-                buttonTextAfterSelection={(selectedItem, index) => {
-                  return selectedItem
-                }}
-                rowTextForSelection={(item, index) => {
-                  return item
-                }}
-                buttonStyle={styles.dropdown2BtnStyle}
-                buttonTextStyle={styles.dropdown2BtnTxtStyle}
-                renderDropdownIcon={isOpened => {
-                  return <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#FFF'} size={18} />;
-                }}
-                dropdownIconPosition={'right'}
-                dropdownStyle={styles.dropdown2DropdownStyle}
-                rowStyle={styles.dropdown2RowStyle}
-                rowTextStyle={styles.dropdown2RowTxtStyle}
+              <DropDownPicker
+                open={openPekerjaan}
+                value={pekerjaan}
+                items={itemsPekerjaan}
+                setOpen={setOpenPekerjaan}
+                setValue={setPekerjaan}
+                setItems={setItemsPekerjaan}
+                listMode="SCROLLVIEW"
+              />
+              <View style={styles.contentTitle}>
+                <Text headline semibold>
+                  Status Perkawinan
+                </Text>
+              </View>
+              <DropDownPicker
+                open={openStatus}
+                value={status}
+                items={itemsStatus}
+                setOpen={setOpenStatus}
+                setValue={setStatus}
+                setItems={setItemsStatus}
+                listMode="SCROLLVIEW"
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>

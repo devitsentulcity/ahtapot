@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { RefreshControl, View, FlatList, Alert, TouchableOpacity, StyleSheet } from 'react-native';
+import { RefreshControl, View, FlatList, Alert, TouchableOpacity, StyleSheet, LogBox } from 'react-native';
 import {BaseStyle, useTheme} from '@config';
 import {useTranslation} from 'react-i18next';
 import { Header, SafeAreaView, Icon, Text } from '@components';
@@ -9,7 +9,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import styles from './styles';
 import CommonServices from '../../services/common';
 import Table, { Section, BioCell, KeyValueCell } from 'react-native-js-tableview';
-
+LogBox.ignoreAllLogs();
 export default function ListTrxVaDetail({ navigation, route }) {
   const {t} = useTranslation();
   const {colors} = useTheme();
@@ -72,13 +72,12 @@ export default function ListTrxVaDetail({ navigation, route }) {
     const myData = [];
     for (let i = 0; i < trxVaDetailList?.length; i++) {
       myData.push(
-        <Section header={''} footer={''}>
+        <Section key={i} header={''} footer={''}>
           <KeyValueCell title='Amount' value={rupiah(trxVaDetailList[i]?.amount?.split('.')[0])} />
           <KeyValueCell title='Time' value={trxVaDetailList[i]?.timestamp} />
         </Section>
       );
     }
-
     return myData;
   }
   
@@ -104,7 +103,7 @@ export default function ListTrxVaDetail({ navigation, route }) {
   return (
     <View style={{flex: 1}}>
       <Header
-        title={'Detail Transaksi ' + item.transactionId}
+        title={'Detail'}
         renderLeft={() => {
           return <Icon name="arrow-left" size={20} color={colors.primary} />;
         }}

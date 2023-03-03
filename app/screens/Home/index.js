@@ -146,8 +146,9 @@ export default function Home({navigation}) {
             key={'categoryResidential'}
             style={[styles.serviceItem, {width: Utils.getWidthDevice() * 0.24}]}
             onPress={() => {
-              const filter = new FilterModel();
-              navigation.navigate('List', {filter});
+              navigation.navigate('ListAllCluster', { item : {
+                cluster_category: 'Residential'
+              } });
             }}>
             <View
               style={[styles.serviceCircleIcon, {backgroundColor: '#e33222'}]}>
@@ -166,8 +167,11 @@ export default function Home({navigation}) {
             key={'categoryApartemen'}
             style={[styles.serviceItem, {width: Utils.getWidthDevice() * 0.24}]}
             onPress={() => {
-              const filter = new FilterModel();
-              navigation.navigate('List', {filter});
+              navigation.navigate('ListAllCluster', {
+                item: {
+                  cluster_category: 'Apartemen'
+                }
+              });
             }}>
             <View
               style={[styles.serviceCircleIcon, {backgroundColor: '#ee9836'}]}>
@@ -186,8 +190,11 @@ export default function Home({navigation}) {
             key={'categoryRuko'}
             style={[styles.serviceItem, {width: Utils.getWidthDevice() * 0.24}]}
             onPress={() => {
-              const filter = new FilterModel();
-              navigation.navigate('List', {filter});
+              navigation.navigate('ListAllCluster', {
+                item: {
+                  cluster_category: 'Commercial'
+                }
+              });
             }}>
             <View
               style={[styles.serviceCircleIcon, {backgroundColor: '#1231ee'}]}>
@@ -206,8 +213,11 @@ export default function Home({navigation}) {
             key={'categoryKavling'}
             style={[styles.serviceItem, {width: Utils.getWidthDevice() * 0.24}]}
             onPress={() => {
-              const filter = new FilterModel();
-              navigation.navigate('List', {filter});
+              navigation.navigate('ListAllCluster', {
+                item: {
+                  cluster_category: 'Kavling'
+                }
+              });
             }}>
             <View
               style={[styles.serviceCircleIcon, {backgroundColor: '#7bc33b'}]}>
@@ -350,9 +360,9 @@ export default function Home({navigation}) {
                 style={[styles.popularItem, {marginLeft: 15}]}
                 image={item.gambar}
                 onPress={() => {
-                  navigation.navigate('List', { item: item, });
+                  navigation.navigate('ListTypeCluster', { item: item, });
                 }}>
-                <Text headline blackColor semibold>
+                <Text style={{ textTransform: 'capitalize' }} subhead blackColor semibold>
                   {item.KawasanName}
                 </Text>
               </Card>

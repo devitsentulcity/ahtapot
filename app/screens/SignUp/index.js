@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react';
-import { View, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import { View, KeyboardAvoidingView, Platform, Alert, LogBox } from 'react-native';
 import { BaseStyle, useTheme } from '@config';
 import { Header, SafeAreaView, Icon, Button, TextInput } from '@components';
 import styles from './styles';
 import { useTranslation } from 'react-i18next';
 import CommonServices from '../../services/common';
 import PhoneInput from "react-native-phone-number-input";
-
+LogBox.ignoreAllLogs();
 export default function SignUp({ navigation, route }) {
   const { colors } = useTheme();
   const { t } = useTranslation();

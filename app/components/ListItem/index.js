@@ -70,9 +70,6 @@ export default function ListItem(props) {
       <View style={style}>
         <TouchableOpacity onPress={onPress}>
           <Image source={{uri: image}} style={styles.blockImage} />
-          {/* <Tag status style={styles.tagStatus}>
-            {t(status)}
-          </Tag> */}
           {favorite ? (
             <Icon
               solid
@@ -95,26 +92,7 @@ export default function ListItem(props) {
                 flexDirection: 'row',
                 alignItems: 'center',
               }}>
-              {/* <Tag rate onPress={onPressTag}>
-                {rate}
-              </Tag> */}
-              {/* <View style={{marginLeft: 10}}>
-                <Text caption1 whiteColor semibold style={{marginBottom: 5}}>
-                  {t('rate')}
-                </Text>
-                <StarRating
-                  disabled={true}
-                  starSize={10}
-                  maxStars={5}
-                  rating={rate}
-                  selectedStar={onPressTag}
-                  fullStarColor={BaseColor.yellowColor}
-                />
-              </View> */}
             </View>
-            {/* <Text caption1 semibold whiteColor style={{marginTop: 5}}>
-              {numReviews} {t('feedback')}
-            </Text> */}
           </View>
         </TouchableOpacity>
         <View
@@ -129,13 +107,11 @@ export default function ListItem(props) {
             {title}
           </Text>
           <View style={styles.blockLineMap}>
-            {/* <Icon name="map-marker-alt" color={colors.primaryLight} size={12} /> */}
             <Text caption1 grayColor style={{paddingHorizontal: 4}}>
               {location}
             </Text>
           </View>
           <View style={styles.blockLinePhone}>
-            {/* <Icon name="phone" color={colors.primaryLight} size={12} /> */}
             <Text caption1 grayColor style={{paddingHorizontal: 4}}>
               {phone}
             </Text>
@@ -178,9 +154,6 @@ export default function ListItem(props) {
       <TouchableOpacity style={[styles.listContent, style]} onPress={onPress}>
         <View onPress={onPress}>
           <Image source={image} style={styles.listImage} />
-          {/* <Tag status style={styles.listTagStatus}>
-            {t(status)}
-          </Tag> */}
         </View>
         <View style={styles.listContentRight}>
           <Text title2 semibold style={{marginTop: 5}}>
@@ -189,41 +162,12 @@ export default function ListItem(props) {
           <Text headline semibold grayColor numberOfLines={1}>
             {subtitle}
           </Text>
-          {/* <View style={styles.lineRate}>
-            <Tag onPress={onPressTag} rateSmall style={{marginRight: 5}}>
-              {rate}
-            </Tag>
-            <StarRating
-              disabled={true}
-              starSize={10}
-              maxStars={5}
-              rating={rate}
-              selectedStar={rating => {}}
-              fullStarColor={BaseColor.yellowColor}
-            />
-          </View> */}
           <Text caption1 grayColor style={{marginTop: 10}}>
             {location}
           </Text>
           <Text caption1 grayColor style={{marginTop: 5}}>
             {phone}
           </Text>
-          {/* {favorite ? (
-            <Icon
-              name="heart"
-              color={colors.primaryLight}
-              solid
-              size={18}
-              style={styles.iconListLike}
-            />
-          ) : (
-            <Icon
-              name="heart"
-              color={colors.primaryLight}
-              size={18}
-              style={styles.iconListLike}
-            />
-          )} */}
         </View>
       </TouchableOpacity>
     );
@@ -260,25 +204,6 @@ export default function ListItem(props) {
       <TouchableOpacity style={[styles.girdContent, style]} onPress={onPress}>
         <View>
           <Image source={image} style={styles.girdImage} />
-          {/* <Tag status style={styles.tagGirdStatus}>
-            {t(status)}
-          </Tag> */}
-          {/* {favorite ? (
-            <Icon
-              name="heart"
-              color={colors.primaryLight}
-              solid
-              size={18}
-              style={styles.iconGirdLike}
-            />
-          ) : (
-            <Icon
-              name="heart"
-              color={colors.primaryLight}
-              size={18}
-              style={styles.iconGirdLike}
-            />
-          )} */}
         </View>
         <Text subhead semibold style={{marginTop: 5}} numberOfLines={1}>
           {title}
@@ -291,24 +216,6 @@ export default function ListItem(props) {
           numberOfLines={1}>
           {subtitle}
         </Text>
-        {/* <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginTop: 5,
-          }}>
-          <Tag onPress={onPressTag} rateSmall style={{marginRight: 5}}>
-            {rate}
-          </Tag>
-          <StarRating
-            disabled={true}
-            starSize={10}
-            maxStars={5}
-            rating={rate}
-            selectedStar={onPressTag}
-            fullStarColor={BaseColor.yellowColor}
-          />
-        </View> */}
         <Text caption2 grayColor style={{marginTop: 10}} numberOfLines={1}>
           {location}
         </Text>
@@ -355,19 +262,9 @@ export default function ListItem(props) {
           <Text footnote semibold grayColor style={{marginTop: 4}}>
             {subtitle}
           </Text>
-          {/* <View style={styles.smallContentRate}>
-            <Tag onPress={onPressTag} rateSmall style={{marginRight: 4}}>
-              {rate}
-            </Tag>
-            <StarRating
-              disabled={true}
-              starSize={10}
-              maxStars={5}
-              rating={rate}
-              selectedStar={onPressTag}
-              fullStarColor={BaseColor.yellowColor}
-            />
-          </View> */}
+          <Text footnote semibold grayColor style={{ marginTop: 4 }}>
+            {location}
+          </Text>
         </View>
         {enableAction && (
           <TouchableOpacity onPress={omPressMore} style={styles.moreButton}>

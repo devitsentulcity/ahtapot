@@ -29,6 +29,7 @@ import ProfileGroup from './ProfileGroup';
 import FoodListItem from './FoodListItem';
 import ModalFilter from './ModalFilter';
 import RangeSlider from './RangeSlider';
+import ImageSiteplan from './ImageSiteplan';
 
 export {
   TextInput,
@@ -62,4 +63,5 @@ export {
   FoodListItem,
   ModalFilter,
   RangeSlider,
+  ImageSiteplan,
 };

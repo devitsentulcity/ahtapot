@@ -4,6 +4,8 @@ import {
   ScrollView,
   Animated,
   Linking,
+  Dimensions,
+  Image,
 } from 'react-native';
 import {BaseColor, useTheme, BaseStyle} from '@config';
 import {
@@ -11,8 +13,9 @@ import {
   SafeAreaView,
   Icon,
   Text,
-  Image,
+  ImageSiteplan,
   Button,
+  ListItem,
 } from '@components';
 import {useTranslation} from 'react-i18next';
 import * as Utils from '@utils';
@@ -28,12 +31,12 @@ import styles from './styles';
 import CommonServices from '../../services/common';
 import { WebView } from 'react-native-webview';
 
-export default function ProductDetail({navigation, route}) {
+export default function ListTypeCluster({navigation, route}) {
+  const win = Dimensions.get('window');
   const {t} = useTranslation();
   const {colors} = useTheme();
   const dispatch = useDispatch();
   const wishlist = useSelector(wishlistSelect);
-  // const design = useSelector(designSelect);
   const item = route.params?.item;
   const idCluster = route.params?.id;
   const useGallery = !!route.params?.useGallery;
@@ -44,8 +47,9 @@ export default function ProductDetail({navigation, route}) {
   const [product, setProduct] = useState(null);
   const [heightHeader, setHeightHeader] = useState(Utils.heightHeader());
   const heightImageBanner = Utils.scaleWithPixel(250, 1);
-  const [clusterId, setClusterId] = useState('');
   const [cluster, setCluster] = useState('');
+  const [listType, setListType] = useState([]);
+  const [codeCluster, setCodeCluster] = useState('');
 
   useEffect(() => {
     setProduct(item);
@@ -61,22 +65,20 @@ export default function ProductDetail({navigation, route}) {
 
   const fecthTipe = async () => {
     let params = {
-      cluster: idCluster,
-      tipe: item.id
+      cluster_category: '',
+      cluster: item?.KawasanCode,
+      tipe: '',
+      unit: ''
     }
     let response = await CommonServices.callApi('/pub/unitlookup', 'POST', params);
     if (response.status === 'success') {
       setCluster(response.data.cluster);
+      setListType(response.data.list.data);
     } else {
-      setCluster([]);
+      setCluster('');
+      setListType([]);
     }
   }
-  const onUnitDetail = () => {
-    navigation.navigate('ListType', {
-      item: item,
-      id: idCluster
-    });
-  };
 
   const onMessage = (data) => {
     console.log(data.nativeEvent.data);
@@ -129,8 +131,8 @@ export default function ProductDetail({navigation, route}) {
             }),
           },
         ]}>
-        <Image
-          source={cluster.image}
+        <ImageSiteplan
+          source={cluster?.image}
           style={{width: '100%', height: '100%'}}
         />
         <Animated.View
@@ -254,35 +256,95 @@ export default function ProductDetail({navigation, route}) {
             }}>
             <View style={styles.lineSpace}>
               <Text title1 semibold>
-                {cluster.name}
+                {cluster?.name}
               </Text>
             </View>
           </View>
           <View
             style={[styles.contentDescription, {borderColor: colors.border}]}>
             <Text body2 style={{lineHeight: 20}}>
-              {cluster.description}
+              {cluster?.description}
             </Text>
+            <View style={{
+              flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              }}>
+              <View style={{ flex: 1, alignItems: 'center' }}>
+                <Button
+                  style={{ marginTop: 20, width: '90%'}}
+                  loading={loading}
+                  onPress={() => console.log('Price List')}>
+                  {'Price List'}
+                </Button>
+              </View>
+              <View style={{ flex: 1, alignItems: 'center' }}>
+                <Button
+                  style={{ marginTop: 20, width: '90%' }}
+                  loading={loading}
+                  onPress={() => console.log('Download Brochure')}>
+                  {'Brochure'}
+                </Button>
+              </View>
+            </View>
+            <View
+              style={{
+                alignItems: "center"
+              }}>
+              <Text
+                body2
+                semibold
+                style={{
+                  paddingTop: 20,
+                  paddingBottom: 30
+                }}>
+                {'Siteplan'}
+              </Text>
+              <Image
+                source={{ uri: cluster.siteplan }}
+                style={{
+                  resizeMode: 'contain',
+                  aspectRatio: 1,
+                  flex: 1,
+                  width: '100%',
+                  height: undefined,
+                  marginBottom: -50,
+                  marginTop: -50,
+                }}
+              />
+            </View>
           </View>
-          <View style={{width: '100%'}}>
-            <Button full style={{marginTop: 20}} onPress={onUnitDetail}>
-              Detail Unit
-            </Button>
-          </View>
-          <View style={{width: '100%'}}>
-            <Button full style={{marginTop: 20}}>
-              Brosur
-            </Button>
-          </View>
-          <View style={{width: '100%'}}>
-            <Button full style={{marginTop: 20}}>
-              Daftar Harga
-            </Button>
-          </View>
-          <View style={{width: '100%'}}>
-            <Button full style={{marginTop: 20}}>
-              Virtual Reality
-            </Button>
+          <Text
+            title3
+            semibold
+            style={{
+              paddingHorizontal: 20,
+              paddingBottom: 5,
+              paddingTop: 15,
+            }}>
+            {'Type'}
+          </Text>
+          <View style={{ paddingHorizontal: 20 }}>
+            {listType?.map?.(item => {
+              return (
+                <ListItem
+                  key={item.id}
+                  small
+                  image={item.image}
+                  title={item.id}
+                  subtitle={item.name}
+                  location={'Stok unit : ' + item.unit_total}
+                  style={{ marginBottom: 15 }}
+                  onPress={() => {
+                    navigation.navigate('ProductDetail', {
+                      item: item,
+                      id: codeCluster,
+                    });
+                  }}
+                />
+              );
+            })}
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -291,13 +353,14 @@ export default function ProductDetail({navigation, route}) {
 
   useEffect(() => {
     initPage();
+    setCodeCluster(item?.KawasanCode);
   }, []);
 
   return (
     <View style={{flex: 1}}>
       {renderBanner()}
       <Header
-        title={'Tipe : ' + item.name}
+        title={'Cluster : ' + item?.KawasanName}
         renderLeft={() => {
           return (
             <Icon

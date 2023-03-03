@@ -74,7 +74,7 @@ export default function List({navigation, route}) {
 
   const fecthType = async () => {
     let params = {
-      cluster: item.KawasanCode,
+      cluster: item?.KawasanCode,
       tipe: ''
     }
     let response = await CommonServices.callApi('/pub/unitlookup', 'POST', params);
@@ -793,13 +793,13 @@ export default function List({navigation, route}) {
 
   useEffect(() => {
     initPage();
-    setIdCluster(item.KawasanCode);
+    setIdCluster(item?.KawasanCode);
   }, []);
 
   return (
     <View style={{flex: 1}}>
       <Header
-        title={'Cluster ' + item.KawasanName}
+        title={'Cluster ' + item?.KawasanName}
         renderLeft={() => {
           return (
             <Icon
