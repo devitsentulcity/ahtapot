@@ -63,9 +63,7 @@ export default function Home({navigation}) {
   };
 
   const fetchCluster = async () => {
-    let params = {}
-    let response = await CommonServices.callApi('/pub/cluster', 'GET', params);
-    console.log(response.data);
+    let response = await CommonServices.callApi('/pub/cluster', 'GET');
     if (response.status === 'success') {
       setClusterList(response.data);
     } else {
@@ -87,14 +85,6 @@ export default function Home({navigation}) {
       .catch(err => {
         return false;
       });
-  };
-
-  /**
-   *
-   * onOpen ChooseBusiness
-   */
-  const onChooseBusiness = () => {
-    navigation.navigate('ChooseBusiness');
   };
 
   /**

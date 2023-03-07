@@ -13,6 +13,7 @@ export default StyleSheet.create({
     width: '100%',
     height: 32,
     justifyContent: 'center',
+    marginTop: 15
   },
   contain: {
     alignItems: 'center',

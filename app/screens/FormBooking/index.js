@@ -31,6 +31,9 @@ import moment from 'moment';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'react-native-image-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
+import RadioButtonRN from 'radio-buttons-react-native';
+import CommonServices from '../../services/common';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 const options = {
   title: 'Select Avatar',
@@ -55,13 +58,11 @@ export default function ProfileEdit({ navigation, route }) {
   });
   const win = Dimensions.get('window');
   const item = route.params?.item;
-
+  
   const [loading, setLoading] = useState(false);
-  const [date, setDate] = useState(''); 
+
   const [tanggal, settanggal] = useState(moment().format("DD/MM/YYYY"));
-  const [namaKonsumen, setnamaKonsumen] = useState('');
   const [tabShow, SettabShow] = useState('1');
-  const [State, SetState] = useState('');
   const [uriImgKTP, seturiImgKTP] = useState(null);
   const [nameImgKTP, setnameImgKTP] = useState(null);
   const [uriImgNPWP, seturiImgNPWP] = useState(null);
@@ -69,38 +70,114 @@ export default function ProfileEdit({ navigation, route }) {
   const [uriImgDokumenLain, seturiImgDokumenLain] = useState(null);
   const [nameImgDokumenLain, setnameImgDokumenLain] = useState(null);
 
-  const[openTcp, setOpenTCP] = useState(false);
-  const [tcp, setTcp] = useState(null);
   const [itemsTcp, setItemsTcp] = useState([
-    { label: 'Tunai Keras', value: '1' },
-    { label: 'KPR', value: '2' },
-    { label: 'Tunai Bertahap', value: '3' }
+    { label: 'Tunai Keras', value: 'T' },
+    { label: 'KPR', value: 'K' },
+    { label: 'Tunai Bertahap', value: 'I' }
   ]);
 
-  const [openStatus, setOpenStatus] = useState(false);
-  const [status, setStatus] = useState(null);
   const [itemsStatus, setItemsStatus] = useState([
-    { label: 'Kawin', value: '1' },
-    { label: 'Belum Kawin', value: '2' },
-    { label: 'Cerai', value: '3' },
+    { label: 'Kawin', value: 'Kawin' },
+    { label: 'Belum Kawin', value: 'Belum Kawin' },
+    { label: 'Cerai', value: 'Cerai' },
   ]);
 
   const [openPekerjaan, setOpenPekerjaan] = useState(false);
-  const [pekerjaan, setPekerjaan] = useState(null);
   const [itemsPekerjaan, setItemsPekerjaan] = useState([
-    { label: 'Karyawan Swasta', value: '1' },
-    { label: 'PNS', value: '2' },
-    { label: 'POLRI', value: '3' }, 
-    { label: 'TNI', value: '4' }, 
-    { label: 'GURU', value: '5' },
-    { label: 'WIRASWASTA', value: '6' },
-    { label: 'DOSEN', value: '7' },
-    { label: 'KARWAYAN BUMN', value: '8' },
-    { label: 'IBU RUMAH TANGGA', value: '9' },
-    { label: 'DOKTER', value: '10' },
-    { label: 'PELAUT', value: '11' },
-    { label: 'PILOT', value: '12' },
+    { label: 'Karyawan Swasta', value: 'Karyawan Swasta' },
+    { label: 'PNS', value: 'PNS' },
+    { label: 'POLRI', value: 'POLRI' }, 
+    { label: 'TNI', value: 'TNI' }, 
+    { label: 'GURU', value: 'GURU' },
+    { label: 'WIRASWASTA', value: 'WIRASWASTA' },
+    { label: 'DOSEN', value: 'DOSEN' },
+    { label: 'KARWAYAN BUMN', value: 'KARWAYAN BUMN' },
+    { label: 'IBU RUMAH TANGGA', value: 'IBU RUMAH TANGGA' },
+    { label: 'DOKTER', value: 'DOKTER' },
+    { label: 'PELAUT', value: 'PELAUT' },
+    { label: 'PILOT', value: 'PILOT' },
   ]);
+
+  const [date, setDate] = useState('');
+  const [namaKonsumen, setNamaKonsumen] = useState('');
+  const [tcp, setTcp] = useState(null);
+  const [hargaJual, sethargaJual] = useState('');
+  const [noKtp, setNoKtp] = useState('');
+  const [npwp, setNpwp] = useState('');
+  const [alamatKtp, setAlamatKtp] = useState('');
+  const [namaKantor, setNamaKantor] = useState('');
+  const [alamatKantor, setAlamatKantor] = useState('');
+  const [noHp1, setNoHp1] = useState('');
+  const [noHp2, setNoHp2] = useState('');
+  const [noKantor, setNoKantor] = useState('');
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState(null);
+  const [pekerjaan, setPekerjaan] = useState(null);
+  const [keterangan, setKeterangan] = useState('');
+
+  const [success, setSuccess] = useState({
+    namaKonsumen: true,
+    noKtp: true,
+    noHp1: true,
+  });
+
+  const [showAlert, setShowAlert] = useState(false);
+  const [notice, setNotice] = useState('');
+  const [toTab, setToTab] = useState('');
+
+  const sAlert = (item_to) => {
+    setShowAlert(true);
+    setNotice('Apakah anda sudah yakin ?');
+    setToTab(item_to);
+  }
+
+  const hAlert = () => {
+    setShowAlert(false);
+    setNotice('');
+    setToTab('');
+  }
+
+  const valid = () => {
+    if (namaKonsumen == '' || noKtp == '' || noHp1 == '')
+    {
+      setSuccess({
+        ...success,
+        namaKonsumen: namaKonsumen != '' ? true : false,
+        noKtp: noKtp != '' ? true : false,
+        noHp1: noHp1 != '' ? true : false,
+      });
+    }else{
+      SettabShow('2');
+    }
+  }
+
+  const actBooking = async () => {
+
+  }
+
+  const rupiah = (number) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR"
+    }).format(number);
+  }
+
+  const getCurrentDate = () => {
+    var date = new Date().getDate();
+    var month = new Date().getMonth() + 1;
+    var year = new Date().getFullYear();
+    return year + '-' + month + '-' + date;
+  }
+
+  const getHargaJual = async (valueTcp) => {
+    let response = await CommonServices.callApi('/api/detailblockharga/' + item?.blockcode + '/' + getCurrentDate() + '/' + valueTcp, 'GET');
+    if (response.status === 'success') {
+      sethargaJual(rupiah(response.data.detailharga.hargajualppn));
+    } else {
+      sethargaJual('0');
+    }
+    setTcp(valueTcp);
+  };
   
   launchImageLibraryKTP = () => {
     let options = {
@@ -196,7 +273,7 @@ export default function ProfileEdit({ navigation, route }) {
           style={{flex: 1}}>
           <ScrollView horizontal>
             <View style={styles.TabBoxTwo}>
-              <TouchableOpacity onPress={() => SettabShow('1')} style={tabShow === '1' ? [styles.TabsettextActiveBoxTwo, { backgroundColor: colorrdata }] : styles.TabsettextBoxTwo}>
+              {/* <TouchableOpacity onPress={() => SettabShow('1')} style={tabShow === '1' ? [styles.TabsettextActiveBoxTwo, { backgroundColor: colorrdata }] : styles.TabsettextBoxTwo}>
                 <Text onPress={() => SettabShow('1')} style={tabShow === '1' ? styles.TabsettextActiveTwo : [styles.TabsettextTwo, { color: colorrdata }]}>Data Konsumen</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => SettabShow('2')} style={tabShow === '2' ? [styles.TabsettextActiveBoxTwo, { backgroundColor: colorrdata }] : styles.TabsettextBoxTwo}>
@@ -204,6 +281,16 @@ export default function ProfileEdit({ navigation, route }) {
               </TouchableOpacity>
               <TouchableOpacity onPress={() => SettabShow('3')} style={tabShow === '3' ? [styles.TabsettextActiveBoxTwo, { backgroundColor: colorrdata }] : styles.TabsettextBoxTwo}>
                 <Text onPress={() => SettabShow('3')} style={tabShow === '3' ? styles.TabsettextActiveTwo : [styles.TabsettextTwo, { color: colorrdata }]}>Konfirmasi</Text>
+              </TouchableOpacity> */}
+
+              <TouchableOpacity style={tabShow === '1' ? [styles.TabsettextActiveBoxTwo, { backgroundColor: colorrdata }] : styles.TabsettextBoxTwo}>
+                <Text style={tabShow === '1' ? styles.TabsettextActiveTwo : [styles.TabsettextTwo, { color: colorrdata }]}>Data Konsumen</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={tabShow === '2' ? [styles.TabsettextActiveBoxTwo, { backgroundColor: colorrdata }] : styles.TabsettextBoxTwo}>
+                <Text style={tabShow === '2' ? styles.TabsettextActiveTwo : [styles.TabsettextTwo, { color: colorrdata }]}>Rincian Harga</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={tabShow === '3' ? [styles.TabsettextActiveBoxTwo, { backgroundColor: colorrdata }] : styles.TabsettextBoxTwo}>
+                <Text style={tabShow === '3' ? styles.TabsettextActiveTwo : [styles.TabsettextTwo, { color: colorrdata }]}>Konfirmasi</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>
@@ -266,24 +353,34 @@ export default function ProfileEdit({ navigation, route }) {
               </View>
               <TextInput
                 placeholder={'Nama Konsumen'}
+                value={namaKonsumen}
+                onChangeText={text => setNamaKonsumen(text)}
+                success={success.namaKonsumen}
+                onFocus={() => {
+                  setSuccess({
+                    ...success,
+                    namaKonsumen: true,
+                  });
+                }}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
                   Pilih TCP
                 </Text>
               </View>
-              <DropDownPicker
-                open={openTcp}
-                value={tcp}
-                items={itemsTcp}
-                setOpen={setOpenTCP}
-                setValue={setTcp}
-                setItems={setItemsTcp}
-                listMode="SCROLLVIEW"
-                onChangeValue={(text) => {
-                  console.log(text)
-                }}
+              <RadioButtonRN
+                style={{ flexWrap: 'wrap', flexDirection: "row", alignItems: "center", justifyContent: "center" }}
+                data={itemsTcp}
+                animationTypes={['pulse']}
+                initial={1}
+                circleSize={10}
+                box={false}
+                selectedBtn={(e) => 
+                  getHargaJual(e.value)
+                }
+                boxStyle={{ flex: 1, alignItems: "center" }}
               />
+              
               <View style={styles.contentTitle}>
                 <Text headline semibold>
                   Harga Jual
@@ -292,6 +389,7 @@ export default function ProfileEdit({ navigation, route }) {
               <TextInput
                 placeholder={'Harga Jual'}
                 editable={false}
+                value={hargaJual}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -300,6 +398,15 @@ export default function ProfileEdit({ navigation, route }) {
               </View>
               <TextInput
                 placeholder={'No KTP'}
+                value={noKtp}
+                onChangeText={text => setNoKtp(text)}
+                success={success.noKtp}
+                onFocus={() => {
+                  setSuccess({
+                    ...success,
+                    noKtp: true,
+                  });
+                }}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -308,7 +415,8 @@ export default function ProfileEdit({ navigation, route }) {
               </View>
               <TextInput
                 placeholder={'NPWP'}
-                value={''}
+                value={npwp}
+                onChangeText={text => setNpwp(text)}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -317,9 +425,9 @@ export default function ProfileEdit({ navigation, route }) {
               </View>
               <TextInput
                 placeholder={'Alamat KTP'}
-                value={''}
+                value={alamatKtp}
+                onChangeText={text => setAlamatKtp(text)}
               />
-              
               <View style={styles.contentTitle}>
                 <Text headline semibold>
                   Nama Kantor/Instansi
@@ -327,7 +435,8 @@ export default function ProfileEdit({ navigation, route }) {
               </View>
               <TextInput
                 placeholder={'Nama Kantor/Instansi'}
-                value={''}
+                value={namaKantor}
+                onChangeText={text => setNamaKantor(text)}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -336,7 +445,8 @@ export default function ProfileEdit({ navigation, route }) {
               </View>
               <TextInput
                 placeholder={'Alamat Kantor/Instansi'}
-                value={''}
+                value={alamatKantor}
+                onChangeText={text => setAlamatKantor(text)}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -345,7 +455,15 @@ export default function ProfileEdit({ navigation, route }) {
               </View>
               <TextInput
                 placeholder={'No HP 1'}
-                value={''}
+                value={noHp1}
+                onChangeText={text => setNoHp1(text)}
+                success={success.noHp1}
+                onFocus={() => {
+                  setSuccess({
+                    ...success,
+                    noHp1: true,
+                  });
+                }}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -354,7 +472,8 @@ export default function ProfileEdit({ navigation, route }) {
               </View>
               <TextInput
                 placeholder={'No HP 2'}
-                value={''}
+                value={noHp2}
+                onChangeText={text => setNoHp2(text)}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -363,7 +482,8 @@ export default function ProfileEdit({ navigation, route }) {
               </View>
               <TextInput
                 placeholder={'No Kantor/FAX'}
-                value={''}
+                value={noKantor}
+                onChangeText={text => setNoKantor(text)}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -372,7 +492,23 @@ export default function ProfileEdit({ navigation, route }) {
               </View>
               <TextInput
                 placeholder={'Email'}
-                value={''}
+                value={email}
+                onChangeText={text => setEmail(text)}
+              />
+              <View style={styles.contentTitle}>
+                <Text headline semibold>
+                  Status Perkawinan
+                </Text>
+              </View>
+              <RadioButtonRN
+                style={{ flexWrap: 'wrap', flexDirection: "row", alignItems: "center", justifyContent: "center" }}
+                data={itemsStatus}
+                animationTypes={['pulse']}
+                initial={1}
+                circleSize={10}
+                box={false}
+                selectedBtn={(e) => setStatus(e.value)}
+                boxStyle={{ flex: 1, alignItems: "center" }}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -388,20 +524,7 @@ export default function ProfileEdit({ navigation, route }) {
                 setItems={setItemsPekerjaan}
                 listMode="SCROLLVIEW"
               />
-              <View style={styles.contentTitle}>
-                <Text headline semibold>
-                  Status Perkawinan
-                </Text>
-              </View>
-              <DropDownPicker
-                open={openStatus}
-                value={status}
-                items={itemsStatus}
-                setOpen={setOpenStatus}
-                setValue={setStatus}
-                setItems={setItemsStatus}
-                listMode="SCROLLVIEW"
-              />
+              
               <View style={styles.contentTitle}>
                 <Text headline semibold>
                   Foto KTP
@@ -421,10 +544,23 @@ export default function ProfileEdit({ navigation, route }) {
                   source={{ uri: uriImgKTP }}
 
                 />
-              ) : null}
+              ) : <Image
+                style={{
+                  resizeMode: 'contain',
+                  aspectRatio: 1,
+                  flex: 1,
+                  width: '100%',
+                  height: undefined,
+                  marginBottom: -50,
+                  marginTop: -50,
+                }}
+                  source={require('@assets/images/ktp.png')}
+              /> }
+
               <Button loading={loading} full onPress={this.launchImageLibraryKTP}>
                 Foto KTP
               </Button>
+              
               <View style={styles.contentTitle}>
                 <Text headline semibold>
                   Foto NPWP
@@ -444,11 +580,22 @@ export default function ProfileEdit({ navigation, route }) {
                   source={{ uri: uriImgNPWP }}
 
                 />
-              ) : null}
+              ) : <Image
+                style={{
+                  resizeMode: 'contain',
+                  aspectRatio: 1,
+                  flex: 1,
+                  width: '100%',
+                  height: undefined,
+                  marginBottom: -50,
+                  marginTop: -50,
+                }}
+                source={require('@assets/images/npwp.png')}
+              /> }
               <Button loading={loading} full onPress={this.launchImageLibraryNPWP}>
                 Foto NPWP
               </Button>
-              <View style={styles.contentTitle}>
+              {/* <View style={styles.contentTitle}>
                 <Text headline semibold>
                   Foto Dokumen Lainnya
                 </Text>
@@ -470,7 +617,7 @@ export default function ProfileEdit({ navigation, route }) {
               ) : null}
               <Button loading={loading} full onPress={this.launchImageLibraryDokumenLain}>
                 Foto Dokumen Lainnya
-              </Button>
+              </Button> */}
               <View style={styles.contentTitle}>
                 <Text headline semibold>
                   Keterangan
@@ -478,8 +625,18 @@ export default function ProfileEdit({ navigation, route }) {
               </View>
               <TextInput
                 placeholder={'Keterangan'}
-                editable={false}
+                value={keterangan}
+                onChangeText={text => setKeterangan(text)}
+                numberOfLines={4}
+                multiline={true}
               />
+
+              <View style={{ paddingVertical: 15, paddingHorizontal: 20 }}>
+                <Button onPress={() => sAlert('22')}>
+                  Next
+                </Button>
+              </View>
+
             </ScrollView>
           : null}
           {tabShow == '2' ?
@@ -511,6 +668,31 @@ export default function ProfileEdit({ navigation, route }) {
                 txtContent={'Cicilan Ke-1 '}
                 txtRight={'23 Februari 2023'}
               />
+
+              <View style={{
+                flex: 1,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+                <View style={{ flex: 1, alignItems: 'center' }}>
+                  <Button
+                    style={{ marginTop: 20, width: '90%' }}
+                    loading={loading}
+                    onPress={() => SettabShow('1')}>
+                    Prev
+                  </Button>
+                </View>
+                <View style={{ flex: 1, alignItems: 'center' }}>
+                  <Button
+                    style={{ marginTop: 20, width: '90%' }}
+                    loading={loading}
+                    onPress={() => sAlert('3')}>
+                    Next
+                  </Button>
+                </View>
+              </View>
+              
             </ScrollView>
           : null}
           {tabShow == '3' ?
@@ -521,8 +703,7 @@ export default function ProfileEdit({ navigation, route }) {
                 </Text>
               </View>
               <TextInput
-                placeholder={''}
-                value={''}
+                value={item?.cluster}
                 editable={false}
               />
               <View style={styles.contentTitle}>
@@ -531,8 +712,7 @@ export default function ProfileEdit({ navigation, route }) {
                 </Text>
               </View>
               <TextInput
-                placeholder={''}
-                value={''}
+                value={item?.blocktype}
                 editable={false}
               />
               <View style={styles.contentTitle}>
@@ -541,8 +721,7 @@ export default function ProfileEdit({ navigation, route }) {
                 </Text>
               </View>
               <TextInput
-                placeholder={''}
-                value={''}
+                value={item?.blockcode}
                 editable={false}
               />
               <View style={styles.contentTitle}>
@@ -551,8 +730,7 @@ export default function ProfileEdit({ navigation, route }) {
                 </Text>
               </View>
               <TextInput
-                placeholder={''}
-                value={''}
+                value={item?.lblt}
                 editable={false}
               />
               <View style={styles.contentTitle}>
@@ -561,8 +739,7 @@ export default function ProfileEdit({ navigation, route }) {
                 </Text>
               </View>
               <TextInput
-                placeholder={''}
-                value={''}
+                value={tcp}
                 editable={false}
               />
               <View style={styles.contentTitle}>
@@ -571,11 +748,10 @@ export default function ProfileEdit({ navigation, route }) {
                 </Text>
               </View>
               <TextInput
-                placeholder={''}
-                value={''}
+                value={hargaJual}
                 editable={false}
               />
-              <View style={styles.contentTitle}>
+              {/* <View style={styles.contentTitle}>
                 <Text headline semibold>
                   VA
                 </Text>
@@ -584,15 +760,14 @@ export default function ProfileEdit({ navigation, route }) {
                 placeholder={''}
                 value={''}
                 editable={false}
-              />
+              /> */}
               <View style={styles.contentTitle}>
                 <Text headline semibold>
                   Nama
                 </Text>
               </View>
               <TextInput
-                placeholder={''}
-                value={''}
+                value={namaKonsumen}
                 editable={false}
               />
               <View style={styles.contentTitle}>
@@ -601,8 +776,7 @@ export default function ProfileEdit({ navigation, route }) {
                 </Text>
               </View>
               <TextInput
-                placeholder={''}
-                value={''}
+                value={noKtp}
                 editable={false}
               />
               <View style={styles.contentTitle}>
@@ -611,18 +785,64 @@ export default function ProfileEdit({ navigation, route }) {
                 </Text>
               </View>
               <TextInput
-                placeholder={''}
-                value={''}
+                value={alamatKtp}
                 editable={false}
               />
-              <View style={{paddingVertical: 15, paddingHorizontal: 20}}>
-                <Button loading={loading}>
-                  Submit
-                </Button>
+
+              <View style={{
+                flex: 1,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+                <View style={{ flex: 1, alignItems: 'center' }}>
+                  <Button
+                    style={{ marginTop: 20, width: '90%' }}
+                    loading={loading}
+                    onPress={() => SettabShow('2')}>
+                    Prev
+                  </Button>
+                </View>
+                <View style={{ flex: 1, alignItems: 'center' }}>
+                  <Button
+                    style={{ marginTop: 20, width: '90%' }}
+                    loading={loading}
+                    onPress={() => sAlert("4")}>
+                    Sumbit
+                  </Button>
+                </View>
               </View>
             </ScrollView>
           : null}
         </KeyboardAvoidingView>
+
+        <AwesomeAlert
+          show={showAlert}
+          showProgress={false}
+          title="Konfirmasi"
+          message={notice}
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showCancelButton={true}
+          showConfirmButton={true}
+          cancelText="Batal"
+          confirmText="Yakin"
+          confirmButtonColor="#DD6B55"
+          onCancelPressed={() => {
+            hAlert();
+          }}
+          onConfirmPressed={() => {
+            if (toTab === '22'){
+              valid();
+            } else if(toTab === '4') {
+              actBooking();
+            }else {
+              SettabShow(toTab);
+            }
+            hAlert();
+          }}
+        />
+        
       </SafeAreaView>
     </View>
   );

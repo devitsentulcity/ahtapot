@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { authActions } from '@actions';
 import CommonServices from '../../services/common';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 export default function ProfileEdit({ navigation, route }) {
   const { colors } = useTheme();
@@ -36,14 +37,22 @@ export default function ProfileEdit({ navigation, route }) {
   const [loading, setLoading] = useState(false);
   const [dataCluster, setDataCluster] = useState('');
   const item = route.params?.item;
+  const [showAlert, setShowAlert] = useState(false);
+
+  const sAlert = () => {
+    setShowAlert(true);
+  }
+
+  const hAlert = () => {
+    setShowAlert(false);
+  }
 
   const initPage = async () => {
     fecthUnit();
   }
 
   const fecthUnit = async () => {
-    params = {}
-    let response = await CommonServices.callApi('/api/detailblock/' + item.id, 'GET', params);
+    let response = await CommonServices.callApi('/api/detailblock/' + item.id, 'GET');
     if (response.status === 'success') {
       setDataCluster(response.data.detailblock);
     } else {
@@ -151,15 +160,35 @@ export default function ProfileEdit({ navigation, route }) {
             />
           </ScrollView>
           <View style={{ paddingVertical: 15, paddingHorizontal: 20 }}>
-            <Button loading={loading} full onPress={() => {
-              navigation.navigate('FormBooking', {
-                item: dataCluster,
-              });
+            <Button loading={loading} full onPress={ () =>{
+              sAlert()
             }}>
               {'Units Booking Process'}
             </Button>
           </View>
         </KeyboardAvoidingView>
+
+        <AwesomeAlert
+          show={showAlert}
+          showProgress={false}
+          title="Confirmation"
+          message="Are you sure ?"
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showCancelButton={true}
+          showConfirmButton={true}
+          cancelText="No"
+          confirmText="Yes"
+          confirmButtonColor="#DD6B55"
+          onCancelPressed={() => {
+            hAlert();
+          }}
+          onConfirmPressed={() => {
+            navigation.navigate('FormBooking', {
+              item: dataCluster,
+            });
+          }}
+        />
       </SafeAreaView>
     </View>
   );

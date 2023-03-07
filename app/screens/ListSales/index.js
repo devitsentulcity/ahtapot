@@ -61,8 +61,8 @@ export default function ListSales({ navigation, route }) {
       unique_id: uniqueId,
     }
     let response = await CommonServices.callApi('api/user/approve', 'POST', paramsActive);
-    console.log(response);
-    console.log(paramsActive);
+    // console.log(response);
+    // console.log(paramsActive);
     if(response.status === 'success')
     {
       Alert.alert({

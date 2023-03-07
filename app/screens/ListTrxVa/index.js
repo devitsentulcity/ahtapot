@@ -24,8 +24,7 @@ export default function ListTrxVa({ navigation, route }) {
   };
 
   const fetchTrxVa = async () => {
-    let params = {}
-    let response = await CommonServices.callApi('api/va/list', 'GET', params);
+    let response = await CommonServices.callApi('api/va/list', 'GET');
     if (response.status === 'success') {
       setTrxVa(response.data.data);
     } else {

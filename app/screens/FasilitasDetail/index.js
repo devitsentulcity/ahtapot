@@ -49,8 +49,7 @@ export default function FasilitasDetail({navigation, route}) {
   };
 
   const fecthFasilitas = async () => {
-    let params = {}
-    let response = await CommonServices.callApi('/pub/fasilitas/' + item.id, 'GET', params);
+    let response = await CommonServices.callApi('/pub/fasilitas/' + item.id, 'GET');
     console.log(response);
     if (response.status === 'success') {
       setFasilitas(response.data[0]);

@@ -25,8 +25,7 @@ export default function ListTrxVaDetail({ navigation, route }) {
   };
 
   const fetchTrxVaDetail = async () => {
-    let params = {}
-    let response = await CommonServices.callApi('api/va/detail/' + item.transactionId, 'GET', params);
+    let response = await CommonServices.callApi('api/va/detail/' + item.transactionId, 'GET');
     console.log(response.data.detail);
     if (response.status === 'success') {
       setTrxVaDetail(response.data.detail);
