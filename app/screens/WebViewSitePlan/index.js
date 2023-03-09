@@ -1,11 +1,7 @@
 import React, { useState, useEffect, Component } from 'react';
 import {
   View,
-  ScrollView,
-  Animated,
-  Linking,
   Dimensions,
-  Image,
 } from 'react-native';
 import {BaseColor, useTheme, BaseStyle} from '@config';
 import {
@@ -13,23 +9,14 @@ import {
   SafeAreaView,
   Icon,
   Text,
-  ImageSiteplan,
-  Button,
-  ListItem,
 } from '@components';
 import {useTranslation} from 'react-i18next';
 import * as Utils from '@utils';
-import {useDispatch, useSelector} from 'react-redux';
-import {
-  Placeholder,
-  PlaceholderLine,
-  Progressive,
-  PlaceholderMedia,
-} from 'rn-placeholder';
-import {userSelect, wishlistSelect, designSelect} from '@selectors';
 import styles from './styles';
-import CommonServices from '../../services/common';
+import {useDispatch, useSelector} from 'react-redux';
+import {userSelect, wishlistSelect, designSelect} from '@selectors';
 import { WebView } from 'react-native-webview';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 export default function WebViewSitePlan({navigation, route}) {
   const win = Dimensions.get('window');
@@ -40,17 +27,33 @@ export default function WebViewSitePlan({navigation, route}) {
   const item = route.params?.item;
   const useGallery = !!route.params?.useGallery;
   const [kodeKawasan, setKodeKawasan] = useState('');  
+  const [kodetg, setKodeTg] = useState('');
+
+  const [showConfirm, setShowConfirm] = useState('');
+  const [messageConfirm, setMessageConfirm] = useState('');
+  const [unitBooking, setUnitBooking] = useState('');
+
+  const hAlert = () => {
+    setShowConfirm(false);
+  }
 
   const onMessage = (data) => {
-    console.log(data.nativeEvent.data);
-    // navigation.navigate('ListType', {
-    //   item: item,
-    //   id: idCluster
-    // });
+    setShowConfirm(true);
+    setMessageConfirm('Booking unit ' + data.nativeEvent.data + ' ?');
+    setUnitBooking(data.nativeEvent.data);
+  }
+
+  const hConfirm = (kodeUnit) => {
+    navigation.navigate('DataUnit', {
+      item: {
+        id: kodeUnit
+      },
+    });
   }
 
   useEffect(() => {
-    setKodeKawasan(item.KawasanCode.toLowerCase());
+    setKodeKawasan(item.KawasanCode?.toLowerCase());
+    setKodeTg(item.tg?.toLowerCase());
   }, []);
 
   return (
@@ -79,10 +82,42 @@ export default function WebViewSitePlan({navigation, route}) {
         }}
       />
       <SafeAreaView style={BaseStyle.safeAreaView} edges={['right', 'left']}>
+        <View
+          style={[styles.contentDescription, { borderColor: colors.border }]}>
+          <Text body2 style={{ lineHeight: 20, textAlign: 'center' }}>
+            Zoom untuk melihat siteplan lebih detail
+          </Text>
+          <Text body2 style={{ lineHeight: 20, textAlign: 'center' }}>
+            Klik unit yang akan dibooking
+          </Text>
+          <Text body2 style={{ lineHeight: 20, textAlign: 'center' }}>
+            Warna hijau untuk Available dan merah untuk Booked
+          </Text>
+        </View>
         <WebView
           originWhitelist={['*']}
-          source={{ uri: 'http://10.10.20.36/msales_v1/svgz_sc.php?p=' + kodeKawasan }}
+          source={{ uri: 'http://10.10.20.36/msales_v1/svgz_sc.php?p=' + kodeKawasan + '&tg=' + kodetg }}
           onMessage={onMessage}
+        />
+
+        <AwesomeAlert
+          show={showConfirm}
+          showProgress={false}
+          title={'Konfirmasi'}
+          message={messageConfirm}
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showCancelButton={true}
+          showConfirmButton={true}
+          cancelText="Tidak"
+          confirmText="Iya"
+          confirmButtonColor="#DD6B55"
+          onCancelPressed={() => {
+            hAlert();
+          }}
+          onConfirmPressed={() => {
+            hConfirm(unitBooking)
+          }}
         />
       </SafeAreaView>
     </View>

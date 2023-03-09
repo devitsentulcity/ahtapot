@@ -72,6 +72,7 @@ export default function ListTypeCluster({navigation, route}) {
       unit: ''
     }
     let response = await CommonServices.callApi('/pub/unitlookup', 'POST', params);
+    //console.log(response.data.list.data);
     if (response.status === 'success') {
       setCluster(response.data.cluster);
       setListType(response.data.list.data);
@@ -305,7 +306,10 @@ export default function ListTypeCluster({navigation, route}) {
               </Text>
               <TouchableWithoutFeedback onPress={() => {
                 navigation.navigate('WebViewSitePlan', {
-                  item: item
+                  item: {
+                    KawasanCode: item.KawasanCode,
+                    KawasanName: item.KawasanName
+                  }
                 });
               }}>
                 <Image
@@ -342,35 +346,42 @@ export default function ListTypeCluster({navigation, route}) {
             {'Type'}
           </Text>
           <View style={{ paddingHorizontal: 20 }}>
-            {listType?.map?.(item => {
+            {listType?.map?.(items => {
               return (
                 user ? 
                   <ListItem
-                    key={item.id}
+                    key={items.id}
                     small
-                    image={item.image}
-                    title={item.id}
-                    subtitle={item.name}
-                    location={'Stok unit : ' + item.unit_total}
+                    image={items.image}
+                    title={items.id}
+                    subtitle={items.name}
+                    location={'Stok unit : ' + items.unit_total}
                     style={{ marginBottom: 15 }}
                     onPress={() => {
-                      navigation.navigate('ProductDetail', {
-                        item: item,
-                        id: codeCluster,
+                      navigation.navigate('WebViewSitePlan', {
+                        item: {
+                          KawasanCode: item.KawasanCode,
+                          KawasanName: item.KawasanName,
+                          tg: items.id
+                        }
                       });
+                      // navigation.navigate('ProductDetail', {
+                      //   item: items,
+                      //   id: codeCluster,
+                      // });
                     }}
                   />
                   : <ListItem
-                    key={item.id}
+                    key={items.id}
                     small
-                    image={item.image}
-                    title={item.id}
-                    subtitle={item.name}
+                    image={items.image}
+                    title={items.id}
+                    subtitle={items.name}
                     location={'login untuk mengetahui stok'}
                     style={{ marginBottom: 15 }}
                     onPress={() => {
                       navigation.navigate('ProductDetail', {
-                        item: item,
+                        item: items,
                         id: codeCluster,
                       });
                     }}
