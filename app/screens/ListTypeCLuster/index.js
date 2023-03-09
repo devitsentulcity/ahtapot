@@ -308,7 +308,8 @@ export default function ListTypeCluster({navigation, route}) {
                 navigation.navigate('WebViewSitePlan', {
                   item: {
                     KawasanCode: item.KawasanCode,
-                    KawasanName: item.KawasanName
+                    KawasanName: item.KawasanName,
+                    tg: ''
                   }
                 });
               }}>
