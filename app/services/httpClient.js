@@ -16,12 +16,22 @@ const request = async function (
   if (getToken() !== null) {
     authHeader = getToken();
   }
+  
+  let paramHeader = null;
+  if(options.content == null){
+    paramHeader = {
+      'Authorization': 'Bearer ' + authHeader
+    }
+  }else{
+    paramHeader = {
+      'Authorization': 'Bearer ' + authHeader,
+      'Content-Type': 'multipart/form-data'
+    }
+  }
 
   let optDefault = {
     baseURL: custom_url,
-    headers: { 
-      'Authorization': 'Bearer ' + authHeader
-    },
+    headers: paramHeader,
     timeout: 60000,
     maxContentLength: 150 * 1000 * 1000,
   };

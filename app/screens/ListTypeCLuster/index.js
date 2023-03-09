@@ -6,6 +6,7 @@ import {
   Linking,
   Dimensions,
   Image,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import {BaseColor, useTheme, BaseStyle} from '@config';
 import {
@@ -135,6 +136,7 @@ export default function ListTypeCluster({navigation, route}) {
           source={cluster?.image}
           style={{width: '100%', height: '100%'}}
         />
+        
         <Animated.View
           style={{
             position: 'absolute',
@@ -301,18 +303,32 @@ export default function ListTypeCluster({navigation, route}) {
                 }}>
                 {'Siteplan'}
               </Text>
-              <Image
-                source={{ uri: cluster.siteplan }}
-                style={{
-                  resizeMode: 'contain',
-                  aspectRatio: 1,
-                  flex: 1,
-                  width: '100%',
-                  height: undefined,
-                  marginBottom: -50,
-                  marginTop: -50,
-                }}
-              />
+              <TouchableWithoutFeedback onPress={() => {
+                navigation.navigate('WebViewSitePlan', {
+                  item: item
+                });
+              }}>
+                <Image
+                  source={{ uri: cluster.siteplan }}
+                  style={{
+                    resizeMode: 'contain',
+                    aspectRatio: 1,
+                    flex: 1,
+                    width: '100%',
+                    height: undefined,
+                    marginBottom: -50,
+                    marginTop: -50,
+                  }}
+                />
+              </TouchableWithoutFeedback>
+            </View>
+            <View
+              style={{
+                alignItems: "center"
+              }}>
+              <Text body1 grayColor style={{ marginTop: 25 }}>
+                Click to preview
+              </Text>
             </View>
           </View>
           <Text

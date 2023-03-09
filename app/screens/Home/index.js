@@ -227,7 +227,7 @@ export default function Home({navigation}) {
             style={[styles.serviceItem, {width: Utils.getWidthDevice() * 0.24}]}
             onPress={() => {
               const filter = new FilterModel();
-              // navigation.navigate('List', { filter });
+              navigation.navigate('ListNup', { filter });
             }}>
             <View
               style={[styles.serviceCircleIcon, {backgroundColor: '#4c1f7e'}]}>

@@ -35,15 +35,6 @@ import RadioButtonRN from 'radio-buttons-react-native';
 import CommonServices from '../../services/common';
 import AwesomeAlert from 'react-native-awesome-alerts';
 
-const options = {
-  title: 'Select Avatar',
-  customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
-  storageOptions: {
-    skipBackup: true,
-    path: 'images',
-  },
-};
-
 export default function ProfileEdit({ navigation, route }) {
   
   const { colorrdata } = useSelector(state => state.commonReducer) || {};
@@ -51,7 +42,6 @@ export default function ProfileEdit({ navigation, route }) {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const user = useSelector(userSelect);
-  const messenger = useSelector(messengerSelect);
   const offsetKeyboard = Platform.select({
     ios: 0,
     android: 20,
@@ -137,6 +127,23 @@ export default function ProfileEdit({ navigation, route }) {
     setToTab('');
   }
 
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [titleConfirm, setTitleNotice] = useState('');
+  const [messageConfirm, setMessageNotice] = useState('');
+  const [nextState, setNextState] = useState('');
+
+  const hConfirm = (nS) => {
+    setShowConfirm(false);
+    setTitleNotice('');
+    setMessageNotice('');
+    if (nS === '0'){
+      navigation.navigate('ListTypeCluster', { item: {
+        KawasanCode: item.cluster_id,
+        KawasanName: item.cluster_name
+      }, });
+    }
+  }
+
   const valid = () => {
     if (namaKonsumen == '' || noKtp == '' || noHp1 == '')
     {
@@ -152,7 +159,59 @@ export default function ProfileEdit({ navigation, route }) {
   }
 
   const actBooking = async () => {
+    setLoading(true);
+    let formData = new FormData();
+    formData.append('namakonsumen', namaKonsumen);
+    formData.append('nohp1', noHp1);
+    formData.append('nohp2', noHp2);
+    formData.append('email', email);
+    formData.append('statuskawin', status);
+    formData.append('pekerjaan', pekerjaan);
+    formData.append('filektp', {
+      uri: uriImgKTP,
+      name: nameImgKTP,
+      type: 'image/jpeg'
+    });
+    formData.append('filenpwp', {
+      uri: uriImgNPWP,
+      name: nameImgNPWP,
+      type: 'image/jpeg'
+    });
+    formData.append('keterangan', keterangan);
+    formData.append('alamatdomisili', '');
+    formData.append('namakantor', namaKantor);
+    formData.append('alamatkantor', alamatKantor);
+    formData.append('notelpkantor', '');
+    formData.append('npwp', npwp);
+    formData.append('noktp', noKtp);
+    formData.append('alamatktp', '');
+    formData.append('tcp', tcp);
+    formData.append('hargajual', hargaJual.hargajual);
+    formData.append('harganetto', hargaJual.harganetto);
+    formData.append('hargappn', hargaJual.hargappn);
+    formData.append('hargajualppn', hargaJual.hargajualppn);
+    formData.append('bphtb', hargaJual.bphtb);
+    formData.append('tjvalue', 0);
+    formData.append('umvalue', 0);
+    formData.append('kprvalue', 0);
+    formData.append('idperiodeharga', 0);
+    formData.append('periodharganame', '-');
+    formData.append('iddetailperiodharga', 0);
 
+    let resBooking = await CommonServices.callApi('api/bookingsppdigital/' + item?.blockcode, 'POST', formData, 'form-data');
+    console.log(resBooking);
+    setShowConfirm(true);
+    if (resBooking.status === 'success')
+    {
+      setTitleNotice('Berhasil');
+      setMessageNotice('Booking Unit Berhasil');
+      setNextState('0')
+    }else {
+      setTitleNotice('Gagal');
+      setMessageNotice('Booking Unit Gagal');
+      setNextState('1')
+    }
+    setLoading(false);
   }
 
   const rupiah = (number) => {
@@ -172,12 +231,18 @@ export default function ProfileEdit({ navigation, route }) {
   const getHargaJual = async (valueTcp) => {
     let response = await CommonServices.callApi('/api/detailblockharga/' + item?.blockcode + '/' + getCurrentDate() + '/' + valueTcp, 'GET');
     if (response.status === 'success') {
-      sethargaJual(rupiah(response.data.detailharga.hargajualppn));
+      sethargaJual(response.data.detailharga);
     } else {
       sethargaJual('0');
     }
     setTcp(valueTcp);
   };
+
+  const detailTcp = (dataTcp) => {
+    if(dataTcp === 'T'){ return 'Tunai Keras'}
+    else if (dataTcp === 'K'){ return 'KPR'}
+    else { return 'Tunai Bertahap' }
+  }
   
   launchImageLibraryKTP = () => {
     let options = {
@@ -193,7 +258,7 @@ export default function ProfileEdit({ navigation, route }) {
         // console.log('ImagePicker Error: ', response.error);
       } else if (response.customButton) {
         // console.log('User tapped custom button: ', response.customButton);
-        alert(response.customButton);
+        // alert(response.customButton);
       } else {
         setnameImgKTP(response.assets[0].fileName);
         seturiImgKTP(response.assets[0].uri);
@@ -220,29 +285,6 @@ export default function ProfileEdit({ navigation, route }) {
       } else {
         setnameImgNPWP(response.assets[0].fileName);
         seturiImgNPWP(response.assets[0].uri);
-      }
-    });
-
-  }
-
-  launchImageLibraryDokumenLain = () => {
-    let options = {
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-    ImagePicker.launchImageLibrary(options, (response) => {
-      if (response.didCancel) {
-        // console.log('User cancelled image picker');
-      } else if (response.error) {
-        // console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        // console.log('User tapped custom button: ', response.customButton);
-        alert(response.customButton);
-      } else {
-        setnameImgDokumenLain(response.assets[0].fileName);
-        seturiImgDokumenLain(response.assets[0].uri);
       }
     });
 
@@ -389,7 +431,7 @@ export default function ProfileEdit({ navigation, route }) {
               <TextInput
                 placeholder={'Harga Jual'}
                 editable={false}
-                value={hargaJual}
+                value={rupiah(hargaJual.hargajual)}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
@@ -595,29 +637,6 @@ export default function ProfileEdit({ navigation, route }) {
               <Button loading={loading} full onPress={this.launchImageLibraryNPWP}>
                 Foto NPWP
               </Button>
-              {/* <View style={styles.contentTitle}>
-                <Text headline semibold>
-                  Foto Dokumen Lainnya
-                </Text>
-              </View>
-              {uriImgDokumenLain != null ? (
-                <Image
-                  style={{
-                    resizeMode: 'contain',
-                    aspectRatio: 1,
-                    flex: 1,
-                    width: '100%',
-                    height: undefined,
-                    marginBottom: -50,
-                    marginTop: -50,
-                  }}
-                  source={{ uri: uriImgDokumenLain }}
-
-                />
-              ) : null}
-              <Button loading={loading} full onPress={this.launchImageLibraryDokumenLain}>
-                Foto Dokumen Lainnya
-              </Button> */}
               <View style={styles.contentTitle}>
                 <Text headline semibold>
                   Keterangan
@@ -640,35 +659,97 @@ export default function ProfileEdit({ navigation, route }) {
             </ScrollView>
           : null}
           {tabShow == '2' ?
-            <ScrollView contentContainerStyle={{
-              paddingTop: 0
-            }}>
-              <ListThumbSquare
-                txtLeftTitle={'Rp. 30.000.000'}
-                txtContent={'Booking Fee'}
-                txtRight={'09 Januari 2022'}
+            <ScrollView estedScrollEnabled={true} contentContainerStyle={styles.contain}>
+              <View style={styles.contentTitle}>
+                <Text headline semibold>
+                  Cluster
+                </Text>
+              </View>
+              <TextInput
+                value={item?.cluster}
+                editable={false}
               />
-              <ListThumbSquare
-                txtLeftTitle={'Rp. 111.726.384'}
-                txtContent={'Down Payment 1 : 10% '}
-                txtRight={'23 November 2022'}
+              <View style={styles.contentTitle}>
+                <Text headline semibold>
+                  Tipe
+                </Text>
+              </View>
+              <TextInput
+                value={item?.blocktype}
+                editable={false}
               />
-              <ListThumbSquare
-                txtLeftTitle={'Rp. 40.647.394'}
-                txtContent={'Cicilan Ke-1 '}
-                txtRight={'23 Desember 2022'}
+              <View style={styles.contentTitle}>
+                <Text headline semibold>
+                  Unit
+                </Text>
+              </View>
+              <TextInput
+                value={item?.blockcode}
+                editable={false}
               />
-              <ListThumbSquare
-                txtLeftTitle={'Rp. 40.647.394'}
-                txtContent={'Cicilan Ke-2 '}
-                txtRight={'23 Januari 2023'}
+              <View style={styles.contentTitle}>
+                <Text headline semibold>
+                  LB/LT
+                </Text>
+              </View>
+              <TextInput
+                value={item?.lblt}
+                editable={false}
               />
-              <ListThumbSquare
-                txtLeftTitle={'Rp. 40.647.394'}
-                txtContent={'Cicilan Ke-1 '}
-                txtRight={'23 Februari 2023'}
+              <View style={styles.contentTitle}>
+                <Text headline semibold>
+                  TCP
+                </Text>
+              </View>
+              <TextInput
+                value={detailTcp(tcp)}
+                editable={false}
               />
-
+              <View style={styles.contentTitle}>
+                <Text headline semibold>
+                  Harga Jual
+                </Text>
+              </View>
+              <TextInput
+                value={rupiah(hargaJual.hargajual) }
+                editable={false}
+              />
+              <View style={styles.contentTitle}>
+                <Text headline semibold>
+                  Harga Jual Netto
+                </Text>
+              </View>
+              <TextInput
+                value={rupiah(hargaJual.harganetto)}
+                editable={false}
+              />
+              <View style={styles.contentTitle}>
+                <Text headline semibold>
+                  Harga PPN
+                </Text>
+              </View>
+              <TextInput
+                value={rupiah(hargaJual.hargappn)}
+                editable={false}
+              />
+              <View style={styles.contentTitle}>
+                <Text headline semibold>
+                  Harga Jual + PPN
+                </Text>
+              </View>
+              <TextInput
+                value={rupiah(hargaJual.hargajualppn)}
+                editable={false}
+              />
+              <View style={styles.contentTitle}>
+                <Text headline semibold>
+                  BPHTB
+                </Text>
+              </View>
+              <TextInput
+                value={rupiah(hargaJual.bphtb)}
+                editable={false}
+              />
               <View style={{
                 flex: 1,
                 flexDirection: 'row',
@@ -678,7 +759,6 @@ export default function ProfileEdit({ navigation, route }) {
                 <View style={{ flex: 1, alignItems: 'center' }}>
                   <Button
                     style={{ marginTop: 20, width: '90%' }}
-                    loading={loading}
                     onPress={() => SettabShow('1')}>
                     Prev
                   </Button>
@@ -686,7 +766,6 @@ export default function ProfileEdit({ navigation, route }) {
                 <View style={{ flex: 1, alignItems: 'center' }}>
                   <Button
                     style={{ marginTop: 20, width: '90%' }}
-                    loading={loading}
                     onPress={() => sAlert('3')}>
                     Next
                   </Button>
@@ -739,7 +818,7 @@ export default function ProfileEdit({ navigation, route }) {
                 </Text>
               </View>
               <TextInput
-                value={tcp}
+                value={detailTcp(tcp)}
                 editable={false}
               />
               <View style={styles.contentTitle}>
@@ -748,19 +827,9 @@ export default function ProfileEdit({ navigation, route }) {
                 </Text>
               </View>
               <TextInput
-                value={hargaJual}
+                value={rupiah(hargaJual.hargajualppn)}
                 editable={false}
               />
-              {/* <View style={styles.contentTitle}>
-                <Text headline semibold>
-                  VA
-                </Text>
-              </View>
-              <TextInput
-                placeholder={''}
-                value={''}
-                editable={false}
-              /> */}
               <View style={styles.contentTitle}>
                 <Text headline semibold>
                   Nama
@@ -777,6 +846,15 @@ export default function ProfileEdit({ navigation, route }) {
               </View>
               <TextInput
                 value={noKtp}
+                editable={false}
+              />
+              <View style={styles.contentTitle}>
+                <Text headline semibold>
+                  NPWP
+                </Text>
+              </View>
+              <TextInput
+                value={npwp}
                 editable={false}
               />
               <View style={styles.contentTitle}>
@@ -798,7 +876,6 @@ export default function ProfileEdit({ navigation, route }) {
                 <View style={{ flex: 1, alignItems: 'center' }}>
                   <Button
                     style={{ marginTop: 20, width: '90%' }}
-                    loading={loading}
                     onPress={() => SettabShow('2')}>
                     Prev
                   </Button>
@@ -840,6 +917,21 @@ export default function ProfileEdit({ navigation, route }) {
               SettabShow(toTab);
             }
             hAlert();
+          }}
+        />
+
+        <AwesomeAlert
+          show={showConfirm}
+          showProgress={false}
+          title={titleConfirm}
+          message={messageConfirm}
+          closeOnTouchOutside={false}
+          closeOnHardwareBackPress={false}
+          showConfirmButton={true}
+          confirmText={'OK'}
+          confirmButtonColor="#DD6B55"
+          onConfirmPressed={() => {
+            hConfirm(nextState)
           }}
         />
         

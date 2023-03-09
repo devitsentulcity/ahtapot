@@ -1,10 +1,11 @@
 import request from './httpClient';
 
-function callApi(urlParam, methodParam, param=null) {
+function callApi(urlParam, methodParam, param=null, content=null) {
     return request({
         url: urlParam,
         method: methodParam,
-        data: param
+        data: param,
+        content: content
     }, false)
 }
 

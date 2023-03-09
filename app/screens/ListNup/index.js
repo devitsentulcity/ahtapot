@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { RefreshControl, View, FlatList, Alert } from 'react-native';
-import {BaseStyle, useTheme} from '@config';
+import { RefreshControl, View, FlatList, Alert, TouchableOpacity } from 'react-native';
+import { BaseStyle, useTheme, BaseColor } from '@config';
 import {useTranslation} from 'react-i18next';
 import { Header, SafeAreaView, Icon, Text, ListThumbCircle, Button } from '@components';
 import {notificationActions} from '@actions';
@@ -10,6 +10,7 @@ import styles from './styles';
 import CommonServices from '../../services/common';
 import { userSelect } from '@selectors';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import Table, { Section, BioCell, KeyValueCell } from 'react-native-js-tableview';
 
 export default function ListNup({ navigation, route }) {
   const {t} = useTranslation();
@@ -18,107 +19,38 @@ export default function ListNup({ navigation, route }) {
   const notification = useSelector(notificationSelect);
   const [refreshing, setRefresh] = useState(false);
   const item = route.params?.item;
-  const [salesData, setSalesData] = useState([]);
-  const [uniqueId, setUniqueId] = useState('');
-  const [showAlert, setShowAlert] = useState(false);
-  const [viewName, setViewName] = useState('');
-
-  const sAlert = (unique_id, item_nama) => {
-    setShowAlert(true);
-    setUniqueId(unique_id);
-    setViewName('Anda yakin akan aktivasi sales ' + item_nama + ' ?');
-  }
-
-  const hAlert = () => {
-    setShowAlert(false);
-    setUniqueId('');
-    setViewName('');
-  }
-
-  const initPage = async () => {
-    fetchSales();
-  };
-
-  const fetchSales = async () => {
-    let params = {
-      aktif: item.aktif,
-      level: item.level,
-      mgr_id: '',
-      sp_access: ''
-    }
-    let response = await CommonServices.callApi('api/user?page=&item=0', 'POST', params);
-    console.log(response);
-    if (response.status === 'success') {
-      setSalesData(response.data.data);
-    } else {
-      setSalesData([]);
-    }
-  }
-
-  const actActive = async () => {
-    hAlert();
-    let paramsActive = {
-      unique_id: uniqueId,
-    }
-    let response = await CommonServices.callApi('api/approve', 'POST', paramsActive);
-    console.log(response);
-    console.log(paramsActive);
-    if(response.status === 'success')
+  const [trxNup, setTrxNup] = useState([
     {
-      Alert.alert({
-        type: 'success',
-        title: 'Aktivasi',
-        message: 'Aktivasi Akun Berhasil'
-      });
-    } else {
-      Alert.alert({ title: 'Aktifasi', message: response.data });
-    }
-    fetchSales();
-  }
-
-  /**
-   * Reload wishlist
-   */
-  const onRefresh = () => {
-    setRefresh(true);
-    dispatch(
-      notificationActions.onLoadNotification(null, () => {
-        setRefresh(false);
-      }),
-    );
-  };
+      transaction_id: '0001',
+      nama: 'hardi Subagyo',
+      noUrut: '0001',
+      namaSales: 'Imran'
+    },
+    {
+      transaction_id: '0002',
+      nama: 'Kesti Winarsih',
+      noUrut: '0002',
+      namaSales: 'Bambang'
+    },
+    {
+      transaction_id: '0003',
+      nama: 'Kamaludin',
+      noUrut: '0003',
+      namaSales: 'Sigit'
+    },
+    {
+      transaction_id: '0004',
+      nama: 'Manaf',
+      noUrut: '0004',
+      namaSales: 'Kuza'
+    },
+  ]);
 
   /**
    * render Content list
    */
   const renderContent = () => {
-    if (salesData.length > 0) {
-      return (
-        <FlatList
-          contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 10 }}
-          refreshControl={
-            <RefreshControl
-              colors={[colors.primary]}
-              tintColor={colors.primary}
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-            />
-          }
-          data={salesData}
-          renderItem={({ item, index }) => (
-            <ListThumbCircle
-              image={'https://engineering.fb.com/wp-content/uploads/2016/04/yearinreview.jpg'}
-              txtLeftTitle={item.nama}
-              txtContent={item.email}
-              txtRight={item.nohp}
-              style={{ marginBottom: 5 }}
-              onPress={() => sAlert(item.unique_id, item.nama)}
-            />
-          )}
-        />
-      );
-    }
-    if (notification.list?.length == 0) {
+    if (trxNup?.length == 0) {
       return (
         <View style={styles.loadingContent}>
           <View style={{alignItems: 'center'}}>
@@ -132,17 +64,42 @@ export default function ListNup({ navigation, route }) {
           </View>
         </View>
       );
+    }else {
+      return (
+        <FlatList
+          contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 10 }}
+          refreshControl={
+            <RefreshControl
+              colors={[colors.primary]}
+              tintColor={colors.primary}
+            />
+          }
+          data={trxNup}
+          renderItem={({ item, index }) => (
+            <Table style={styles.container} accentColor='#4DB6AC' scrollable={true}>
+              <Section header={''} footer={''}>
+                <BioCell title={item.nama} subtitle={''} />
+                <KeyValueCell title='Kode' value={item.transaction_id} />
+                <KeyValueCell title='No Urut' value={item.noUrut} />
+                <KeyValueCell title='Sales' value={item.namaSales} />
+              </Section>
+            </Table>
+          )}
+        />
+      );
     }
   };
 
-  useEffect(() => {
-    initPage();
-  }, []);
+  const renderIcon = () => {
+    return (
+      <View style={{ flex: 1, backgroundColor: '#f3f3f3' }}></View>
+    );
+  }
 
   return (
     <View style={{flex: 1}}>
       <Header
-        title={item.judul}
+        title={'Data NUP'}
         renderLeft={() => {
           return <Icon name="arrow-left" size={20} color={colors.primary} />;
         }}
@@ -151,26 +108,16 @@ export default function ListNup({ navigation, route }) {
         }}
       />
       <SafeAreaView style={BaseStyle.safeAreaView} edges={['right', 'left']}>
+        {renderIcon()}
         {renderContent()}
-        <AwesomeAlert
-          show={showAlert}
-          showProgress={false}
-          title="Konfirmasi"
-          message={viewName}
-          closeOnTouchOutside={true}
-          closeOnHardwareBackPress={false}
-          showCancelButton={true}
-          showConfirmButton={true}
-          cancelText="Batal"
-          confirmText="Yakin"
-          confirmButtonColor="#DD6B55"
-          onCancelPressed={() => {
-            hAlert();
+
+        <TouchableOpacity
+          onPress={ () => {
+            navigation.navigate('NupAdd');
           }}
-          onConfirmPressed={() => {
-            actActive();
-          }}
-        />
+          style={[styles.menuIcon, { backgroundColor: colors.primary }]}>
+          <Icon name="plus" size={22} color={BaseColor.whiteColor} solid />
+        </TouchableOpacity>
       </SafeAreaView>
     </View>
   );
