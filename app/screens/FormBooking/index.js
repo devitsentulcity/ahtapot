@@ -498,18 +498,6 @@ export default function ProfileEdit({ navigation, route }) {
                   No HP 1
                 </Text>
               </View>
-              {/* <TextInput
-                placeholder={'No HP 1'}
-                value={noHp1}
-                onChangeText={text => setNoHp1(text)}
-                success={success.noHp1}
-                onFocus={() => {
-                  setSuccess({
-                    ...success,
-                    noHp1: true,
-                  });
-                }}
-              /> */}
               <PhoneInput
                 ref={phoneNoHp1}
                 defaultValue={noHp1}
@@ -529,11 +517,6 @@ export default function ProfileEdit({ navigation, route }) {
                   No HP 2
                 </Text>
               </View>
-              {/* <TextInput
-                placeholder={'No HP 2'}
-                value={noHp2}
-                onChangeText={text => setNoHp2(text)}
-              /> */}
               <PhoneInput
                 ref={phoneNoHp2}
                 defaultValue={noHp2}

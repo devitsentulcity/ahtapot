@@ -187,6 +187,7 @@ export default function ProfileEdit({ navigation, route }) {
             navigation.navigate('FormBooking', {
               item: dataCluster,
             });
+            hAlert();
           }}
         />
       </SafeAreaView>

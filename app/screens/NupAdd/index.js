@@ -8,13 +8,13 @@ import {
   Dimensions,
   Image,
   RefreshControl,
-  FlatList
+  FlatList,
+  Modal
 } from 'react-native';
-import { BaseStyle, useTheme } from '@config';
+import { BaseStyle, useTheme, BaseColor } from '@config';
 import {
   Header,
   SafeAreaView,
-  Icon,
   Text,
   TextInput,
   Button,
@@ -34,6 +34,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import CommonServices from '../../services/common';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import PhoneInput from "react-native-phone-number-input";
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function NupAdd({ navigation, route }) {
 
@@ -97,6 +98,76 @@ export default function NupAdd({ navigation, route }) {
     hAlert();
   }
 
+  const [showChooseKtp, setShowChooseKtp] = useState(false);
+  const sChooseKtp = () => { setShowChooseKtp(true); }
+  const hChooseKtp = () => { setShowChooseKtp(false); }
+  const buttonImageKtp = () => {
+    return (
+      <SafeAreaView
+        style={BaseStyle.safeAreaView}
+        edges={['right', 'top', 'left']}>
+        <View style={{
+          flex: 1,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        }}>
+          <View style={{ flex: 1, alignItems: 'center', width: '100%'}}>
+            <Icon.Button
+              name="camera"
+              size={25}
+              backgroundColor="#E5634D"
+              onPress={() => console.log("")}
+            >Kamera</Icon.Button>
+          </View>
+          <Text>&nbsp;&nbsp;</Text>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Icon.Button
+              name="image"
+              size={25}
+              backgroundColor="#E5634D"
+              onPress={this.launchImageLibraryKTP}
+            >Galeri</Icon.Button>
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  const [showChooseNpwp, setShowChooseNpwp] = useState(false);
+  const sChooseNpwp = () => { setShowChooseNpwp(true); }
+  const hChooseNpwp = () => { setShowChooseNpwp(false); }
+  const buttonImageNpwp = () => {
+    return (
+      <SafeAreaView
+        style={BaseStyle.safeAreaView}
+        edges={['right', 'top', 'left']}>
+        <View style={{
+          flex: 1,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        }}>
+          <View style={{ flex: 1, alignItems: 'center', width: '100%' }}>
+            <Icon.Button
+              name="camera"
+              size={25}
+              backgroundColor="#E5634D"
+              onPress={() => console.log("")}
+            >Kamera</Icon.Button>
+          </View>
+          <Text>&nbsp;&nbsp;</Text>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Icon.Button
+              name="image"
+              size={25}
+              backgroundColor="#E5634D"
+              onPress={this.launchImageLibraryNPWP}
+            >Galeri</Icon.Button>
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   const getCluster = async () => {
     let y = [];
     let response = await CommonServices.callApi('/pub/unitlookup','POST');
@@ -124,6 +195,7 @@ export default function NupAdd({ navigation, route }) {
       } else {
         setnameImgKTP(response.assets[0].fileName);
         seturiImgKTP(response.assets[0].uri);
+        hChooseKtp();
       }
     });
 
@@ -147,6 +219,7 @@ export default function NupAdd({ navigation, route }) {
       } else {
         setnameImgNPWP(response.assets[0].fileName);
         seturiImgNPWP(response.assets[0].uri);
+        hChooseNpwp();
       }
     });
 
@@ -272,18 +345,6 @@ export default function NupAdd({ navigation, route }) {
               }}
               success={success.noHp1}
             />
-            {/* <TextInput
-              placeholder={'No HP 1'}
-              value={noHp1}
-              onChangeText={text => setNoHp1(text)}
-              success={success.noHp1}
-              onFocus={() => {
-                setSuccess({
-                  ...success,
-                  noHp1: true,
-                });
-              }}
-            /> */}
             <View style={styles.contentTitle}>
               <Text headline semibold>
                 No HP 2
@@ -302,11 +363,6 @@ export default function NupAdd({ navigation, route }) {
                 setNoHp2(text);
               }}
             />
-            {/* <TextInput
-              placeholder={'No HP 2'}
-              value={noHp2}
-              onChangeText={text => setNoHp2(text)}
-            /> */}
             <View style={styles.contentTitle}>
               <Text headline semibold>
                 Foto KTP
@@ -339,7 +395,10 @@ export default function NupAdd({ navigation, route }) {
               source={require('@assets/images/ktp.png')}
             />}
 
-            <Button loading={loading} full onPress={this.launchImageLibraryKTP}>
+            {/* <Button loading={loading} full onPress={this.launchImageLibraryKTP}>
+              Foto KTP
+            </Button> */}
+            <Button loading={loading} full onPress={() => { sChooseKtp() }}>
               Foto KTP
             </Button>
 
@@ -374,7 +433,10 @@ export default function NupAdd({ navigation, route }) {
               }}
               source={require('@assets/images/npwp.png')}
             />}
-            <Button loading={loading} full onPress={this.launchImageLibraryNPWP}>
+            {/* <Button loading={loading} full onPress={this.launchImageLibraryNPWP}>
+              Foto NPWP
+            </Button> */}
+            <Button loading={loading} full onPress={() => { sChooseNpwp() }}>
               Foto NPWP
             </Button>
 
@@ -432,6 +494,36 @@ export default function NupAdd({ navigation, route }) {
           }}
           onConfirmPressed={() => {
             (typeAlert == 'Batal') ? navigation.navigate('ListNup') : saveNup();
+          }}
+        />
+
+        <AwesomeAlert
+          show={showChooseKtp}
+          showProgress={false}
+          title="Pilih Upload"
+          message={buttonImageKtp()}
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showCancelButton={true}
+          cancelText="Tutup"
+          confirmButtonColor="#DD6B55"
+          onCancelPressed={() => {
+            hChooseKtp()
+          }}
+        />
+
+        <AwesomeAlert
+          show={showChooseNpwp}
+          showProgress={false}
+          title="Pilih Upload"
+          message={buttonImageNpwp()}
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showCancelButton={true}
+          cancelText="Tutup"
+          confirmButtonColor="#DD6B55"
+          onCancelPressed={() => {
+            hChooseNpwp()
           }}
         />
 

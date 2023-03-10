@@ -116,7 +116,8 @@ export default function WebViewSitePlan({navigation, route}) {
             hAlert();
           }}
           onConfirmPressed={() => {
-            hConfirm(unitBooking)
+            hConfirm(unitBooking);
+            hAlert();
           }}
         />
       </SafeAreaView>

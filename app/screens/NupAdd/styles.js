@@ -207,4 +207,22 @@ export default StyleSheet.create({
     marginHorizontal: 3,
     marginBottom: 20
   },
+  menuIcon: {
+    width: 40,
+    height: 40,
+    position: 'absolute',
+    bottom: 15,
+    right: 5,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
