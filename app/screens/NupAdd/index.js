@@ -484,9 +484,31 @@ export default function NupAdd({ navigation, route }) {
             {/* <Button loading={loading} full onPress={this.launchImageLibraryKTP}>
               Foto KTP
             </Button> */}
-            <Button loading={loading} full onPress={() => { sChooseKtp() }}>
+            {/* <Button loading={loading} full onPress={() => { sChooseKtp() }}>
               Foto KTP
-            </Button>
+            </Button> */}
+            <View style={{
+              flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <View style={{ flex: 1, alignItems: 'center' }}>
+                <Button
+                  style={{ marginTop: 20, width: '95%' }}
+                  onPress={this.launchImageLibraryKTPCamera}>
+                  KTP dari Kamera
+                </Button>
+              </View>
+              <View style={{ flex: 1, alignItems: 'center' }}>
+                <Button
+                  style={{ marginTop: 20, width: '95%' }}
+                  loading={loading}
+                  onPress={this.launchImageLibraryKTP}>
+                  KTP dari Galeri
+                </Button>
+              </View>
+            </View>
 
             <View style={styles.contentTitle}>
               <Text headline semibold>

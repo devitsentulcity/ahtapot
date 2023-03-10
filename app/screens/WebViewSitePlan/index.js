@@ -99,6 +99,11 @@ export default function WebViewSitePlan({navigation, route}) {
           source={{ uri: 'http://10.10.20.36/msales_v1/svgz_sc.php?p=' + kodeKawasan + '&tg=' + kodetg }}
           onMessage={onMessage}
         />
+        {/* <WebView
+          originWhitelist={['*']}
+          source={{ uri: 'https://inapps.sentulcity.co.id/msales_v1/svgz_sc.php?p=' + kodeKawasan + '&tg=' + kodetg }}
+          onMessage={onMessage}
+        /> */}
 
         <AwesomeAlert
           show={showConfirm}

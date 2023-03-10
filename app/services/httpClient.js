@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-// export const BASE_URL = 'https://inapps.sentulcity.co.id/msales/';
+export const BASE_URL = 'https://inapps.sentulcity.co.id/msales/';
 // export const BASE_URL = 'http://10.10.21.39:8080/msales/';
-export const BASE_URL = 'http://10.10.20.36/msales';
+// export const BASE_URL = 'http://10.10.20.36/msales';
 import { store } from '@store';
 
 const getToken = () => store.getState().auth?.user?.token;
