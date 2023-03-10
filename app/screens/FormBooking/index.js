@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   ScrollView,
@@ -34,6 +34,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import RadioButtonRN from 'radio-buttons-react-native';
 import CommonServices from '../../services/common';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import PhoneInput from "react-native-phone-number-input";
 
 export default function ProfileEdit({ navigation, route }) {
   
@@ -98,7 +99,9 @@ export default function ProfileEdit({ navigation, route }) {
   const [namaKantor, setNamaKantor] = useState('');
   const [alamatKantor, setAlamatKantor] = useState('');
   const [noHp1, setNoHp1] = useState('');
+  const phoneNoHp1 = useRef(null);
   const [noHp2, setNoHp2] = useState('');
+  const phoneNoHp2 = useRef(null);
   const [noKantor, setNoKantor] = useState('');
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState(null);
@@ -495,7 +498,7 @@ export default function ProfileEdit({ navigation, route }) {
                   No HP 1
                 </Text>
               </View>
-              <TextInput
+              {/* <TextInput
                 placeholder={'No HP 1'}
                 value={noHp1}
                 onChangeText={text => setNoHp1(text)}
@@ -506,16 +509,43 @@ export default function ProfileEdit({ navigation, route }) {
                     noHp1: true,
                   });
                 }}
+              /> */}
+              <PhoneInput
+                ref={phoneNoHp1}
+                defaultValue={noHp1}
+                defaultCode="ID"
+                layout="first"
+                withShadow
+                containerStyle={{ margin: 10, width: '100%', height: 50, backgroundColor: "#f5f5f5" }}
+                textInputStyle={{ height: 50 }}
+                placeholder="Nomor Handphone"
+                onChangeFormattedText={text => {
+                  setNoHp1(text);
+                }}
+                success={success.noHp1}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>
                   No HP 2
                 </Text>
               </View>
-              <TextInput
+              {/* <TextInput
                 placeholder={'No HP 2'}
                 value={noHp2}
                 onChangeText={text => setNoHp2(text)}
+              /> */}
+              <PhoneInput
+                ref={phoneNoHp2}
+                defaultValue={noHp2}
+                defaultCode="ID"
+                layout="first"
+                withShadow
+                containerStyle={{ margin: 10, width: '100%', height: 50, backgroundColor: "#f5f5f5" }}
+                textInputStyle={{ height: 50 }}
+                placeholder="Nomor Handphone"
+                onChangeFormattedText={text => {
+                  setNoHp2(text);
+                }}
               />
               <View style={styles.contentTitle}>
                 <Text headline semibold>

@@ -24,6 +24,8 @@ import {useTranslation} from 'react-i18next';
 import {FilterModel} from '@models';
 import {banner, fasilitas} from '../../api/home/home';
 import CommonServices from '../../services/common';
+import { userSelect, designSelect } from '@selectors';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 const deltaY = new Animated.Value(0);
 
@@ -37,6 +39,17 @@ export default function Home({navigation}) {
   const [bannerList, setBannerList] = useState([]);
   const [clusterList, setClusterList] = useState([]);
   const [fasilitasList, setFasilitasList] = useState([]);
+  const user = useSelector(userSelect);
+
+  const [showAlert, setShowAlert] = useState(false);
+
+  const sAlert = () => {
+    setShowAlert(true);
+  }
+
+  const hAlert = () => {
+    setShowAlert(false);
+  }
 
   const initPage = async () => {
     fetchBanner();
@@ -226,8 +239,7 @@ export default function Home({navigation}) {
             key={'categoryNUP'}
             style={[styles.serviceItem, {width: Utils.getWidthDevice() * 0.24}]}
             onPress={() => {
-              const filter = new FilterModel();
-              navigation.navigate('ListNup', { filter });
+              user ? navigation.navigate('ListNup') : sAlert()
             }}>
             <View
               style={[styles.serviceCircleIcon, {backgroundColor: '#4c1f7e'}]}>
@@ -246,8 +258,7 @@ export default function Home({navigation}) {
             key={'categoryReserved'}
             style={[styles.serviceItem, {width: Utils.getWidthDevice() * 0.24}]}
             onPress={() => {
-              const filter = new FilterModel();
-              // navigation.navigate('List', { filter });
+              user ? navigation.navigate('ListNup') : sAlert()
             }}>
             <View
               style={[styles.serviceCircleIcon, {backgroundColor: '#bfb339'}]}>
@@ -266,8 +277,7 @@ export default function Home({navigation}) {
             key={'categoryBooking'}
             style={[styles.serviceItem, {width: Utils.getWidthDevice() * 0.24}]}
             onPress={() => {
-              const filter = new FilterModel();
-              // navigation.navigate('List', { filter });
+              user ? navigation.navigate('ListNup') : sAlert()
             }}>
             <View
               style={[styles.serviceCircleIcon, {backgroundColor: '#4546b5'}]}>
@@ -286,8 +296,7 @@ export default function Home({navigation}) {
             key={'categoryListBooking'}
             style={[styles.serviceItem, {width: Utils.getWidthDevice() * 0.24}]}
             onPress={() => {
-              const filter = new FilterModel();
-              // navigation.navigate('List', { filter });
+              user ? navigation.navigate('ListNup') : sAlert()
             }}>
             <View
               style={[styles.serviceCircleIcon, {backgroundColor: '#b152af'}]}>
@@ -492,6 +501,20 @@ export default function Home({navigation}) {
             {renderFasilitas()}
           </View>
         </ScrollView>
+        <AwesomeAlert
+          show={showAlert}
+          showProgress={false}
+          title={'Akes Ditolak'}
+          message={'Silahkan login terlebih dahulu'}
+          closeOnTouchOutside={false}
+          closeOnHardwareBackPress={false}
+          showConfirmButton={true}
+          confirmText={'OK'}
+          confirmButtonColor="#DD6B55"
+          onConfirmPressed={() => {
+            hAlert()
+          }}
+        />
       </SafeAreaView>
     </View>
   );

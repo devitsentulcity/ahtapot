@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   ScrollView,
@@ -31,18 +31,9 @@ import moment from 'moment';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'react-native-image-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
-import RadioButtonRN from 'radio-buttons-react-native';
 import CommonServices from '../../services/common';
 import AwesomeAlert from 'react-native-awesome-alerts';
-
-const options = {
-  title: 'Select Avatar',
-  customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
-  storageOptions: {
-    skipBackup: true,
-    path: 'images',
-  },
-};
+import PhoneInput from "react-native-phone-number-input";
 
 export default function NupAdd({ navigation, route }) {
 
@@ -51,7 +42,6 @@ export default function NupAdd({ navigation, route }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const user = useSelector(userSelect);
-  const messenger = useSelector(messengerSelect);
   const offsetKeyboard = Platform.select({
     ios: 0,
     android: 20,
@@ -60,7 +50,6 @@ export default function NupAdd({ navigation, route }) {
   const item = route.params?.item;
 
   const [loading, setLoading] = useState(false);
-
   const [tanggal, settanggal] = useState(moment().format("DD/MM/YYYY"));
   const [tabShow, SettabShow] = useState('1');
   const [uriImgKTP, seturiImgKTP] = useState(null);
@@ -73,13 +62,13 @@ export default function NupAdd({ navigation, route }) {
   const [noKtp, setNoKtp] = useState('');
   const [alamatKtp, setAlamatKtp] = useState('');
   const [noHp1, setNoHp1] = useState('');
+  const phoneNoHp1 = useRef(null);
   const [noHp2, setNoHp2] = useState('');
+  const phoneNoHp2 = useRef(null);
   const [keterangan, setKeterangan] = useState('');
   const [cluster, setCluster] = useState('');
   const [openCluster, setOpenCluster] = useState(false);
   const [itemsCluster, setItemsCluster] = useState([]);
-
-  
 
   const [success, setSuccess] = useState({
     namaKonsumen: true,
@@ -87,24 +76,34 @@ export default function NupAdd({ navigation, route }) {
     noHp1: true,
   });
 
-  const [showAlert, setShowAlert] = useState(false);
+  const initPage = async () => {
+    getCluster();
+  };
 
-  const sAlert = () => {
+  const [showAlert, setShowAlert] = useState(false);
+  const [typeAlert, setTypeAlert] = useState('');
+
+  const sAlert = (type) => {
     setShowAlert(true);
+    setTypeAlert(type);
   }
 
   const hAlert = () => {
     setShowAlert(false);
   }
 
-  const getHargaJual = async (valueTcp) => {
-    let response = await CommonServices.callApi('/api/detailblockharga/' + item?.blockcode + '/' + getCurrentDate() + '/' + valueTcp, 'GET');
-    if (response.status === 'success') {
-      sethargaJual(response.data.detailharga);
-    } else {
-      sethargaJual('0');
-    }
-    setTcp(valueTcp);
+  const saveNup = () => {
+    console.log("SAVE");
+    hAlert();
+  }
+
+  const getCluster = async () => {
+    let y = [];
+    let response = await CommonServices.callApi('/pub/unitlookup','POST');
+    response.data.list.data.forEach(function(items) {
+      y.push({label: items.name,value: items.id});
+    })
+    setItemsCluster(y);
   };
 
   launchImageLibraryKTP = () => {
@@ -153,10 +152,14 @@ export default function NupAdd({ navigation, route }) {
 
   }
 
+  useEffect(() => {
+    initPage();
+  }, []);
+
   return (
     <View style={{ flex: 1 }}>
       <Header
-        title={'Form Booking'}
+        title={'Input Data NUP'}
         renderLeft={() => {
           return (
             <Icon
@@ -255,7 +258,21 @@ export default function NupAdd({ navigation, route }) {
                 No HP 1
               </Text>
             </View>
-            <TextInput
+            <PhoneInput
+              ref={phoneNoHp1}
+              defaultValue={noHp1}
+              defaultCode="ID"
+              layout="first"
+              withShadow
+              containerStyle={{ margin: 10, width: '100%', height: 50, backgroundColor: "#f5f5f5" }}
+              textInputStyle={{ height: 50 }}
+              placeholder="Nomor Handphone"
+              onChangeFormattedText={text => {
+                setNoHp1(text);
+              }}
+              success={success.noHp1}
+            />
+            {/* <TextInput
               placeholder={'No HP 1'}
               value={noHp1}
               onChangeText={text => setNoHp1(text)}
@@ -266,19 +283,30 @@ export default function NupAdd({ navigation, route }) {
                   noHp1: true,
                 });
               }}
-            />
+            /> */}
             <View style={styles.contentTitle}>
               <Text headline semibold>
                 No HP 2
               </Text>
             </View>
-            <TextInput
+            <PhoneInput
+              ref={phoneNoHp2}
+              defaultValue={noHp2}
+              defaultCode="ID"
+              layout="first"
+              withShadow
+              containerStyle={{ margin: 10, width: '100%', height: 50, backgroundColor: "#f5f5f5" }}
+              textInputStyle={{ height: 50 }}
+              placeholder="Nomor Handphone"
+              onChangeFormattedText={text => {
+                setNoHp2(text);
+              }}
+            />
+            {/* <TextInput
               placeholder={'No HP 2'}
               value={noHp2}
               onChangeText={text => setNoHp2(text)}
-            />
-            
-
+            /> */}
             <View style={styles.contentTitle}>
               <Text headline semibold>
                 Foto KTP
@@ -362,6 +390,28 @@ export default function NupAdd({ navigation, route }) {
               numberOfLines={4}
               multiline={true}
             />
+            <View style={{
+              flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <View style={{ flex: 1, alignItems: 'center' }}>
+                <Button
+                  style={{ marginTop: 20, width: '90%' }}
+                  onPress={() => sAlert('Batal')}>
+                  Batal
+                </Button>
+              </View>
+              <View style={{ flex: 1, alignItems: 'center' }}>
+                <Button
+                  style={{ marginTop: 20, width: '90%' }}
+                  loading={loading}
+                  onPress={() => sAlert()}>
+                  Simpan
+                </Button>
+              </View>
+            </View>
           </ScrollView>
         </KeyboardAvoidingView>
 
@@ -378,10 +428,10 @@ export default function NupAdd({ navigation, route }) {
           confirmText="Yakin"
           confirmButtonColor="#DD6B55"
           onCancelPressed={() => {
-            hAlert();
+            hAlert()
           }}
           onConfirmPressed={() => {
-
+            (typeAlert == 'Batal') ? navigation.navigate('ListNup') : saveNup();
           }}
         />
 
