@@ -9,7 +9,8 @@ import {
   Image,
   RefreshControl,
   FlatList,
-  Modal
+  Modal,
+  PermissionsAndroid
 } from 'react-native';
 import { BaseStyle, useTheme, BaseColor } from '@config';
 import {
@@ -116,7 +117,7 @@ export default function NupAdd({ navigation, route }) {
               name="camera"
               size={25}
               backgroundColor="#E5634D"
-              onPress={() => console.log("")}
+              onPress={this.launchImageLibraryKTPCamera}
             >Kamera</Icon.Button>
           </View>
           <Text>&nbsp;&nbsp;</Text>
@@ -151,7 +152,7 @@ export default function NupAdd({ navigation, route }) {
               name="camera"
               size={25}
               backgroundColor="#E5634D"
-              onPress={() => console.log("")}
+              onPress={this.launchImageLibraryNPWPCamera}
             >Kamera</Icon.Button>
           </View>
           <Text>&nbsp;&nbsp;</Text>
@@ -201,6 +202,48 @@ export default function NupAdd({ navigation, route }) {
 
   }
 
+  launchImageLibraryKTPCamera = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: "App Camera Permission",
+          message: "App needs access to your camera ",
+          buttonNeutral: "Ask Me Later",
+          buttonNegative: "Cancel",
+          buttonPositive: "OK"
+        }
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        let options = {
+          storageOptions: {
+            skipBackup: true,
+            path: 'images',
+          },
+        };
+        ImagePicker.launchCamera(options, (response) => {
+          if (response.didCancel) {
+            // console.log('User cancelled image picker');
+          } else if (response.error) {
+            // console.log('ImagePicker Error: ', response.error);
+          } else if (response.customButton) {
+            // console.log('User tapped custom button: ', response.customButton);
+            alert(response.customButton);
+          } else {
+            // console.log(response);
+            setnameImgKTP(response.assets[0].fileName);
+            seturiImgKTP(response.assets[0].uri);
+            hChooseKtp();
+          }
+        });
+      } else {
+        console.log("Camera permission denied");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   launchImageLibraryNPWP = () => {
     let options = {
       storageOptions: {
@@ -222,6 +265,49 @@ export default function NupAdd({ navigation, route }) {
         hChooseNpwp();
       }
     });
+
+  }
+
+  launchImageLibraryNPWPCamera = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: "App Camera Permission",
+          message: "App needs access to your camera ",
+          buttonNeutral: "Ask Me Later",
+          buttonNegative: "Cancel",
+          buttonPositive: "OK"
+        }
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        let options = {
+          storageOptions: {
+            skipBackup: true,
+            path: 'images',
+          },
+        };
+        ImagePicker.launchCamera(options, (response) => {
+          if (response.didCancel) {
+            // console.log('User cancelled image picker');
+          } else if (response.error) {
+            // console.log('ImagePicker Error: ', response.error);
+          } else if (response.customButton) {
+            // console.log('User tapped custom button: ', response.customButton);
+            alert(response.customButton);
+          } else {
+            // console.log(response);
+            setnameImgNPWP(response.assets[0].fileName);
+            seturiImgNPWP(response.assets[0].uri);
+            hChooseNpwp();
+          }
+        });
+      } else {
+        console.log("Camera permission denied");
+      }
+    } catch (err) {
+      console.log(err);
+    }
 
   }
 
