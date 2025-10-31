@@ -304,37 +304,76 @@ export default function ListTypeCluster({navigation, route}) {
                 }}>
                 {'Siteplan'}
               </Text>
-              <TouchableWithoutFeedback onPress={() => {
-                navigation.navigate('WebViewSitePlan', {
-                  item: {
-                    KawasanCode: item.KawasanCode,
-                    KawasanName: item.KawasanName,
-                    tg: ''
-                  }
-                });
-              }}>
-                <Image
-                  source={{ uri: cluster.siteplan }}
+              {
+                user ? 
+                  <TouchableWithoutFeedback onPress={() => {
+                    navigation.navigate('WebViewSitePlan', {
+                      item: {
+                        KawasanCode: item.KawasanCode,
+                        KawasanName: item.KawasanName,
+                        tg: ''
+                      }
+                    });
+                  }}>
+                    <Image
+                      source={{ uri: cluster.siteplan }}
+                      style={{
+                        resizeMode: 'contain',
+                        aspectRatio: 1,
+                        flex: 1,
+                        width: '100%',
+                        height: undefined,
+                        marginBottom: -50,
+                        marginTop: -50,
+                      }}
+                    />
+                  </TouchableWithoutFeedback>
+                : 
+                  <Image
+                    source={{ uri: cluster.siteplan }}
+                    style={{
+                      resizeMode: 'contain',
+                      aspectRatio: 1,
+                      flex: 1,
+                      width: '100%',
+                      height: undefined,
+                      marginBottom: -50,
+                      marginTop: -50,
+                    }}
+                  />
+              }
+            </View>
+            {
+              user ?
+                <TouchableWithoutFeedback onPress={() => {
+                    navigation.navigate('WebViewSitePlan', {
+                      item: {
+                        KawasanCode: item.KawasanCode,
+                        KawasanName: item.KawasanName,
+                        tg: ''
+                      }
+                    });
+                  }}>
+                  <View
+                    style={{
+                      alignItems: "center"
+                    }}>
+                    <Text body1 grayColor style={{ marginTop: 25 }} >
+                      Click to preview
+                    </Text>
+                  </View>
+                </TouchableWithoutFeedback> 
+              : 
+                <View
                   style={{
-                    resizeMode: 'contain',
-                    aspectRatio: 1,
-                    flex: 1,
-                    width: '100%',
-                    height: undefined,
-                    marginBottom: -50,
-                    marginTop: -50,
-                  }}
-                />
-              </TouchableWithoutFeedback>
-            </View>
-            <View
-              style={{
-                alignItems: "center"
-              }}>
-              <Text body1 grayColor style={{ marginTop: 25 }}>
-                Click to preview
-              </Text>
-            </View>
+                    alignItems: "center"
+                  }}>
+                  <Text body1 grayColor style={{ marginTop: 25 }}>
+                    login to preview
+                  </Text>
+                </View>
+            }
+            
           </View>
           <Text
             title3
@@ -380,12 +419,6 @@ export default function ListTypeCluster({navigation, route}) {
                     subtitle={items.name}
                     location={'login untuk mengetahui stok'}
                     style={{ marginBottom: 15 }}
-                    onPress={() => {
-                      navigation.navigate('ProductDetail', {
-                        item: items,
-                        id: codeCluster,
-                      });
-                    }}
                   />
               );
             })}

@@ -27,7 +27,8 @@ export const ThemeSupport = [
     light: {
       dark: false,
       colors: {
-        primary: '#E5634D',
+        primary: '#232e5c',
+        // primary: '#E5634D',
         primaryDark: '#C31C0D',
         primaryLight: '#FF8A65',
         accent: '#4A90A4',

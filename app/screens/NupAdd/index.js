@@ -104,33 +104,29 @@ export default function NupAdd({ navigation, route }) {
   const hChooseKtp = () => { setShowChooseKtp(false); }
   const buttonImageKtp = () => {
     return (
-      <SafeAreaView
-        style={BaseStyle.safeAreaView}
-        edges={['right', 'top', 'left']}>
-        <View style={{
-          flex: 1,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-        }}>
-          <View style={{ flex: 1, alignItems: 'center', width: '100%'}}>
-            <Icon.Button
-              name="camera"
-              size={25}
-              backgroundColor="#E5634D"
-              onPress={this.launchImageLibraryKTPCamera}
-            >Kamera</Icon.Button>
-          </View>
-          <Text>&nbsp;&nbsp;</Text>
-          <View style={{ flex: 1, alignItems: 'center' }}>
-            <Icon.Button
-              name="image"
-              size={25}
-              backgroundColor="#E5634D"
-              onPress={this.launchImageLibraryKTP}
-            >Galeri</Icon.Button>
-          </View>
+      <View style={{
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+      }}>
+        <View style={{ flex: 1, alignItems: 'center', width: '100%' }}>
+          <Icon.Button
+            name="camera"
+            size={25}
+            backgroundColor="#E5634D"
+            onPress={this.launchImageLibraryKTPCamera}
+          >Kamera</Icon.Button>
         </View>
-      </SafeAreaView>
+        <Text>&nbsp;&nbsp;</Text>
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <Icon.Button
+            name="image"
+            size={25}
+            backgroundColor="#E5634D"
+            onPress={this.launchImageLibraryKTP}
+          >Galeri</Icon.Button>
+        </View>
+      </View>
     );
   }
 
@@ -139,33 +135,29 @@ export default function NupAdd({ navigation, route }) {
   const hChooseNpwp = () => { setShowChooseNpwp(false); }
   const buttonImageNpwp = () => {
     return (
-      <SafeAreaView
-        style={BaseStyle.safeAreaView}
-        edges={['right', 'top', 'left']}>
-        <View style={{
-          flex: 1,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-        }}>
-          <View style={{ flex: 1, alignItems: 'center', width: '100%' }}>
-            <Icon.Button
-              name="camera"
-              size={25}
-              backgroundColor="#E5634D"
-              onPress={this.launchImageLibraryNPWPCamera}
-            >Kamera</Icon.Button>
-          </View>
-          <Text>&nbsp;&nbsp;</Text>
-          <View style={{ flex: 1, alignItems: 'center' }}>
-            <Icon.Button
-              name="image"
-              size={25}
-              backgroundColor="#E5634D"
-              onPress={this.launchImageLibraryNPWP}
-            >Galeri</Icon.Button>
-          </View>
+      <View style={{
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+      }}>
+        <View style={{ flex: 1, alignItems: 'center', width: '100%' }}>
+          <Icon.Button
+            name="camera"
+            size={25}
+            backgroundColor="#E5634D"
+            onPress={this.launchImageLibraryNPWPCamera}
+          >Kamera</Icon.Button>
         </View>
-      </SafeAreaView>
+        <Text>&nbsp;&nbsp;</Text>
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <Icon.Button
+            name="image"
+            size={25}
+            backgroundColor="#E5634D"
+            onPress={this.launchImageLibraryNPWP}
+          >Galeri</Icon.Button>
+        </View>
+      </View>
     );
   }
 
@@ -458,12 +450,12 @@ export default function NupAdd({ navigation, route }) {
               <Image
                 style={{
                   resizeMode: 'contain',
-                  aspectRatio: 1,
+                  // aspectRatio: 1,
                   flex: 1,
                   width: '100%',
-                  height: undefined,
-                  marginBottom: -50,
-                  marginTop: -50,
+                  height: 200,
+                  marginBottom: 10,
+                  // marginTop: -50,
                 }}
                 source={{ uri: uriImgKTP }}
 
@@ -487,28 +479,9 @@ export default function NupAdd({ navigation, route }) {
             {/* <Button loading={loading} full onPress={() => { sChooseKtp() }}>
               Foto KTP
             </Button> */}
-            <View style={{
-              flex: 1,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              <View style={{ flex: 1, alignItems: 'center' }}>
-                <Button
-                  style={{ marginTop: 20, width: '95%' }}
-                  onPress={this.launchImageLibraryKTPCamera}>
-                  KTP dari Kamera
-                </Button>
-              </View>
-              <View style={{ flex: 1, alignItems: 'center' }}>
-                <Button
-                  style={{ marginTop: 20, width: '95%' }}
-                  loading={loading}
-                  onPress={this.launchImageLibraryKTP}>
-                  KTP dari Galeri
-                </Button>
-              </View>
-            </View>
+            <Button loading={loading} full onPress={() => { sChooseKtp() }}>
+              Foto KTP
+            </Button>
 
             <View style={styles.contentTitle}>
               <Text headline semibold>
@@ -519,12 +492,12 @@ export default function NupAdd({ navigation, route }) {
               <Image
                 style={{
                   resizeMode: 'contain',
-                  aspectRatio: 1,
+                  // aspectRatio: 1,
                   flex: 1,
                   width: '100%',
-                  height: undefined,
-                  marginBottom: -50,
-                  marginTop: -50,
+                  height: 200,
+                  marginBottom: 10,
+                  // marginTop: -50,
                 }}
                 source={{ uri: uriImgNPWP }}
 
@@ -614,7 +587,7 @@ export default function NupAdd({ navigation, route }) {
           closeOnHardwareBackPress={false}
           showCancelButton={true}
           cancelText="Tutup"
-          confirmButtonColor="#DD6B55"
+          confirmButtonColor="#232e5c"
           onCancelPressed={() => {
             hChooseKtp()
           }}
@@ -629,7 +602,7 @@ export default function NupAdd({ navigation, route }) {
           closeOnHardwareBackPress={false}
           showCancelButton={true}
           cancelText="Tutup"
-          confirmButtonColor="#DD6B55"
+          confirmButtonColor="#232e5c"
           onCancelPressed={() => {
             hChooseNpwp()
           }}

@@ -37,10 +37,12 @@ export default function WebViewSitePlan({navigation, route}) {
     setShowConfirm(false);
   }
 
-  const onMessage = (data) => {
+  const onMessage = (event) => {
+    let getData = JSON.parse(event.nativeEvent.data);
+    // console.log(getData.kode);
     setShowConfirm(true);
-    setMessageConfirm('Booking unit ' + data.nativeEvent.data + ' ?');
-    setUnitBooking(data.nativeEvent.data);
+    setMessageConfirm('Booking unit ' + getData.keterangan + ' ?');
+    setUnitBooking(getData.kode);
   }
 
   const hConfirm = (kodeUnit) => {
@@ -97,7 +99,7 @@ export default function WebViewSitePlan({navigation, route}) {
         <WebView
           originWhitelist={['*']}
           source={{ uri: 'http://10.10.20.36/msales_v1/svgz_sc.php?p=' + kodeKawasan + '&tg=' + kodetg }}
-          onMessage={onMessage}
+          onMessage={event => onMessage(event)}
         />
         {/* <WebView
           originWhitelist={['*']}
@@ -116,7 +118,7 @@ export default function WebViewSitePlan({navigation, route}) {
           showConfirmButton={true}
           cancelText="Tidak"
           confirmText="Iya"
-          confirmButtonColor="#DD6B55"
+          confirmButtonColor="#232E5C"
           onCancelPressed={() => {
             hAlert();
           }}

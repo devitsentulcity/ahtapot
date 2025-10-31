@@ -53,20 +53,22 @@ export default StyleSheet.create({
     width: widthPercent(33.33),
   },
   TabsettextActiveTwo: {
-    color: Colors.PrimaryColor,
-    fontSize: SF(15),
+    color: '#a7302c',
+    fontSize: SF(16),
     textAlign: 'center',
     paddingVertical: SH(5),
     paddingHorizontal: SH(10),
     borderWidth: 1,
+    borderRadius: 5,
   },
   TabsettextTwo: {
     color: '#000',
-    fontSize: SF(15),
+    fontSize: SF(16),
     textAlign: 'center',
     paddingVertical: SH(5),
     paddingHorizontal: SH(10),
     borderWidth: 1,
+    borderRadius: 5,
   },
   MinHeightStyle: {
     height: '100%'

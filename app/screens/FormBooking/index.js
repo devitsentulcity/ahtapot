@@ -7,36 +7,31 @@ import {
   TouchableOpacity,
   Dimensions,
   Image,
-  RefreshControl,
-  FlatList
+  PermissionsAndroid
 } from 'react-native';
 import {BaseStyle, useTheme} from '@config';
 import {
   Header,
   SafeAreaView,
-  Icon,
   Text,
   TextInput,
   Button,
-  ListThumbSquare
 } from '@components';
 import styles from './styles';
 import { userSelect, messengerSelect } from '@selectors';
 import {useDispatch, useSelector} from 'react-redux';
 import {useTranslation} from 'react-i18next';
-import {authActions} from '@actions';
 import MaskInput, { Masks } from 'react-native-mask-input';
-import SelectDropdown from 'react-native-select-dropdown'
 import moment from 'moment';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'react-native-image-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import RadioButtonRN from 'radio-buttons-react-native';
 import CommonServices from '../../services/common';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import PhoneInput from "react-native-phone-number-input";
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-export default function ProfileEdit({ navigation, route }) {
+export default function FormBooking({ navigation, route }) {
   
   const { colorrdata } = useSelector(state => state.commonReducer) || {};
   const {colors} = useTheme();
@@ -265,9 +260,51 @@ export default function ProfileEdit({ navigation, route }) {
       } else {
         setnameImgKTP(response.assets[0].fileName);
         seturiImgKTP(response.assets[0].uri);
+        hChooseKtp();
       }
     });
 
+  }
+
+  launchImageLibraryKTPCamera = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: "App Camera Permission",
+          message: "App needs access to your camera ",
+          buttonNeutral: "Ask Me Later",
+          buttonNegative: "Cancel",
+          buttonPositive: "OK"
+        }
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        let options = {
+          storageOptions: {
+            skipBackup: true,
+            path: 'images',
+          },
+        };
+        ImagePicker.launchCamera(options, (response) => {
+          if (response.didCancel) {
+            // console.log('User cancelled image picker');
+          } else if (response.error) {
+            // console.log('ImagePicker Error: ', response.error);
+          } else if (response.customButton) {
+            // console.log('User tapped custom button: ', response.customButton);
+            // alert(response.customButton);
+          } else {
+            setnameImgKTP(response.assets[0].fileName);
+            seturiImgKTP(response.assets[0].uri);
+            hChooseKtp();
+          }
+        });
+      } else {
+        console.log("Camera permission denied");
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   launchImageLibraryNPWP = () => {
@@ -288,9 +325,113 @@ export default function ProfileEdit({ navigation, route }) {
       } else {
         setnameImgNPWP(response.assets[0].fileName);
         seturiImgNPWP(response.assets[0].uri);
+        hChooseNpwp();
       }
     });
+  }
 
+  launchImageLibraryNPWPCamera = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: "App Camera Permission",
+          message: "App needs access to your camera ",
+          buttonNeutral: "Ask Me Later",
+          buttonNegative: "Cancel",
+          buttonPositive: "OK"
+        }
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        let options = {
+          storageOptions: {
+            skipBackup: true,
+            path: 'images',
+          },
+        };
+        ImagePicker.launchCamera(options, (response) => {
+          if (response.didCancel) {
+            // console.log('User cancelled image picker');
+          } else if (response.error) {
+            // console.log('ImagePicker Error: ', response.error);
+          } else if (response.customButton) {
+            // console.log('User tapped custom button: ', response.customButton);
+            alert(response.customButton);
+          } else {
+            setnameImgNPWP(response.assets[0].fileName);
+            seturiImgNPWP(response.assets[0].uri);
+            hChooseNpwp();
+          }
+        });
+      } else {
+        console.log("Camera permission denied");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+
+  }
+
+  const [showChooseKtp, setShowChooseKtp] = useState(false);
+  const sChooseKtp = () => { setShowChooseKtp(true); }
+  const hChooseKtp = () => { setShowChooseKtp(false); }
+  const buttonImageKtp = () => {
+    return (
+      <View style={{
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+      }}>
+        <View style={{ flex: 1, alignItems: 'center', width: '100%' }}>
+          <Icon.Button
+            name="camera"
+            size={25}
+            backgroundColor="#232E5C"
+            onPress={this.launchImageLibraryKTPCamera}
+          >Kamera</Icon.Button>
+        </View>
+        <Text>&nbsp;&nbsp;</Text>
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <Icon.Button
+            name="image"
+            size={25}
+            backgroundColor="#232E5C"
+            onPress={this.launchImageLibraryKTP}
+          >Galeri</Icon.Button>
+        </View>
+      </View>
+    );
+  }
+
+  const [showChooseNpwp, setShowChooseNpwp] = useState(false);
+  const sChooseNpwp = () => { setShowChooseNpwp(true); }
+  const hChooseNpwp = () => { setShowChooseNpwp(false); }
+  const buttonImageNpwp = () => {
+    return (
+      <View style={{
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+      }}>
+        <View style={{ flex: 1, alignItems: 'center', width: '100%' }}>
+          <Icon.Button
+            name="camera"
+            size={25}
+            backgroundColor="#232E5C"
+            onPress={this.launchImageLibraryNPWPCamera}
+          >Kamera</Icon.Button>
+        </View>
+        <Text>&nbsp;&nbsp;</Text>
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <Icon.Button
+            name="image"
+            size={25}
+            backgroundColor="#232E5C"
+            onPress={this.launchImageLibraryNPWP}
+          >Galeri</Icon.Button>
+        </View>
+      </View>
+    );
   }
 
   return (
@@ -318,16 +459,6 @@ export default function ProfileEdit({ navigation, route }) {
           style={{flex: 1}}>
           <ScrollView horizontal>
             <View style={styles.TabBoxTwo}>
-              {/* <TouchableOpacity onPress={() => SettabShow('1')} style={tabShow === '1' ? [styles.TabsettextActiveBoxTwo, { backgroundColor: colorrdata }] : styles.TabsettextBoxTwo}>
-                <Text onPress={() => SettabShow('1')} style={tabShow === '1' ? styles.TabsettextActiveTwo : [styles.TabsettextTwo, { color: colorrdata }]}>Data Konsumen</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => SettabShow('2')} style={tabShow === '2' ? [styles.TabsettextActiveBoxTwo, { backgroundColor: colorrdata }] : styles.TabsettextBoxTwo}>
-                <Text onPress={() => SettabShow('2')} style={tabShow === '2' ? styles.TabsettextActiveTwo : [styles.TabsettextTwo, { color: colorrdata }]}>Rincian Harga</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => SettabShow('3')} style={tabShow === '3' ? [styles.TabsettextActiveBoxTwo, { backgroundColor: colorrdata }] : styles.TabsettextBoxTwo}>
-                <Text onPress={() => SettabShow('3')} style={tabShow === '3' ? styles.TabsettextActiveTwo : [styles.TabsettextTwo, { color: colorrdata }]}>Konfirmasi</Text>
-              </TouchableOpacity> */}
-
               <TouchableOpacity style={tabShow === '1' ? [styles.TabsettextActiveBoxTwo, { backgroundColor: colorrdata }] : styles.TabsettextBoxTwo}>
                 <Text style={tabShow === '1' ? styles.TabsettextActiveTwo : [styles.TabsettextTwo, { color: colorrdata }]}>Data Konsumen</Text>
               </TouchableOpacity>
@@ -589,12 +720,12 @@ export default function ProfileEdit({ navigation, route }) {
                 <Image
                   style={{
                       resizeMode: 'contain',
-                      aspectRatio: 1,
+                      // aspectRatio: 1,
                       flex: 1,
                       width: '100%',
-                      height: undefined,
-                      marginBottom: -50,
-                      marginTop: -50,
+                      height: 200,
+                      marginBottom: 10,
+                      // marginTop: -50,
                   }}
                   source={{ uri: uriImgKTP }}
 
@@ -612,7 +743,7 @@ export default function ProfileEdit({ navigation, route }) {
                   source={require('@assets/images/ktp.png')}
               /> }
 
-              <Button loading={loading} full onPress={this.launchImageLibraryKTP}>
+              <Button loading={loading} full onPress={() => { sChooseKtp() }}>
                 Foto KTP
               </Button>
               
@@ -625,12 +756,12 @@ export default function ProfileEdit({ navigation, route }) {
                 <Image
                   style={{
                     resizeMode: 'contain',
-                    aspectRatio: 1,
+                    // aspectRatio: 1,
                     flex: 1,
                     width: '100%',
-                    height: undefined,
-                    marginBottom: -50,
-                    marginTop: -50,
+                    height: 200,
+                    marginBottom: 10,
+                    // marginTop: -50,
                   }}
                   source={{ uri: uriImgNPWP }}
 
@@ -647,7 +778,7 @@ export default function ProfileEdit({ navigation, route }) {
                 }}
                 source={require('@assets/images/npwp.png')}
               /> }
-              <Button loading={loading} full onPress={this.launchImageLibraryNPWP}>
+              <Button loading={loading} full onPress={() => { sChooseNpwp() }}>
                 Foto NPWP
               </Button>
               <View style={styles.contentTitle}>
@@ -917,7 +1048,7 @@ export default function ProfileEdit({ navigation, route }) {
           showConfirmButton={true}
           cancelText="Batal"
           confirmText="Yakin"
-          confirmButtonColor="#DD6B55"
+          confirmButtonColor="#232E5C"
           onCancelPressed={() => {
             hAlert();
           }}
@@ -942,9 +1073,39 @@ export default function ProfileEdit({ navigation, route }) {
           closeOnHardwareBackPress={false}
           showConfirmButton={true}
           confirmText={'OK'}
-          confirmButtonColor="#DD6B55"
+          confirmButtonColor="#232E5C"
           onConfirmPressed={() => {
             hConfirm(nextState)
+          }}
+        />
+
+        <AwesomeAlert
+          show={showChooseKtp}
+          showProgress={false}
+          title="Pilih Upload"
+          message={ buttonImageKtp() }
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showCancelButton={true}
+          cancelText="Tutup"
+          confirmButtonColor="#232E5C"
+          onCancelPressed={() => {
+            hChooseKtp()
+          }}
+        />
+
+        <AwesomeAlert
+          show={showChooseNpwp}
+          showProgress={false}
+          title="Pilih Upload"
+          message={buttonImageNpwp()}
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showCancelButton={true}
+          cancelText="Tutup"
+          confirmButtonColor="#232E5C"
+          onCancelPressed={() => {
+            hChooseNpwp()
           }}
         />
         

@@ -179,7 +179,7 @@ export default function ProfileEdit({ navigation, route }) {
           showConfirmButton={true}
           cancelText="No"
           confirmText="Yes"
-          confirmButtonColor="#DD6B55"
+          confirmButtonColor="#232E5C"
           onCancelPressed={() => {
             hAlert();
           }}
